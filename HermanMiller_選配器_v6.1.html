@@ -1,0 +1,3836 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herman Miller 選配計算器 v6｜Aeron · Cosm · Sayl · Mirra 2 · Eames</title>
+<style>
+  :root {
+    --bg: #f5f4f2;
+    --surface: #ffffff;
+    --border: #e0ddd8;
+    --border-strong: #c8c4bc;
+    --text: #1a1917;
+    --text-muted: #6b6860;
+    --accent: #1a1917;
+    --accent-light: #f0efe9;
+    --green: #2d6a4f;
+    --green-light: #e8f5ef;
+    --red: #c0392b;
+    --red-light: #fdf0ee;
+    --yellow: #7a5c00;
+    --yellow-light: #fef9e7;
+    --step-bg: #fafaf8;
+    --total-bg: #1a1917;
+    --total-text: #ffffff;
+    --us-line: #1F4E78;
+    --us-light: #EAF3FA;
+    --asia-line: #8B2635;
+    --asia-light: #F8EDEE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Microsoft JhengHei', '微軟正黑體', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+    font-size: 14px;
+    line-height: 1.6;
+    font-feature-settings: "tnum";
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* ── TOP HEADER ── */
+  .header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-brand {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .header-version {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'Consolas', 'Microsoft JhengHei', monospace;
+    background: var(--accent-light);
+    border: 1px solid var(--border);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* ── PRODUCT TABS (level 1) ── */
+  .product-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+  .product-tab-btn {
+    padding: 12px 22px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .product-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .product-tab-btn:hover:not(.active) { color: var(--text); background: var(--accent-light); }
+
+  .product-panel { display: none; }
+  .product-panel.active { display: block; }
+
+  /* ── INNER TABS (level 2) ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── INPUT SECTION ── */
+  .input-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .input-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .input-row { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .model-input {
+    flex: 1; min-width: 260px;
+    font-family: 'Consolas', 'Microsoft JhengHei', monospace;
+    font-size: 15px; font-weight: 500;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--accent-light);
+    color: var(--accent);
+    outline: none;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s;
+  }
+  .model-input:focus { border-color: var(--accent); }
+  .model-input::placeholder { color: #bbb; font-weight: 400; }
+
+  .btn-primary {
+    padding: 11px 22px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.05em;
+    white-space: nowrap; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-clear {
+    padding: 11px 16px;
+    background: none; color: var(--text-muted);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-clear:hover { background: var(--accent-light); color: var(--accent); }
+
+  .input-hint { margin-top: 8px; font-size: 11px; color: var(--text-muted); }
+  .input-hint code {
+    font-family: 'Consolas', monospace;
+    background: var(--accent-light); padding: 1px 5px;
+    border-radius: 3px; font-size: 11px;
+  }
+
+  /* ── EXAMPLE BUTTONS ── */
+  .examples { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .examples-label { font-size: 11px; color: var(--text-muted); }
+  .example-btn {
+    background: var(--step-bg); border: 1px solid var(--border);
+    padding: 4px 10px; font-size: 11px;
+    font-family: 'Consolas', 'Microsoft JhengHei', monospace;
+    cursor: pointer; color: var(--text-muted);
+    border-radius: 3px; transition: all 0.15s;
+  }
+  .example-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── ALERT ── */
+  .alert {
+    padding: 12px 16px; border-radius: 6px;
+    font-size: 13px; margin-bottom: 16px;
+    display: none; align-items: flex-start; gap: 8px;
+  }
+  .alert.show { display: flex; }
+  .alert-error { background: var(--red-light); border: 1px solid #f5c6c2; color: var(--red); }
+  .alert-warn  { background: var(--yellow-light); border: 1px solid #fae5a0; color: var(--yellow); }
+  .alert-info  { background: var(--us-light); border: 1px solid #c5dcec; color: var(--us-line); }
+  .alert-icon  { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── 更新時間戳橫條（計算/確認後回饋）── */
+  .update-stamp {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--green-light); border: 1px solid #aed8c4;
+    color: var(--green); font-size: 12px; font-weight: 600;
+    padding: 7px 14px; border-radius: 6px;
+    margin-bottom: 10px;
+    opacity: 0; transform: translateY(-4px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+  }
+  .update-stamp.show { opacity: 1; transform: translateY(0); }
+  .update-stamp .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green); flex-shrink: 0;
+  }
+  .update-stamp .ts {
+    font-family: 'Consolas', monospace; font-weight: 500;
+    color: var(--text-muted); margin-left: auto;
+  }
+
+  /* ── DUAL LINE BADGES ── */
+  .line-badges { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .line-badge {
+    flex: 1; min-width: 240px;
+    padding: 14px 18px;
+    border: 2px solid;
+    background: var(--surface);
+    border-radius: 8px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .line-badge.us { border-color: var(--us-line); }
+  .line-badge.us.active { background: var(--us-light); }
+  .line-badge.asia { border-color: var(--asia-line); }
+  .line-badge.asia.active { background: var(--asia-light); }
+  .line-badge.unavailable { opacity: 0.5; background: var(--step-bg); border-style: dashed; }
+  .line-badge.pending { opacity: 0.7; background: var(--yellow-light); border-color: #d4b94e; border-style: dashed; }
+
+  .line-name {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .line-badge.us .line-name { color: var(--us-line); }
+  .line-badge.asia .line-name { color: var(--asia-line); }
+  .line-price {
+    font-size: 26px; font-weight: 700;
+    margin-top: 6px; letter-spacing: -0.02em;
+    font-family: 'Consolas', monospace;
+  }
+  .line-badge.us .line-price { color: var(--us-line); }
+  .line-badge.asia .line-price { color: var(--asia-line); }
+  .line-price.na { font-size: 13px; color: var(--text-muted); padding-top: 8px; font-family: inherit; font-weight: 400; }
+  .line-method { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .badge-tag {
+    position: absolute; top: 10px; right: 12px;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 8px; background: var(--accent); color: #fff;
+    letter-spacing: 0.1em; border-radius: 3px;
+    display: none;
+  }
+  .badge-tag.show { display: inline-block; }
+
+  /* ── RESULT ── */
+  .result-block { display: none; }
+  .result-block.show { display: block; }
+
+  .model-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent); color: #fff;
+    padding: 8px 16px; border-radius: 6px; margin-bottom: 16px;
+    font-family: 'Consolas', monospace;
+    font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+  }
+  .model-badge-label {
+    font-family: inherit;
+    font-size: 10px; opacity: 0.6;
+    text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400;
+  }
+
+  /* ── PARSE CARD (for dual-line layout) ── */
+  .parse-card {
+    background: var(--surface); border: 1px solid var(--border);
+    margin-bottom: 16px; overflow: hidden;
+    border-radius: 8px;
+  }
+  .parse-header {
+    background: var(--accent); color: #fff;
+    padding: 10px 16px; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.08em;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .parse-header.us-h { background: var(--us-line); }
+  .parse-header.asia-h { background: var(--asia-line); }
+  .parse-header.unavailable { background: #999; }
+  .parse-header.pending { background: #b59930; }
+
+  /* ── STEPS TABLE ── */
+  .steps-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--surface);
+    font-size: 13px;
+  }
+  .steps-table thead tr { background: var(--step-bg); border-bottom: 1.5px solid var(--border); }
+  .steps-table th {
+    padding: 6px 12px; text-align: left;
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-muted); font-weight: 600;
+  }
+  .steps-table th:last-child { text-align: right; }
+  .steps-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  .steps-table tbody tr:last-child { border-bottom: none; }
+  .steps-table tbody tr:hover { background: var(--accent-light); }
+  .steps-table td { padding: 6px 12px; vertical-align: middle; }
+
+  .step-num { font-family: 'Consolas', monospace; font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+  .step-code {
+    font-family: 'Consolas', monospace; font-size: 12px; font-weight: 500;
+    background: var(--accent-light); border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 4px; display: inline-block; white-space: nowrap;
+  }
+  .step-desc { color: var(--text); line-height: 1.4; }
+  .step-desc small { display: block; color: var(--text-muted); font-size: 11px; margin-top: 1px; }
+  .step-price { font-family: 'Consolas', monospace; font-size: 13px; font-weight: 500; text-align: right; white-space: nowrap; }
+  .price-zero  { color: var(--text-muted); }
+  .price-add   { color: var(--green); }
+  .price-minus { color: var(--asia-line); }
+  .price-base  { color: var(--accent); font-weight: 700; }
+
+  tr.base-row { background: var(--accent-light); }
+
+  tr.total-row { background: var(--total-bg); color: var(--total-text); }
+  tr.total-row td { border: none; padding: 13px 14px; }
+  tr.total-row td.label { text-align: right; font-weight: 700; letter-spacing: 0.05em; font-size: 12px; }
+  tr.total-row td.amount { font-size: 17px; font-weight: 700; color: #FFD700; font-family: 'Consolas', monospace; text-align: right; white-space: nowrap; }
+  tr.total-row.us-total td.label { background: var(--us-line); }
+  tr.total-row.us-total td.amount { background: var(--us-line); }
+  tr.total-row.asia-total td.label { background: var(--asia-line); }
+  tr.total-row.asia-total td.amount { background: var(--asia-line); }
+
+  /* ── TOTAL BAR (single line products) ── */
+  .total-bar {
+    background: var(--total-bg); color: var(--total-text);
+    border-radius: 8px; padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+  }
+  .total-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.6; }
+  .total-model { font-family: 'Consolas', monospace; font-size: 12px; opacity: 0.5; margin-top: 2px; }
+  .total-sub   { font-size: 11px; opacity: 0.45; margin-top: 3px; }
+  .total-price { font-family: 'Consolas', monospace; font-size: 28px; font-weight: 500; letter-spacing: -0.02em; }
+  .total-currency { font-size: 14px; opacity: 0.7; margin-right: 4px; }
+
+  /* ── TWD BAR ── */
+  .twd-bar {
+    background: var(--accent-light); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+  }
+  .twd-label  { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+  .twd-price  { font-family: 'Consolas', monospace; font-size: 20px; font-weight: 700; color: var(--accent); }
+  .twd-rate   { font-size: 11px; color: var(--text-muted); }
+  .twd-input-row { display: flex; align-items: center; gap: 8px; }
+  .twd-input {
+    width: 80px; padding: 5px 8px;
+    border: 1px solid var(--border-strong); border-radius: 4px;
+    font-family: 'Consolas', monospace; font-size: 13px;
+    text-align: right; background: var(--surface); color: var(--accent); outline: none;
+  }
+  .twd-input:focus { border-color: var(--accent); }
+
+  /* ── PENDING / UNAVAILABLE CARDS ── */
+  .unavailable-card {
+    background: var(--step-bg); border: 1px dashed var(--border-strong);
+    padding: 28px 20px; text-align: center;
+    color: var(--text-muted); font-size: 13px;
+  }
+  .unavailable-card strong { color: var(--asia-line); }
+  .pending-card {
+    background: var(--yellow-light); border: 1px dashed #d4b94e;
+    padding: 24px 20px; text-align: center;
+    color: var(--yellow); font-size: 13px;
+  }
+  .pending-card strong { color: var(--yellow); font-size: 14px; display: block; margin-bottom: 6px; }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  /* ── MANUAL CONFIG GRID（三欄緊湊版）── */
+  .config-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 12px;
+  }
+  @media (max-width: 900px) { .config-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .config-grid { grid-template-columns: 1fr; } }
+
+  .config-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  /* 欄位選取閃示：onchange 時加 .just-changed，0.4s 後自動移除 */
+  .config-item.just-changed {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(26,25,23,0.18);
+  }
+  .config-item-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-muted); font-weight: 600; margin-bottom: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .config-item-step {
+    font-family: 'Consolas', monospace; font-size: 10px;
+    background: var(--step-bg); padding: 1px 5px;
+    border-radius: 3px; border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .config-select {
+    width: 100%; padding: 6px 8px;
+    border: 1px solid var(--border-strong); border-radius: 5px;
+    background: var(--accent-light);
+    font-family: inherit;
+    font-size: 13px; color: var(--accent); outline: none; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a1917' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 9px center; padding-right: 26px;
+  }
+  .config-select:focus { border-color: var(--accent); }
+
+  .config-price-display {
+    margin-top: 3px; font-size: 11px; color: var(--text-muted);
+    font-family: 'Consolas', monospace; min-height: 14px; line-height: 14px;
+  }
+  .config-price-display:empty { min-height: 0; margin-top: 0; }
+  .config-price-display.has-price { color: var(--green); font-weight: 500; }
+
+  .btn-build {
+    width: 100%; padding: 13px; background: var(--accent); color: #fff;
+    border: none; border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    letter-spacing: 0.05em; margin-top: 4px; transition: opacity 0.15s;
+  }
+  .btn-build:hover { opacity: 0.85; }
+
+  .generated-code-box {
+    background: var(--accent-light); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 16px;
+    font-family: 'Consolas', monospace; font-size: 14px; font-weight: 500;
+    color: var(--accent); letter-spacing: 0.05em;
+    margin-top: 12px; word-break: break-all;
+    display: none; user-select: all; cursor: text;
+  }
+  .generated-code-box.show { display: block; }
+
+  /* ── EAMES CONFIG WRAPPER ── */
+  .config-wrapper {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-muted); font-weight: 600;
+    margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
+  .eames-config-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 12px;
+  }
+  @media (max-width: 900px) { .eames-config-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .eames-config-grid { grid-template-columns: 1fr; } }
+
+  /* ── SAYL 專用緊湊樣式 ── */
+  #product-sayl .input-section { padding: 14px 16px; margin-bottom: 14px; }
+  #product-sayl .config-wrapper { padding: 14px 16px; margin-bottom: 14px; }
+  #product-sayl .sayl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 720px) { #product-sayl .sayl-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { #product-sayl .sayl-grid { grid-template-columns: 1fr; } }
+  #product-sayl .sayl-config-item {
+    background: var(--step-bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 10px;
+  }
+  #product-sayl .sayl-config-item .config-item-label {
+    font-size: 10px; margin-bottom: 4px;
+  }
+  #product-sayl .sayl-config-item .config-item-step {
+    font-size: 9px; padding: 1px 4px;
+  }
+  #product-sayl .eames-select { padding: 6px 26px 6px 8px; font-size: 12px; }
+  #product-sayl .leather-section { margin-top: 10px; }
+  #product-sayl .leather-sel-label { font-size: 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+  #product-sayl .selected-leather-name { font-size: 11px; }
+  #product-sayl .swatch-container { gap: 8px; margin-top: 6px; }
+  #product-sayl .swatch { width: 24px; height: 24px; }
+  #product-sayl .btn-calc { padding: 9px; font-size: 13px; margin-top: 6px; }
+
+  /* ── MIRRA 2 緊湊樣式（沿用 sayl 風格） ── */
+  #product-mirra .input-section { padding: 14px 16px; margin-bottom: 14px; }
+  #product-mirra .config-wrapper { padding: 14px 16px; margin-bottom: 14px; }
+  #product-mirra .mirra-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 10px;
+  }
+  @media (max-width: 900px) { #product-mirra .mirra-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 720px) { #product-mirra .mirra-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { #product-mirra .mirra-grid { grid-template-columns: 1fr; } }
+  #product-mirra .mirra-config-item {
+    background: var(--step-bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 10px;
+  }
+  #product-mirra .mirra-config-item .config-item-label {
+    font-size: 11px; font-weight: 700;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+  }
+  #product-mirra .mirra-config-item .config-item-step {
+    font-size: 9px; padding: 1px 4px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 3px; color: var(--text-muted);
+  }
+  #product-mirra .eames-select { padding: 6px 26px 6px 8px; font-size: 12px; }
+  #product-mirra .leather-section { margin-top: 10px; }
+  #product-mirra .leather-sel-label { font-size: 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+  #product-mirra .selected-leather-name { font-size: 11px; }
+  #product-mirra .swatch-container { gap: 8px; margin-top: 6px; }
+  #product-mirra .swatch { width: 26px; height: 26px; }
+  #product-mirra .btn-calc { padding: 9px; font-size: 13px; margin-top: 6px; }
+  /* Mirra 色塊「成套色」雙色顯示用 */
+  #product-mirra .swatch.split {
+    background: linear-gradient(135deg, var(--c1) 0%, var(--c1) 50%, var(--c2) 50%, var(--c2) 100%);
+  }
+
+  /* ── 功能說明摺疊區 ── */
+  .feature-details {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 16px; overflow: hidden;
+  }
+  .feature-details summary {
+    list-style: none; cursor: pointer;
+    padding: 12px 18px; background: var(--step-bg);
+    font-size: 12px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.05em; user-select: none;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .feature-details summary::-webkit-details-marker { display: none; }
+  .feature-details summary::after {
+    content: '▼'; font-size: 10px; color: var(--text-muted);
+    transition: transform 0.15s;
+  }
+  .feature-details[open] summary::after { transform: rotate(180deg); }
+  .feature-details summary:hover { background: var(--accent-light); }
+  .feature-body {
+    padding: 14px 18px; font-size: 12px; line-height: 1.7;
+    border-top: 1px solid var(--border);
+  }
+  .feature-body h4 {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted);
+    margin-top: 10px; margin-bottom: 4px;
+    padding-bottom: 4px; border-bottom: 1px dashed var(--border);
+  }
+  .feature-body h4:first-child { margin-top: 0; }
+  .feature-body .feat-row {
+    display: grid; grid-template-columns: 90px 1fr;
+    gap: 10px; padding: 4px 0;
+  }
+  .feature-body .feat-code {
+    font-family: 'Consolas', monospace; font-weight: 700;
+    color: var(--accent); font-size: 12px;
+  }
+  .feature-body .feat-desc { color: var(--text); }
+
+  .eames-config-item {
+    background: var(--step-bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .eames-config-item.just-changed,
+  .sayl-config-item.just-changed,
+  #product-mirra .config-item.just-changed {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(26,25,23,0.18);
+  }
+  .eames-select {
+    width: 100%; padding: 7px 30px 7px 9px;
+    border: 1px solid var(--border-strong); border-radius: 5px;
+    background: var(--surface);
+    font-family: inherit;
+    font-size: 13px; color: var(--accent); outline: none; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a1917' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .eames-select:focus { border-color: var(--accent); }
+
+  .btn-calc {
+    width: 100%; padding: 13px; background: var(--accent); color: #fff;
+    border: none; border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    letter-spacing: 0.05em; margin-top: 4px; transition: opacity 0.15s;
+  }
+  .btn-calc:hover { opacity: 0.85; }
+
+  /* ── LEATHER SWATCHES ── */
+  .swatch-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .swatch {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1px solid var(--border-strong); cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.12s;
+  }
+  .swatch:hover { transform: scale(1.12); }
+  /* 選中：色點 → 白底間隙 → 彩色外環，黑色或白色色票都圈得出來 */
+  .swatch.active {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--green);
+    position: relative; z-index: 1;
+  }
+
+  .leather-section { margin-top: 8px; }
+  .leather-sel-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .selected-leather-name { font-size: 12px; font-weight: 600; color: var(--accent); font-family: 'Consolas', monospace; }
+
+  /* ── QTY ROW ── */
+  .qty-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 12px; padding: 10px 14px;
+    background: var(--step-bg); border: 1px solid var(--border); border-radius: 6px;
+  }
+  .qty-label { font-size: 12px; color: var(--text-muted); flex: 1; }
+  .qty-input {
+    width: 64px; padding: 6px 10px;
+    border: 1px solid var(--border-strong); border-radius: 4px;
+    font-family: 'Consolas', monospace; font-size: 14px; font-weight: 600;
+    text-align: center; color: var(--accent); background: var(--surface); outline: none;
+  }
+  .qty-input:focus { border-color: var(--accent); }
+  .qty-total { font-family: 'Consolas', monospace; font-size: 13px; font-weight: 600; color: var(--green); white-space: nowrap; }
+
+  /* ── COSM SERIES PILLS ── */
+  .series-pills { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .series-pill {
+    font-size: 10px; padding: 3px 8px;
+    background: var(--step-bg); color: var(--text-muted);
+    border-radius: 3px; font-family: 'Consolas', monospace; font-weight: 600;
+    border: 1px solid var(--border);
+  }
+
+  /* ── COSM SERIES BANNER ── */
+  .series-banner {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 12px 18px; margin-bottom: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-radius: 8px;
+    display: none;
+  }
+  .series-banner.show { display: flex; }
+  .series-info { display: flex; align-items: center; gap: 12px; }
+  .series-tag {
+    font-size: 12px; font-weight: 700;
+    padding: 5px 12px; color: #fff;
+    letter-spacing: 0.08em; border-radius: 4px;
+    font-family: 'Consolas', monospace;
+  }
+  .series-FLC1 { background: #305496; }
+  .series-FLC2 { background: #2E75B6; }
+  .series-FLC3 { background: #8B2635; }
+  .series-FLC4 { background: #B8434C; }
+  .series-FLC7 { background: #375623; }
+  .series-FLC8 { background: #548235; }
+  .series-desc { font-size: 13px; color: var(--text); font-weight: 500; }
+
+  /* ── FOOTER ── */
+  .footer-note {
+    margin-top: 28px; font-size: 11px; color: var(--text-muted);
+    border-top: 1px solid var(--border); padding-top: 14px; line-height: 1.8;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; padding: 0; font-size: 11px; }
+    .container { max-width: 100%; }
+    .product-tabs, .tabs, .input-section, .examples,
+    .btn-primary, .btn-clear, .btn-build, .btn-calc,
+    .twd-input-row, .qty-row { display: none !important; }
+    .product-panel { display: block !important; page-break-after: always; }
+    .product-panel:last-child { page-break-after: auto; }
+    .tab-panel { display: block !important; }
+    .result-block { display: block !important; }
+    .parse-card, .total-bar, .twd-bar { page-break-inside: avoid; box-shadow: none; }
+    .header { border-bottom: 2px solid #000; }
+    @page { size: A4 portrait; margin: 1.5cm 1cm; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── TOP HEADER ── -->
+  <div class="header">
+    <span class="header-brand">HermanMiller</span>
+    <h1>選配計算器 v6</h1>
+    <span class="header-version">Price Book 4/26 · 美亞雙線 · v6 · +Mirra 2</span>
+  </div>
+
+  <!-- ── PRODUCT TABS ── -->
+  <div class="product-tabs">
+    <button class="product-tab-btn active" onclick="switchProduct('aeron')">🪑 Aeron® Work Chair</button>
+    <button class="product-tab-btn" onclick="switchProduct('cosm')">💺 Cosm® 全系列</button>
+    <button class="product-tab-btn" onclick="switchProduct('sayl')">🌐 Sayl® AS1YA</button>
+    <button class="product-tab-btn" onclick="switchProduct('mirra')">🦋 Mirra® 2 MRFN</button>
+    <button class="product-tab-btn" onclick="switchProduct('eames')">🛋 Eames® Lounge + Ottoman</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL A: AERON
+  ══════════════════════════════════════════ -->
+  <div id="product-aeron" class="product-panel active">
+
+    <!-- Inner tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchAeronTab('paste')">📋 貼上型號計算</button>
+      <button class="tab-btn" onclick="switchAeronTab('manual')">🎛 下拉手動選配</button>
+    </div>
+
+    <!-- ── AERON TAB 1: PASTE ── -->
+    <div id="aeron-tab-paste" class="tab-panel active">
+      <div class="input-section">
+        <label class="input-label">輸入或貼上 Aeron 型號</label>
+        <div class="input-row">
+          <input type="text" class="model-input" id="aeronModelInput"
+            placeholder="例：AER1B23DW ALP G1 G1 G1 BB BK 23103"
+            onkeydown="if(event.key==='Enter') aeronParseModel()">
+          <button class="btn-primary" onclick="aeronParseModel()">計算價格</button>
+          <button class="btn-clear" onclick="aeronClearAll()">清除</button>
+        </div>
+        <div class="input-hint">
+          支援帶空白或無空白格式，如 <code>AER1B23DW</code> 或 <code>AER 1 B 2 3 D W</code> 皆可自動辨識
+        </div>
+      </div>
+
+      <div class="alert alert-error" id="aeronAlertError">
+        <span class="alert-icon">⚠️</span><div id="aeronAlertErrorMsg"></div>
+      </div>
+      <div class="alert alert-warn" id="aeronAlertWarn">
+        <span class="alert-icon">💡</span><div id="aeronAlertWarnMsg"></div>
+      </div>
+
+      <div class="result-block" id="aeronResultBlock">
+        <!-- Dual line badges -->
+        <div class="line-badges">
+          <div class="line-badge us" id="aeronUsBadgeBox">
+            <span class="badge-tag" id="aeronUsTag">美國線適用</span>
+            <div class="line-name">🇺🇸 美國線 / PB_AEN</div>
+            <div class="line-price" id="aeronUsPrice">—</div>
+            <div class="line-method">累加法（base + Step 加價）</div>
+          </div>
+          <div class="line-badge asia" id="aeronAsiaBadgeBox">
+            <span class="badge-tag" id="aeronAsiaTag">亞洲線適用</span>
+            <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+            <div class="line-price" id="aeronAsiaPrice">—</div>
+            <div class="line-method">查表法（5 碼 base + arm 組合）</div>
+          </div>
+        </div>
+
+        <div class="model-badge">
+          <span class="model-badge-label">型號</span>
+          <span id="aeronBadgeModel"></span>
+        </div>
+
+        <div id="aeronParseArea"></div>
+      </div>
+    </div><!-- /aeron-tab-paste -->
+
+    <!-- ── AERON TAB 2: MANUAL ── -->
+    <div id="aeron-tab-manual" class="tab-panel">
+      <div class="config-grid" id="aeronConfigGrid"></div>
+      <button class="btn-build" onclick="aeronBuildFromSelects()">產生型號並計算價格 →</button>
+      <div class="generated-code-box" id="aeronGeneratedCode"></div>
+      <div class="section-divider"></div>
+      <div class="alert alert-error" id="aeronAlertErrorM">
+        <span class="alert-icon">⚠️</span><div id="aeronAlertErrorMMsg"></div>
+      </div>
+      <div class="result-block" id="aeronResultBlockM">
+        <div class="model-badge">
+          <span class="model-badge-label">型號</span>
+          <span id="aeronBadgeModelM"></span>
+        </div>
+        <div class="parse-card">
+          <div class="parse-header us-h"><span>🇺🇸 美國線解析</span></div>
+          <table class="steps-table">
+            <thead><tr>
+              <th style="width:72px">Step</th>
+              <th style="width:90px">代碼</th>
+              <th>說明</th>
+              <th style="width:110px">加價 (USD)</th>
+            </tr></thead>
+            <tbody id="aeronStepsBodyM"></tbody>
+          </table>
+        </div>
+        <div class="total-bar">
+          <div>
+            <div class="total-label">美國線單張定價</div>
+            <div class="total-model" id="aeronTotalModelM"></div>
+          </div>
+          <div class="total-price">
+            <span class="total-currency">USD</span>
+            <span id="aeronTotalPriceM">—</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /aeron-tab-manual -->
+
+    <div class="footer-note">
+      ※ 本計算器依據 Herman Miller New Aeron® Chairs Price Book (4/26) AER1 美國線 + 80-day Asia Seating (4/26) 亞洲線雙線定價。<br>
+      ※ 亞洲線採「查表法」：以 5 碼主碼 + 9 種 arm+armpad 組合（如 AER1B23DW = $2,347）為基礎，再加 Step 8-15 incremental。<br>
+      ※ 亞洲線專屬色系：DN2 Nightfall（暮藍）、DJ2 Jasper（碧玉綠）、MN2/MJ2 加 MicrobeCare、扶手墊色 DN4/DJ4、皮革 2119 Dark Carbon。美國線目前未確認支援這些色號。<br>
+      ※ 亞洲線無 GF（Glides 腳墊）選項；Size A 無 CRB / MCR / VPR 框架色。<br>
+      ※ 真皮扶手墊（皮革選項 F）適用 Price Category / Band 9 加價 +$90；九級皮革（黑色 2109 / 灰色 2118 / 亞洲深碳 2119）由您提供。<br>
+      ※ 8Z Pellicle 網布 6 色：23103 Graphite / 23101 Mineral / 23102 Carbon / 23105 Black / 23120 Nightfall / 23121 Jasper（均屬 Cat.1，加價 +$0）。<br>
+      ※ 所有定價為美金 USD，不含稅、運費及其他費用。
+    </div>
+
+  </div><!-- /product-aeron -->
+
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL B: COSM (NEW)
+  ══════════════════════════════════════════ -->
+  <div id="product-cosm" class="product-panel">
+
+    <div class="input-section">
+      <label class="input-label">輸入 Cosm 料號</label>
+      <div class="input-row">
+        <input type="text" class="model-input" id="cosmInput"
+          placeholder="例：FLC162SFH G1 G1 G1 SC8 BK 84501"
+          onkeydown="if(event.key==='Enter') cosmRender()">
+        <button class="btn-primary" onclick="cosmRender()">計算價格</button>
+        <button class="btn-clear" onclick="cosmClear()">清除</button>
+      </div>
+      <div class="input-hint">
+        美國線用 <code>S tilt</code>、亞洲線用 <code>Y tilt</code>。系統自動偵測線別並雙線並列計算。
+      </div>
+      <div class="examples">
+        <span class="examples-label">快速範例：</span>
+        <button class="example-btn" onclick="cosmSetExample('FLC162SFH G1 G1 G1 SC8 BK 84501')">FLC1 美</button>
+        <button class="example-btn" onclick="cosmSetExample('FLC162YFH G1 G1 G1 SC8 BK 84501')">FLC1 亞</button>
+        <button class="example-btn" onclick="cosmSetExample('FLC262SFH G1 G1 G1 SC8 BK 84501')">FLC2 KD 美</button>
+        <button class="example-btn" onclick="cosmSetExample('FLC362SFH DN2 DN2 DN2 OC 84504')">FLC3 DIC 美</button>
+        <button class="example-btn" onclick="cosmSetExample('FLC462YFP DR1 DR1 5Y SC8 84506')">FLC4 DIC+KD 亞</button>
+        <button class="example-btn" onclick="cosmSetExample('FLC755SFH G1 G1 G1 SC8 BK 84501')">FLC7 Stool</button>
+        <button class="example-btn" onclick="cosmSetExample('FLC855SFP DB3 DB3 DB3 OC 84505')">FLC8 DIC Stool</button>
+      </div>
+      <div class="series-pills">
+        <span class="series-pill">FLC1 標準</span>
+        <span class="series-pill">FLC2 KD</span>
+        <span class="series-pill">FLC3 DIC</span>
+        <span class="series-pill">FLC4 DIC+KD</span>
+        <span class="series-pill">FLC7 Stool</span>
+        <span class="series-pill">FLC8 DIC Stool</span>
+      </div>
+    </div>
+
+    <div class="alert alert-error" id="cosmAlertError">
+      <span class="alert-icon">⚠️</span><div id="cosmAlertErrorMsg"></div>
+    </div>
+
+    <div class="series-banner" id="cosmSeriesBanner">
+      <div class="series-info">
+        <span class="series-tag" id="cosmSeriesTag">—</span>
+        <span class="series-desc" id="cosmSeriesDesc">—</span>
+      </div>
+    </div>
+
+    <div class="result-block" id="cosmResultBlock">
+      <!-- Dual line badges -->
+      <div class="line-badges">
+        <div class="line-badge us" id="cosmUsBadge">
+          <span class="badge-tag" id="cosmUsTag">本料號適用</span>
+          <div class="line-name">🇺🇸 美國線 / PB_CSM</div>
+          <div class="line-price" id="cosmUsPrice">—</div>
+          <div class="line-method">累加法 · S tilt（auto-harmonic）</div>
+        </div>
+        <div class="line-badge asia" id="cosmAsiaBadge">
+          <span class="badge-tag" id="cosmAsiaTag">本料號適用</span>
+          <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+          <div class="line-price" id="cosmAsiaPrice">—</div>
+          <div class="line-method">查表法 · Y tilt</div>
+        </div>
+      </div>
+
+      <div id="cosmParseArea"></div>
+    </div>
+
+    <div class="footer-note">
+      ※ 本計算器依據 Herman Miller PB_CSM (4/26) 美國線 + 80-day Asia Seating 亞洲線定價。<br>
+      ※ <b>FLC1/FLC2</b> = Cosm 標準款（美亞雙線同價）；<b>FLC3/FLC4</b> = Dipped in Color 彩色款（FLC4 無 Leaf 扶手）。<br>
+      ※ <b>FLC7/FLC8</b> = Cosm Work Stool 吧檯椅（僅美國線供應，亞洲線需走美國線進口）。<br>
+      ※ Tilt 代碼：<b>S</b> = auto-harmonic（美國線）／<b>Y</b> = standard（亞洲線），下單時必須對應正確線別。<br>
+      ※ 所有定價為美金 USD，不含稅、運費及其他費用。
+    </div>
+
+  </div><!-- /product-cosm -->
+
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL D: SAYL AS1YA (亞洲線網背中背)
+  ══════════════════════════════════════════ -->
+  <div id="product-sayl" class="product-panel">
+
+    <!-- ── 貼料號輸入區 ── -->
+    <div class="input-section">
+      <label class="input-label">輸入或貼上 Sayl AS1YA 料號</label>
+      <div class="input-row">
+        <input type="text" class="model-input" id="saylModelInput"
+          placeholder="例：AS1YA22HA N2 65 BB 98 63 9105"
+          onkeydown="if(event.key==='Enter') saylParseModel()">
+        <button class="btn-primary" onclick="saylParseModel()">計算價格</button>
+        <button class="btn-clear" onclick="saylClearAll()">清除</button>
+      </div>
+      <div class="input-hint">
+        順序：<code>AS1YA22{arms}{depth}</code> + back / frame / caster / susp / armpad / fabric。<br>
+        <b>布料色號</b>支援亞洲線 4-5 碼數字（如 9105、7311、23103），統一視為 Band 2 不加價。可省略後段欄位，自動補預設。
+      </div>
+      <div class="examples">
+        <span class="examples-label">快速範例：</span>
+        <button class="example-btn" onclick="saylSetExample('AS1YA22NF N2 BK BB BK 9105')">最低配（無扶手）</button>
+        <button class="example-btn" onclick="saylSetExample('AS1YA22HA N2 65 BB 98 63 9105')">中階配置（HA 扶手）</button>
+        <button class="example-btn" onclick="saylSetExample('AS1YA22AA AJ 67 C7 RO BK 7311')">高階配置（FA 扶手）</button>
+      </div>
+    </div>
+
+    <div class="alert alert-error" id="saylAlertError">
+      <span class="alert-icon">⚠️</span><div id="saylAlertErrorMsg"></div>
+    </div>
+
+    <div class="config-wrapper">
+      <div class="section-title">AS1YA — Work Chair, Suspension Mid-Back（亞洲線網背中背、整裝出貨）</div>
+
+      <!-- ── 主要選項：6 欄 3 列緊湊 grid ── -->
+      <div class="sayl-grid">
+        <div class="sayl-config-item">
+          <div class="config-item-label">高度 Height
+            <span class="config-item-step">Step 4</span></div>
+          <select class="eames-select" id="sayl_height" onchange="saylRecalc()" disabled style="opacity:0.7;cursor:not-allowed;">
+            <option value="2" selected>2 — Standard（固定）</option>
+          </select>
+        </div>
+        <div class="sayl-config-item">
+          <div class="config-item-label">傾仰 Tilt
+            <span class="config-item-step">Step 5</span></div>
+          <select class="eames-select" id="sayl_tilt" onchange="saylRecalc()">
+            <option value="2" selected>2 — Tilt limiter</option>
+            <option value="3">3 — + Forward tilt 5°</option>
+          </select>
+        </div>
+        <div class="sayl-config-item">
+          <div class="config-item-label">扶手 Arms
+            <span class="config-item-step">Step 6</span></div>
+          <select class="eames-select" id="sayl_arms" onchange="saylRecalc()">
+            <option value="N">N — No arms</option>
+            <option value="P">P — Fixed</option>
+            <option value="H">H — Height-adj</option>
+            <option value="A" selected>A — Fully adj</option>
+          </select>
+        </div>
+        <div class="sayl-config-item">
+          <div class="config-item-label">座深 Seat Depth
+            <span class="config-item-step">Step 7</span></div>
+          <select class="eames-select" id="sayl_depth" onchange="saylRecalc()">
+            <option value="F" selected>F — Fixed</option>
+            <option value="A">A — Adjustable</option>
+          </select>
+        </div>
+        <div class="sayl-config-item">
+          <div class="config-item-label">背部支撐 Back
+            <span class="config-item-step">Step 8</span></div>
+          <select class="eames-select" id="sayl_back" onchange="saylRecalc()">
+            <option value="N2" selected>N2 — Standard PostureFit</option>
+            <option value="AJ">AJ — Adj lumbar +$57</option>
+          </select>
+        </div>
+        <div class="sayl-config-item">
+          <div class="config-item-label">輪子 Castors
+            <span class="config-item-step">Step 10</span></div>
+          <select class="eames-select" id="sayl_caster" onchange="saylRecalc()">
+            <option value="BB" selected>BB — Carpet only</option>
+            <option value="C7">C7 — Hard/Carpet +$51</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── 框架/Y-Tower 色塊 ── -->
+      <div class="leather-section" style="padding-top:10px; border-top:1px solid var(--border);">
+        <div class="leather-sel-label">
+          🎨 框架/Y-Tower <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 9</span>
+          <span class="selected-leather-name" id="saylFrameName">BK — Black 黑色</span>
+        </div>
+        <div class="swatch-container" id="saylFrameSwatches"></div>
+      </div>
+
+      <!-- ── 網背 Suspension 色塊 ── -->
+      <div class="leather-section">
+        <div class="leather-sel-label">
+          🌐 網背 Suspension <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 11</span>
+          <span class="selected-leather-name" id="saylSuspName">BK — Black 黑色</span>
+        </div>
+        <div class="swatch-container" id="saylSuspSwatches"></div>
+      </div>
+
+      <!-- ── 扶手墊色塊 ── -->
+      <div class="leather-section" id="saylArmpadSection">
+        <div class="leather-sel-label">
+          🤚 扶手墊 Armpad <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 12</span>
+          <span class="selected-leather-name" id="saylArmpadName">BK — Black 黑色</span>
+        </div>
+        <div class="swatch-container" id="saylArmpadSwatches"></div>
+      </div>
+
+      <!-- ── 布料 (固定 Band 2) ── -->
+      <div style="margin-top:10px; padding:8px 10px; background:var(--step-bg); border:1px solid var(--border); border-radius:6px; font-size:11px; color:var(--text-muted);">
+        💺 <b>座墊布料 Step 13</b>：固定 Band 2（標準布料）+$0｜亞洲線 4-5 碼數字色號（如 9105、7311）統一不加價
+      </div>
+
+      <input type="hidden" id="sayl_fabric" value="2">
+      <button class="btn-calc" onclick="saylRecalc()">重新計算 →</button>
+    </div><!-- /config-wrapper -->
+
+    <!-- RESULT -->
+    <div class="result-block show" id="saylResultBlock">
+      <!-- Dual line badges -->
+      <div class="line-badges">
+        <div class="line-badge us unavailable">
+          <div class="line-name">🇺🇸 美國線</div>
+          <div class="line-price na">本表只做亞洲線</div>
+          <div class="line-method">如需美國線請參考 PB_SYL 累加法</div>
+        </div>
+        <div class="line-badge asia active">
+          <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+          <div class="line-price" id="saylAsiaPrice">—</div>
+          <div class="line-method">查表法（base + incremental）</div>
+        </div>
+      </div>
+
+      <div class="model-badge">
+        <span class="model-badge-label">完整型號</span>
+        <span id="saylBadgeModel">—</span>
+      </div>
+
+      <!-- 亞洲線解析 -->
+      <div class="parse-card">
+        <div class="parse-header asia-h"><span>🌏 亞洲線解析(80-day Asia 查表法)</span></div>
+        <table class="steps-table">
+          <thead><tr>
+            <th style="width:72px">Step</th>
+            <th style="width:100px">代碼</th>
+            <th>說明</th>
+            <th style="width:130px">加價 (USD)</th>
+          </tr></thead>
+          <tbody id="saylStepsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="total-bar">
+        <div>
+          <div class="total-label">亞洲線單張定價(USD)</div>
+          <div class="total-sub">查表 base(含 Step 1-7) + Step 8-13 incremental</div>
+        </div>
+        <div class="total-price">
+          <span class="total-currency">USD</span>
+          <span id="saylTotalPrice">—</span>
+        </div>
+      </div>
+
+      <!-- ── 完整功能說明（摺疊區）── -->
+      <details class="feature-details" id="saylFeatureDetails">
+        <summary>📋 點此展開：本配置完整功能說明（給客戶看的功能清單）</summary>
+        <div class="feature-body" id="saylFeatureBody">
+          <!-- JS 動態生成 -->
+        </div>
+      </details>
+    </div>
+
+    <div class="footer-note">
+      ※ 本計算器依據 Herman Miller 80-day Asia Seating (4/26) Sayl 章節亞洲線定價。<br>
+      ※ <b>本面板僅做 AS1YA</b>（Work Chair, Suspension Mid-Back, Fully Assembled / 網背中背、整裝出貨）。<br>
+      ※ <b>固定條件</b>：高度只取 Standard（2）、布料只取 Band 2，下單時不需另行指定。<br>
+      ※ <b>布料色號</b>：亞洲線實際使用 4-5 碼數字色號（如 9105、7311），統一屬 Band 2 不加價，色號需詢台灣總代理。<br>
+      ※ 框架/Y-Tower、網背、扶手墊三色為色卡上標示之亞洲線可訂顏色。<br>
+      ※ 所有定價為美金 USD，不含稅、運費及其他費用。
+    </div>
+
+  </div><!-- /product-sayl -->
+
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL D: MIRRA 2 (亞洲線)
+  ══════════════════════════════════════════ -->
+  <div id="product-mirra" class="product-panel">
+
+    <!-- ── 貼料號輸入區 ── -->
+    <div class="input-section">
+      <label class="input-label">輸入或貼上 Mirra 2 MRFN 料號（亞洲線）</label>
+      <div class="input-row">
+        <input type="text" class="model-input" id="mirraModelInput"
+          placeholder="例：MRFN2AWAF G1 G1 BK G1 AJ G1 8M17 1A703 BB（或完整 MRFN122AWAF）"
+          onkeydown="if(event.key==='Enter') mirraParseModel()">
+        <button class="btn-primary" onclick="mirraParseModel()">計算價格</button>
+        <button class="btn-clear" onclick="mirraClearAll()">清除</button>
+      </div>
+      <div class="input-hint">
+        亞洲線固定 <code>MRFN12_</code> 前綴（整裝+Standard），所以可只貼 <code>MRFN2AWAF...</code> 起。<br>
+        <b>主碼欄位</b>：[Tilt 1-3][Arms N/P/A][Armpad N/W][AF/AP/FF/FP] +（背框/椅架/扶手墊/底盤/腰靠/腰帶/蝴蝶/座墊/輪子）。<br>
+        <b>尾段</b>：AF=可調座深+蝴蝶背、AP=可調座深+TriFlex、FF=固定座深+蝴蝶背、FP=固定座深+TriFlex。可省略後段，自動補預設。
+      </div>
+      <div class="examples">
+        <span class="examples-label">快速範例：</span>
+        <button class="example-btn" onclick="mirraSetExample('MRFN1NNFP G1 G1 BK G1 SZS NA NA 1A703 BB')">最低配（G1·無扶手·TriFlex）</button>
+        <button class="example-btn" onclick="mirraSetExample('MRFN2AWAF G1 G1 BK G1 AJ G1 8M17 1A703 BB')">門市常用（G1 全套·蝴蝶背·AJ 腰靠）</button>
+        <button class="example-btn" onclick="mirraSetExample('MRFN3AWFF CRE ZM ZM ZM AJ CRE 8M28 1A710 BB')">專案款（CRE 赭黃背 + ZM 白椅架）</button>
+      </div>
+    </div>
+
+    <div class="alert alert-error" id="mirraAlertError">
+      <span class="alert-icon">⚠️</span><div id="mirraAlertErrorMsg"></div>
+    </div>
+    <div class="alert alert-warn" id="mirraAlertWarn">
+      <span class="alert-icon">💡</span><div id="mirraAlertWarnMsg"></div>
+    </div>
+
+    <div class="config-wrapper">
+      <div class="section-title">MRFN — Mirra 2 Work Chair（亞洲線、Standard/High Height）</div>
+
+      <!-- ── 固定規格徽章（亞洲線只能訂這種） ── -->
+      <div style="margin-bottom:12px; padding:8px 12px; background:var(--accent-light); border:1px solid var(--border); border-radius:6px; font-size:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span style="font-weight:700; color:var(--accent);">📌 亞洲線固定規格</span>
+        <span style="font-family:'Consolas',monospace; background:var(--surface); padding:2px 8px; border:1px solid var(--border); border-radius:4px; font-weight:700;">MRFN12_</span>
+        <span style="color:var(--text-muted);">＝ Fully assembled 整裝 + Standard height 406-521mm（不可變更）</span>
+      </div>
+
+      <!-- 隱藏寫死的 assembly/height -->
+      <input type="hidden" id="mirra_assembly" value="1">
+      <input type="hidden" id="mirra_height" value="2">
+
+      <!-- ── 主要選項（從 Tilt 開始） ── -->
+      <div class="mirra-grid">
+        <div class="mirra-config-item">
+          <div class="config-item-label">傾仰 Tilt
+            <span class="config-item-step">Step 4</span></div>
+          <select class="eames-select" id="mirra_tilt" onchange="mirraRecalc()">
+            <option value="1">1 — Standard tilt</option>
+            <option value="2" selected>2 — Tilt limiter</option>
+            <option value="3">3 — + Forward tilt 5°</option>
+          </select>
+        </div>
+        <div class="mirra-config-item">
+          <div class="config-item-label">扶手 Arms
+            <span class="config-item-step">Step 5</span></div>
+          <select class="eames-select" id="mirra_arms" onchange="mirraOnArmsChange()">
+            <option value="N">N — No arms</option>
+            <option value="P">P — Fixed arms</option>
+            <option value="A" selected>A — Fully adjustable 4D</option>
+          </select>
+        </div>
+        <div class="mirra-config-item">
+          <div class="config-item-label">座深 Seat Depth
+            <span class="config-item-step">Step 7</span></div>
+          <select class="eames-select" id="mirra_seat" onchange="mirraRecalc()">
+            <option value="A" selected>A — FlexFront 可調 413-457mm</option>
+            <option value="F">F — Fixed 413mm</option>
+          </select>
+        </div>
+        <div class="mirra-config-item">
+          <div class="config-item-label">背材 Back
+            <span class="config-item-step">Step 8</span></div>
+          <select class="eames-select" id="mirra_back" onchange="mirraOnBackChange()">
+            <option value="F" selected>F — Butterfly™ 蝴蝶背（含布料）</option>
+            <option value="P">P — TriFlex™ 聚合物背</option>
+          </select>
+        </div>
+        <div class="mirra-config-item">
+          <div class="config-item-label">腰靠 Back Support
+            <span class="config-item-step">Step 13</span></div>
+          <select class="eames-select" id="mirra_support" onchange="mirraOnSupportChange()">
+            <option value="SZS">SZS — Basic 基本</option>
+            <option value="N2">N2 — Non-adj 固定 +$45</option>
+            <option value="AJ" selected>AJ — Adjustable 可調 +$75</option>
+          </select>
+        </div>
+        <div class="mirra-config-item">
+          <div class="config-item-label">底盤 Base Finish
+            <span class="config-item-step">Step 12</span></div>
+          <select class="eames-select" id="mirra_base" onchange="mirraRecalc()">
+            <option value="MATCH" selected>跟隨框架色（G1 或 ZM）</option>
+            <option value="L7P">L7P — Silver Alloy 銀色 +$93</option>
+          </select>
+        </div>
+        <div class="mirra-config-item">
+          <div class="config-item-label">輪子 Castors
+            <span class="config-item-step">Step 17</span></div>
+          <select class="eames-select" id="mirra_caster" onchange="mirraRecalc()">
+            <option value="BB" selected>BB — Carpet only 地毯專用</option>
+            <option value="GF">GF — Glide 滑墊 +$25</option>
+            <option value="C7">C7 — Hard/Carpet +$50</option>
+            <option value="C9">C9 — Braking 煞車 +$50</option>
+            <option value="SC8">SC8 — Quiet roll 靜音 +$50</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── 🎨 背套色（6 色，影響 背框/腰帶/蝴蝶布料/座墊） ── -->
+      <div class="leather-section" style="padding-top:10px; border-top:1px solid var(--border);">
+        <div class="leather-sel-label">
+          🎨 背套色 Back Color Set
+          <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 9, 14, 15, 16</span>
+          <span class="selected-leather-name" id="mirraBackColorName">G1 — Graphite 石墨黑（標準）</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); margin:4px 0 6px;">
+          選一個顏色 → <b>背框 + 腰帶 + 蝴蝶布料 + 座墊</b> 自動成套。<b>6 色</b>：G1 / ZM / CRV / CRE / TRA / OLF。
+        </div>
+        <div class="swatch-container" id="mirraBackColorSwatches"></div>
+      </div>
+
+      <!-- ── 🪑 椅架套色（2 色，影響 椅架/扶手墊/底盤） ── -->
+      <div class="leather-section">
+        <div class="leather-sel-label">
+          🪑 椅架套色 Frame Color Set
+          <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 10, 11, 12</span>
+          <span class="selected-leather-name" id="mirraFrameColorName">G1 — Graphite 石墨黑（標準）（扶手墊→Black 黑色）</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); margin:4px 0 6px;">
+          選一個顏色 → <b>椅架 + 扶手墊 + 底盤</b> 自動成套。<b>2 色</b>：<b>G1</b>（門市零售常用）／<b>ZM</b>（專案常用）。
+          底盤可另選 L7P 銀色 +$93。
+        </div>
+        <div class="swatch-container" id="mirraFrameColorSwatches"></div>
+      </div>
+
+      <!-- ── 提示：TriFlex 背 / 無扶手時部分色塊不適用 ── -->
+      <div id="mirraHints" style="margin-top:10px; padding:8px 10px; background:var(--yellow-light); border:1px solid #f0d878; border-radius:6px; font-size:11px; color:var(--yellow); display:none;">
+        <span id="mirraHintsText"></span>
+      </div>
+
+      <button class="btn-calc" onclick="mirraRecalc()">重新計算 →</button>
+    </div><!-- /config-wrapper -->
+
+    <!-- RESULT -->
+    <div class="result-block show" id="mirraResultBlock">
+      <!-- Dual line badges -->
+      <div class="line-badges">
+        <div class="line-badge us unavailable">
+          <div class="line-name">🇺🇸 美國線</div>
+          <div class="line-price na">本表只做亞洲線</div>
+          <div class="line-method">如需美國線請參考 PB_MIT 累加法</div>
+        </div>
+        <div class="line-badge asia active">
+          <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+          <div class="line-price" id="mirraAsiaPrice">—</div>
+          <div class="line-method">查表法（base + incremental）</div>
+        </div>
+      </div>
+
+      <div class="model-badge">
+        <span class="model-badge-label">完整型號</span>
+        <span id="mirraBadgeModel">—</span>
+      </div>
+
+      <!-- 亞洲線解析 -->
+      <div class="parse-card">
+        <div class="parse-header asia-h"><span>🌏 亞洲線解析（80-day Asia 查表法）</span></div>
+        <table class="steps-table">
+          <thead><tr>
+            <th style="width:72px">Step</th>
+            <th style="width:110px">代碼</th>
+            <th>說明</th>
+            <th style="width:130px">加價 (USD)</th>
+          </tr></thead>
+          <tbody id="mirraStepsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="total-bar">
+        <div>
+          <div class="total-label">亞洲線單張定價(USD)</div>
+          <div class="total-sub">查表 base(Step 2-8) + Step 9-17 incremental</div>
+        </div>
+        <div class="total-price">
+          <span class="total-currency">USD</span>
+          <span id="mirraTotalPrice">—</span>
+        </div>
+      </div>
+
+      <!-- 完整功能說明 -->
+      <details class="feature-details" id="mirraFeatureDetails">
+        <summary>📋 點此展開：本配置完整功能說明（給客戶看的功能清單）</summary>
+        <div class="feature-body" id="mirraFeatureBody">
+          <!-- JS 動態生成 -->
+        </div>
+      </details>
+    </div>
+
+    <div class="footer-note">
+      ※ 本計算器依據 Herman Miller 80-day Asia Seating (4/26) Mirra 2 章節亞洲線定價。<br>
+      ※ <b>主碼前綴固定 MRFN12_</b>：亞洲線實務上只能訂 Fully assembled（整裝）+ Standard height（406-521mm 標準座高）。<br>
+      ※ <b>本面板僅做工作椅 MRFN 系列</b>，不含 Stool 吧台椅。<br>
+      ※ <b>背套色 6 色</b>（影響背框/腰帶/蝴蝶布料/座墊）：G1 Graphite、ZM Alpine、CRV Cordovan、CRE Ochre、TRA Ultra-marine、OLF Olive。<br>
+      ※ <b>椅架套色 2 色</b>（影響椅架/扶手墊/底盤）：<b>G1</b>（門市零售常用、扶手墊 BK）／<b>ZM</b>（專案常用、扶手墊 ZM）。底盤可另選 L7P 銀色 +$93。<br>
+      ※ <b>背套色與椅架色可獨立組合</b>：例如「ZM 白椅架 + CRE 赭黃背套」、「G1 黑椅架 + TRA 寶藍背套」皆可下單。<br>
+      ※ <b>背材限制</b>：選 TriFlex 聚合物背（P）時，蝴蝶背布料色（Step 15）不適用；其餘背套色仍套用於座墊與腰帶。<br>
+      ※ <b>台灣總代理 Style 另有 8 種彩色款</b>（Slate Grey、Lime Green、French Press、Urban Orange、Dark Turquoise、Twilight 等），需另詢台灣代理報價。<br>
+      ※ 所有定價為美金 USD，不含稅、運費及其他費用。
+    </div>
+
+  </div><!-- /product-mirra -->
+
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL C: EAMES LOUNGE
+  ══════════════════════════════════════════ -->
+  <div id="product-eames" class="product-panel">
+
+    <div class="config-wrapper">
+      <div class="section-title">Step 1 — 選擇配置</div>
+      <div class="eames-config-grid">
+
+        <!-- 木材 -->
+        <div class="eames-config-item">
+          <div class="config-item-label">
+            木材飾面 Shell Finish
+            <span class="config-item-step">Step 3</span>
+          </div>
+          <select class="eames-select" id="eames_shell" onchange="eamesOnShellChange()">
+            <option value="OU">胡桃木（OU / Walnut）— 標準 +$0</option>
+            <option value="WHN">白橡木（WHN / White Oak）— 標準 +$0</option>
+            <option value="5Q">油胡桃（5Q / Oiled Walnut）— +$979</option>
+            <option value="9N">桑托斯玫瑰木（9N / Santos Palisander）— +$1,014</option>
+            <option value="5D">油桑托斯玫瑰木（5D / Oiled Santos）— +$1,977</option>
+            <option value="1E">黑梣木（ES67071E，殼面固定）— 固定型號</option>
+            <option value="1R">白梣木（ES67071R，殼面固定）— 固定型號</option>
+          </select>
+          <div class="config-price-display" id="eamesPrice_shell">+$0</div>
+        </div>
+
+        <!-- 尺寸 -->
+        <div class="eames-config-item">
+          <div class="config-item-label">
+            尺寸 Chair Size
+            <span class="config-item-step">Step 2</span>
+          </div>
+          <select class="eames-select" id="eames_size" onchange="eamesOnSizeChange()">
+            <option value="classic">Classic 標準尺寸</option>
+            <option value="tall">Tall 高背尺寸 — +$366</option>
+          </select>
+          <div class="config-price-display" id="eamesPrice_size">+$0</div>
+        </div>
+
+        <!-- 皮革等級 -->
+        <div class="eames-config-item" style="grid-column: 1 / -1;">
+          <div class="config-item-label">
+            皮革材質 Leather Category
+            <span class="config-item-step">Step 6</span>
+          </div>
+          <select class="eames-select" id="eames_cat" onchange="eamesOnCatChange()">
+            <option value="std">標準布料（未含皮革，基本售價） — +$0</option>
+            <option value="cat9">Category 9 皮革 Leather（14 款）— 套組加價 +$734</option>
+            <option value="cat11">Category 11 皮革 Prone Leather（16 款）— 套組加價 +$1,072</option>
+          </select>
+          <div class="config-price-display" id="eamesPrice_cat">+$0</div>
+
+          <div class="leather-section" id="eamesLeather9" style="display:none;">
+            <div class="leather-sel-label">選擇皮革顏色：<span class="selected-leather-name" id="eamesLeather9Name">— 請選擇 —</span></div>
+            <div class="swatch-container" id="eamesSwatches9"></div>
+          </div>
+          <div class="leather-section" id="eamesLeather11" style="display:none;">
+            <div class="leather-sel-label">選擇皮革顏色：<span class="selected-leather-name" id="eamesLeather11Name">— 請選擇 —</span></div>
+            <div class="swatch-container" id="eamesSwatches11"></div>
+          </div>
+        </div>
+
+      </div><!-- /eames-config-grid -->
+
+      <!-- 數量 -->
+      <div class="qty-row">
+        <span class="qty-label">🪑 訂購數量（套組）</span>
+        <input type="number" class="qty-input" id="eames_qty" value="1" min="1" max="999" onchange="eamesRecalc()">
+        <span class="qty-total" id="eamesQtyTotal"></span>
+      </div>
+
+      <button class="btn-calc" onclick="eamesCalcAll()">計算總價 →</button>
+    </div><!-- /config-wrapper -->
+
+    <div class="alert alert-warn" id="eamesAlertWarn">
+      <span class="alert-icon">💡</span><div id="eamesAlertWarnMsg"></div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-block" id="eamesResultBlock">
+      <!-- Dual line badges -->
+      <div class="line-badges">
+        <div class="line-badge us active">
+          <div class="line-name">🇺🇸 美國線</div>
+          <div class="line-price" id="eamesUsBadgePrice">—</div>
+          <div class="line-method">累加法（套組 = 椅 + 腳凳）</div>
+        </div>
+        <div class="line-badge asia unavailable">
+          <div class="line-name">🌏 亞洲線</div>
+          <div class="line-price na">需走美國線進口</div>
+          <div class="line-method">80-day Asia 不含 Lounge 系列</div>
+        </div>
+      </div>
+
+      <div class="model-badge">
+        <span class="model-badge-label">型號</span>
+        <span id="eamesBadgeModel">—</span>
+      </div>
+
+      <!-- 美國線解析 -->
+      <div class="parse-card">
+        <div class="parse-header us-h"><span>🇺🇸 美國線解析</span></div>
+        <table class="steps-table">
+          <thead><tr>
+            <th style="width:72px">Step</th>
+            <th style="width:100px">代碼</th>
+            <th>說明</th>
+            <th style="width:130px">加價 (USD)</th>
+          </tr></thead>
+          <tbody id="eamesStepsBody"></tbody>
+        </table>
+      </div>
+
+      <!-- 亞洲線：需走美國線進口 -->
+      <div class="parse-card">
+        <div class="parse-header unavailable"><span>🌏 亞洲線解析</span></div>
+        <div class="unavailable-card">
+          <strong>Eames® Lounge Chair + Ottoman 亞洲線無在地供應</strong><br><br>
+          80-day HM Asia Seating 為辦公椅手冊，不含 Lounge 系列。<br>
+          客戶需求請走<b>美國線進口流程</b>（交期較長、需報關），<br>
+          報價以本頁美國線金額為準，再加運費與關稅。<br><br>
+          <span style="font-size:11px; color:var(--text-muted);">如有 Asia Lounge 專屬手冊釋出，可再行補入。</span>
+        </div>
+      </div>
+
+      <div class="total-bar">
+        <div>
+          <div class="total-label">美國線單套定價（USD）</div>
+          <div class="total-sub">套組 = 椅 + 腳凳</div>
+        </div>
+        <div class="total-price">
+          <span class="total-currency">USD</span>
+          <span id="eamesTotalPrice">—</span>
+        </div>
+      </div>
+
+      <!-- Full model string -->
+      <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:12px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);font-weight:600;white-space:nowrap;">完整型號</span>
+        <span id="eamesFullModel" style="font-family:'Consolas',monospace;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:0.05em;word-break:break-all;text-align:right;">—</span>
+      </div>
+      <div class="twd-bar">
+        <div>
+          <div class="twd-label">台幣換算（含 <span id="eamesQtyLabel">1</span> 套）</div>
+          <div class="twd-rate">匯率：1 USD ＝ <span id="eamesRateDisplay">40</span> TWD（500 進位）</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="twd-price">NT$ <span id="eamesTwdPrice">—</span></div>
+          <div class="twd-input-row" style="justify-content:flex-end; margin-top:6px;">
+            <span style="font-size:11px; color:var(--text-muted);">匯率</span>
+            <input type="number" class="twd-input" id="eamesTwdRate" value="40" step="0.5" min="1" onchange="eamesRecalcTWD()">
+            <span style="font-size:11px; color:var(--text-muted);">TWD</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi total -->
+      <div id="eamesMultiBar" style="display:none;" class="total-bar">
+        <div><div class="total-label">合計（<span id="eamesMultiQtyLabel">1</span> 套）</div></div>
+        <div class="total-price">
+          <span class="total-currency">USD</span>
+          <span id="eamesMultiPrice">—</span>
+        </div>
+      </div>
+    </div><!-- /eamesResultBlock -->
+
+    <div class="footer-note">
+      ※ 本計算器依據 Herman Miller Ancillary Price Book (4/26) · Eames® Lounge Chair + Ottoman 套組美國線定價。<br>
+      ※ 套組基本售價已包含椅 + 腳凳。殼面加價為 Step 3 Shell Finish 加價；梣木系列殼面已內含於固定型號中。<br>
+      ※ Tall 尺寸：胡桃木 / 白橡木 / 油胡桃 / 桑托斯 / 油桑托斯各加 +$366；黑梣木 / 白梣木 Tall 基本售價 $9,602（已含加價）。<br>
+      ※ Category 9 皮革加價 +$734 / Category 11 Prone 皮革加價 +$1,072（套組含椅＋腳凳）。<br>
+      ※ <b>亞洲線無在地供應</b>：80-day Asia Seating 僅含辦公椅，Eames Lounge 客戶需求請走美國線進口（交期較長、需報關）。<br>
+      ※ 所有定價為美金 USD，不含稅、運費及其他費用。台幣換算僅供參考。
+    </div>
+
+  </div><!-- /product-eames -->
+
+</div><!-- /container -->
+
+<script>
+// =========================================================
+// PRODUCT TAB SWITCH
+// =========================================================
+function switchProduct(id) {
+  document.querySelectorAll('.product-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.product-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('product-' + id).classList.add('active');
+  document.querySelectorAll('.product-tab-btn').forEach(b => {
+    if (b.getAttribute('onclick').includes("'" + id + "'")) b.classList.add('active');
+  });
+}
+
+// =========================================================
+// AERON — US LINE DATA (PB_AEN 累加法)
+// =========================================================
+const AERON_STEPS = [
+  { key:'size',   step:'Step 3',  label:'尺寸 Size',
+    options:{ 'A':{desc:'A size 小型',price:1726},'B':{desc:'B size 中型',price:1726},'C':{desc:'C size 大型',price:1726} } },
+  { key:'height', step:'Step 4',  label:'高度調整 Height Adjustment',
+    options:{ '1':{desc:'Low-height range 低高度',price:0},'2':{desc:'Standard-height range 標準高度',price:0},'3':{desc:'High-height range 高高度',price:0} },
+    note:'A size 只能選 1；C size 只能選 2 或 3' },
+  { key:'tilt',   step:'Step 5',  label:'傾仰機構 Tilt',
+    options:{ '1':{desc:'Standard tilt 標準傾仰',price:0},'2':{desc:'Tilt limiter 傾仰限制',price:100},'3':{desc:'Tilt limiter + seat angle 傾仰限制＋座角調整',price:207} } },
+  { key:'arms',   step:'Step 6',  label:'手臂 Arms',
+    options:{ 'N':{desc:'No arms 無手臂',price:0},'P':{desc:'Fixed arms 固定手臂',price:223},'H':{desc:'Height-adjustable arms 高度可調手臂',price:321},'A':{desc:'Height-adj. + pivot arms 高度可調＋旋轉手臂',price:473},'D':{desc:'Fully adjustable arms 全功能可調手臂',price:473} } },
+  { key:'armpad', step:'Step 7',  label:'扶手墊材質 Armpad Upholstery',
+    options:{ 'N':{desc:'No arms — N/A',price:0},'W':{desc:'Nonupholstered armpads 非皮革扶手墊',price:0},'F':{desc:'Leather armpads 皮革扶手墊',price:168} } },
+  { key:'back',   step:'Step 8',  label:'背部支撐 Back Support',
+    options:{ 'SZS':{desc:'Basic back support 基本背部支撐',price:0},'ZSS':{desc:'PostureFit® 骨盆支撐',price:45},'AJ':{desc:'Adjustable lumbar support 可調腰椎支撐',price:65},'ALP':{desc:'Adjustable PostureFit SL® 可調骨盆＋腰椎支撐',price:95} } },
+  { key:'frame',  step:'Step 9',  label:'框架顏色 Frame Finish',
+    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CRB':{desc:'Carbon (CP) 碳黑',price:85},'VPR':{desc:'Mineral 礦石灰',price:175},'BK':{desc:'Black 黑色',price:175},'MG1':{desc:'Graphite + MicrobeCare™',price:70},'MCR':{desc:'Carbon + MicrobeCare™',price:155},'MVR':{desc:'Mineral + MicrobeCare™',price:245},'MBL':{desc:'Black + MicrobeCare™',price:200},'ZB':{desc:'Graphite + Graphite Appliqué',price:175} } },
+  { key:'chassis',step:'Step 10', label:'座盤顏色 Chassis Finish',
+    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CD':{desc:'Polished aluminum 拋光鋁',price:85},'SNC':{desc:'Satin carbon 緞面碳黑',price:0},'SNA':{desc:'Satin aluminum 緞面鋁',price:0},'BLX':{desc:'Onyx ultra matte 極黑啞光',price:0} } },
+  { key:'base',   step:'Step 11', label:'底座顏色 Base Finish',
+    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CD':{desc:'Polished aluminum 拋光鋁',price:250},'DCR':{desc:'Dark carbon 深碳黑',price:0},'SNC':{desc:'Satin carbon 緞面碳黑',price:80},'DVP':{desc:'Dark mineral 深礦石灰',price:0},'SNA':{desc:'Satin aluminum 緞面鋁',price:150},'BK':{desc:'Black 黑色',price:0},'BLX':{desc:'Onyx ultra matte 極黑啞光',price:150} } },
+  { key:'caster', step:'Step 12', label:'輪子 Casters/Glides',
+    options:{ 'BB':{desc:'2½" Hard caster, carpet only 硬輪（地毯專用）',price:0},'GF':{desc:'2½" Glide 腳墊（硬地/地毯）',price:25},'C7':{desc:'2½" Soft caster, hard floors or carpet 軟輪（硬地/地毯）',price:50},'DC1':{desc:'2½" Braking caster 制動軟輪（靜音）',price:75} } },
+  { key:'armpadFinish', step:'Step 13', label:'扶手墊顏色 Armpad Finish',
+    options:{ 'BK':{desc:'Black 黑色（隨 G1 / BK 框架）',price:0},'DVP':{desc:'Dark mineral 深礦石灰（隨 VPR 框架）',price:0},'DCR':{desc:'Dark carbon 深碳黑（隨 CRB 框架）',price:0} },
+    note:'無手臂時此項不適用' },
+  { key:'pellicle', step:'Step 14', label:'8Z Pellicle 網布顏色',
+    options:{ '23103':{desc:'Graphite 石墨黑網布',price:0},'23101':{desc:'Mineral 礦石灰網布',price:0},'23102':{desc:'Carbon 碳黑網布',price:0},'23105':{desc:'Black / Onyx 黑色網布',price:0},'23120':{desc:'Nightfall 暮藍網布',price:0},'23121':{desc:'Jasper 碧玉綠網布',price:0} },
+    note:'8Z Pellicle 6 色均為 Price Category 1，加價 +$0' },
+  { key:'leatherColor', step:'Step 15', label:'皮革扶手墊顏色 Armpad Leather',
+    options:{ 'N/A':{desc:'不適用（非皮革扶手）',price:0},'2109':{desc:'九級皮革 黑色 2109',price:90},'2118':{desc:'九級皮革 灰色 2118',price:90} },
+    note:'僅當 Step 7 選擇 F（皮革扶手墊）時計費' },
+];
+
+// =========================================================
+// AERON — ASIA LINE DATA (80-day Asia 查表法)
+// =========================================================
+const AERON_ASIA_BASE_PRICES = {
+  "AER1A11AF":2307,"AER1A11AW":2144,"AER1A11DF":2308,"AER1A11DW":2145,"AER1A11HF":2160,"AER1A11HW":1997,
+  "AER1A11NN":1684,"AER1A11PF":2064,"AER1A11PW":1901,"AER1A12AF":2404,"AER1A12AW":2241,"AER1A12DF":2405,
+  "AER1A12DW":2242,"AER1A12HF":2257,"AER1A12HW":2094,"AER1A12NN":1781,"AER1A12PF":2161,"AER1A12PW":1998,
+  "AER1A13AF":2509,"AER1A13AW":2346,"AER1A13DF":2510,"AER1A13DW":2347,"AER1A13HF":2362,"AER1A13HW":2199,
+  "AER1A13NN":1886,"AER1A13PF":2266,"AER1A13PW":2103,"AER1B21AF":2307,"AER1B21AW":2144,"AER1B21DF":2308,
+  "AER1B21DW":2145,"AER1B21HF":2160,"AER1B21HW":1997,"AER1B21NN":1684,"AER1B21PF":2064,"AER1B21PW":1901,
+  "AER1B22AF":2404,"AER1B22AW":2241,"AER1B22DF":2405,"AER1B22DW":2242,"AER1B22HF":2257,"AER1B22HW":2094,
+  "AER1B22NN":1781,"AER1B22PF":2161,"AER1B22PW":1998,"AER1B23AF":2509,"AER1B23AW":2346,"AER1B23DF":2510,
+  "AER1B23DW":2347,"AER1B23HF":2362,"AER1B23HW":2199,"AER1B23NN":1886,"AER1B23PF":2266,"AER1B23PW":2103,
+  "AER1B31AF":2307,"AER1B31AW":2144,"AER1B31DF":2308,"AER1B31DW":2145,"AER1B31HF":2160,"AER1B31HW":1997,
+  "AER1B31NN":1684,"AER1B31PF":2064,"AER1B31PW":1901,"AER1B32AF":2404,"AER1B32AW":2241,"AER1B32DF":2405,
+  "AER1B32DW":2242,"AER1B32HF":2257,"AER1B32HW":2094,"AER1B32NN":1781,"AER1B32PF":2161,"AER1B32PW":1998,
+  "AER1B33AF":2509,"AER1B33AW":2346,"AER1B33DF":2510,"AER1B33DW":2347,"AER1B33HF":2362,"AER1B33HW":2199,
+  "AER1B33NN":1886,"AER1B33PF":2266,"AER1B33PW":2103,"AER1C21AF":2307,"AER1C21AW":2144,"AER1C21DF":2308,
+  "AER1C21DW":2145,"AER1C21HF":2160,"AER1C21HW":1997,"AER1C21NN":1684,"AER1C21PF":2064,"AER1C21PW":1901,
+  "AER1C22AF":2404,"AER1C22AW":2241,"AER1C22DF":2405,"AER1C22DW":2242,"AER1C22HF":2257,"AER1C22HW":2094,
+  "AER1C22NN":1781,"AER1C22PF":2161,"AER1C22PW":1998,"AER1C23AF":2509,"AER1C23AW":2346,"AER1C23DF":2510,
+  "AER1C23DW":2347,"AER1C23HF":2362,"AER1C23HW":2199,"AER1C23NN":1886,"AER1C23PF":2266,"AER1C23PW":2103,
+  "AER1C31AF":2307,"AER1C31AW":2144,"AER1C31DF":2308,"AER1C31DW":2145,"AER1C31HF":2160,"AER1C31HW":1997,
+  "AER1C31NN":1684,"AER1C31PF":2064,"AER1C31PW":1901,"AER1C32AF":2404,"AER1C32AW":2241,"AER1C32DF":2405,
+  "AER1C32DW":2242,"AER1C32HF":2257,"AER1C32HW":2094,"AER1C32NN":1781,"AER1C32PF":2161,"AER1C32PW":1998,
+  "AER1C33AF":2509,"AER1C33AW":2346,"AER1C33DF":2510,"AER1C33DW":2347,"AER1C33HF":2362,"AER1C33HW":2199,
+  "AER1C33NN":1886,"AER1C33PF":2266,"AER1C33PW":2103,"AER2A11AF":2307,"AER2A11AW":2144,"AER2A11DF":2308,
+  "AER2A11DW":2145,"AER2A11HF":2160,"AER2A11HW":1997,"AER2A11NN":1684,"AER2A11PF":2064,"AER2A11PW":1901,
+  "AER2A12AF":2404,"AER2A12AW":2241,"AER2A12DF":2405,"AER2A12DW":2242,"AER2A12HF":2257,"AER2A12HW":2094,
+  "AER2A12NN":1781,"AER2A12PF":2161,"AER2A12PW":1998,"AER2A13AF":2509,"AER2A13AW":2346,"AER2A13DF":2510,
+  "AER2A13DW":2347,"AER2A13HF":2362,"AER2A13HW":2199,"AER2A13NN":1886,"AER2A13PF":2266,"AER2A13PW":2103,
+  "AER2B21AF":2307,"AER2B21AW":2144,"AER2B21DF":2308,"AER2B21DW":2145,"AER2B21HF":2160,"AER2B21HW":1997,
+  "AER2B21NN":1684,"AER2B21PF":2064,"AER2B21PW":1901,"AER2B22AF":2404,"AER2B22AW":2241,"AER2B22DF":2405,
+  "AER2B22DW":2242,"AER2B22HF":2257,"AER2B22HW":2094,"AER2B22NN":1781,"AER2B22PF":2161,"AER2B22PW":1998,
+  "AER2B23AF":2509,"AER2B23AW":2346,"AER2B23DF":2510,"AER2B23DW":2347,"AER2B23HF":2362,"AER2B23HW":2199,
+  "AER2B23NN":1886,"AER2B23PF":2266,"AER2B23PW":2103,"AER2B31AF":2307,"AER2B31AW":2144,"AER2B31DF":2308,
+  "AER2B31DW":2145,"AER2B31HF":2160,"AER2B31HW":1997,"AER2B31NN":1684,"AER2B31PF":2064,"AER2B31PW":1901,
+  "AER2B32AF":2404,"AER2B32AW":2241,"AER2B32DF":2405,"AER2B32DW":2242,"AER2B32HF":2257,"AER2B32HW":2094,
+  "AER2B32NN":1781,"AER2B32PF":2161,"AER2B32PW":1998,"AER2B33AF":2509,"AER2B33AW":2346,"AER2B33DF":2510,
+  "AER2B33DW":2347,"AER2B33HF":2362,"AER2B33HW":2199,"AER2B33NN":1886,"AER2B33PF":2266,"AER2B33PW":2103,
+  "AER2C21AF":2307,"AER2C21AW":2144,"AER2C21DF":2308,"AER2C21DW":2145,"AER2C21HF":2160,"AER2C21HW":1997,
+  "AER2C21NN":1684,"AER2C21PF":2064,"AER2C21PW":1901,"AER2C22AF":2404,"AER2C22AW":2241,"AER2C22DF":2405,
+  "AER2C22DW":2242,"AER2C22HF":2257,"AER2C22HW":2094,"AER2C22NN":1781,"AER2C22PF":2161,"AER2C22PW":1998,
+  "AER2C23AF":2509,"AER2C23AW":2346,"AER2C23DF":2510,"AER2C23DW":2347,"AER2C23HF":2362,"AER2C23HW":2199,
+  "AER2C23NN":1886,"AER2C23PF":2266,"AER2C23PW":2103,"AER2C31AF":2307,"AER2C31AW":2144,"AER2C31DF":2308,
+  "AER2C31DW":2145,"AER2C31HF":2160,"AER2C31HW":1997,"AER2C31NN":1684,"AER2C31PF":2064,"AER2C31PW":1901,
+  "AER2C32AF":2404,"AER2C32AW":2241,"AER2C32DF":2405,"AER2C32DW":2242,"AER2C32HF":2257,"AER2C32HW":2094,
+  "AER2C32NN":1781,"AER2C32PF":2161,"AER2C32PW":1998,"AER2C33AF":2509,"AER2C33AW":2346,"AER2C33DF":2510,
+  "AER2C33DW":2347,"AER2C33HF":2362,"AER2C33HW":2199,"AER2C33NN":1886,"AER2C33PF":2266,"AER2C33PW":2103
+};
+
+
+// 亞洲線專屬：Nightfall (DN2) / Jasper (DJ2) 主題系列加價
+// 亞洲線 incremental 表（從 PDF 第 5/8/10 頁）— 所有加價金額均跟美國線相同，
+// 但選項組合不同：Size A 沒有 CRB/MCR/VPR；亞洲線多 DN2/DJ2/MN2/MJ2
+const AERON_ASIA_BACK = { 'SZS':0, 'ZSS':45, 'AJ':65, 'ALP':95 };
+const AERON_ASIA_FRAME_A = {  // Size A 適用（少 CRB/MCR/VPR）
+  'G1':0, 'BK':175, 'MBL':200, 'MG1':70, 'MVR':245,
+  'DN2':0, 'DJ2':0, 'MN2':70, 'MJ2':70  // 亞洲線專屬色系
+};
+const AERON_ASIA_FRAME_BC = {  // Size B/C 適用（全色）
+  'G1':0, 'BK':175, 'CRB':85, 'MCR':155, 'MBL':200, 'MG1':70, 'VPR':175, 'MVR':245,
+  'DN2':0, 'DJ2':0, 'MN2':70, 'MJ2':70
+};
+const AERON_ASIA_CHASSIS_A = { 'G1':0, 'CD':85, 'DN2':0, 'DJ2':0 };
+const AERON_ASIA_CHASSIS_BC = { 'G1':0, 'SNC':0, 'SNA':0, 'CD':85, 'BLX':0, 'DN2':0, 'DJ2':0 };
+const AERON_ASIA_BASE_A = { 'G1':0, 'BK':0, 'CD':250, 'DN2':0, 'DJ2':0 };
+const AERON_ASIA_BASE_BC = { 'G1':0, 'DCR':0, 'DVP':0, 'SNC':80, 'SNA':150, 'CD':250, 'BK':0, 'BLX':150, 'DN2':0, 'DJ2':0 };
+const AERON_ASIA_CASTER = { 'BB':0, 'C7':50, 'DC1':75 };  // 注意：亞洲線無 GF（Glides）
+const AERON_ASIA_ARMPAD_FINISH_A = { 'BK':0, 'DN4':0, 'DJ4':0 };  // Size A 用色：BK + 亞洲線專屬 DN4/DJ4
+const AERON_ASIA_ARMPAD_FINISH_C = { 'BK':0, 'DCR':0, 'DVP':0, 'DN4':0, 'DJ4':0 };  // Size C 多 DCR/DVP
+const AERON_ASIA_PELLICLE = { '23103':0, '23101':0, '23102':0, '23105':0, '23120':0, '23121':0 };
+const AERON_ASIA_LEATHER = { 'N/A':0, '2109':90, '2118':90, '2119':90 };  // 亞洲線多 2119 Dark carbon
+
+const AERON_ASIA_COLOR_HINT = {
+  'DN2': 'Nightfall 暮藍（亞洲線專屬色系）',
+  'DJ2': 'Jasper 碧玉綠（亞洲線專屬色系）',
+  'MN2': 'Nightfall + MicrobeCare（亞洲線專屬）',
+  'MJ2': 'Jasper + MicrobeCare（亞洲線專屬）',
+  'DN4': 'Dark Nightfall 扶手墊色（亞洲線專屬）',
+  'DJ4': 'Dark Jasper 扶手墊色（亞洲線專屬）',
+  '2119': 'Dark Carbon Leather（亞洲線專屬）'
+};
+
+// =========================================================
+// AERON — PARSER (支援 AER1 + AER2)
+// =========================================================
+function aeronParseModel() {
+  _aeronClearAlerts('');
+  document.getElementById('aeronResultBlock').classList.remove('show');
+  const raw = document.getElementById('aeronModelInput').value;
+  if (!raw.trim()) { _aeronShowError('請輸入 Aeron 型號。', ''); return; }
+  const result = _aeronParse(raw);
+  if (result.error) { _aeronShowError(result.error, ''); return; }
+  _aeronRenderDualLine(result);
+}
+
+function aeronClearAll() {
+  document.getElementById('aeronModelInput').value = '';
+  document.getElementById('aeronResultBlock').classList.remove('show');
+  _aeronClearAlerts('');
+}
+
+function _aeronParse(raw) {
+  const clean = raw.replace(/\s+/g,'').toUpperCase();
+  const m = clean.match(/^AER([12])([ABC])([123])([123])([NPHAD])([NWF])(.*)$/);
+  if (!m) return { error: `型號格式錯誤。應為 AER<1/2><A/B/C><1/2/3><1/2/3><N/P/H/A/D><N/W/F> 開頭，例如 AER1B23DW。` };
+
+  const assembly = m[1];  // 1=Fully assembled, 2=KD
+  const size = m[2];
+  const height = m[3];
+  const tilt = m[4];
+  const arm = m[5];
+  const armpad = m[6];
+  const rest = m[7];
+
+  // 拆解後續代碼
+  const KNOWN = ['ALP','SZS','ZSS','AJ',
+    'MG1','MCR','MVR','MBL','MN2','MJ2',  // MicrobeCare frames
+    'CRB','VPR','BK','G1','ZB','DN2','DJ2',  // 標準 frame
+    'SNC','SNA','BLX','CD','DCR','DVP',  // chassis/base/armpad finish
+    'DN4','DJ4',  // 亞洲線扶手墊色
+    'DC1','BB','GF','C7',  // caster
+    '23103','23101','23102','23105','23120','23121',  // pellicle
+    '2109','2118','2119'];  // leather
+  const SORTED = [...new Set(KNOWN)].sort((a,b)=>b.length-a.length);
+  let r = rest;
+  const extracted = [];
+  while (r.length > 0) {
+    let matched = false;
+    for (const t of SORTED) { if (r.startsWith(t)) { extracted.push(t); r = r.slice(t.length); matched = true; break; } }
+    if (!matched) return { error: `無法識別代碼片段「${r}」，請確認型號是否正確。` };
+  }
+
+  const [back, frameStr, chassisStr, baseStr, casterStr] = extracted;
+  let armpadFinishStr = extracted[5];
+  let pellicleStr = extracted[6];
+  let leatherStr = extracted[7] || 'N/A';
+
+  if (!['SZS','ZSS','AJ','ALP'].includes(back)) return { error: `Step 8 背部支撐「${back}」無效。` };
+  if (!frameStr) return { error: 'Step 9 框架顏色代碼缺失。' };
+  if (!chassisStr) return { error: 'Step 10 座盤顏色代碼缺失。' };
+  if (!baseStr) return { error: 'Step 11 底座顏色代碼缺失。' };
+  if (!casterStr) return { error: 'Step 12 輪子代碼缺失。' };
+  if (!pellicleStr || !['23103','23101','23102','23105','23120','23121'].includes(pellicleStr)) {
+    return { error: `Step 14 網布代碼「${pellicleStr || '缺失'}」無效（應為 23101/23102/23103/23105/23120/23121）。` };
+  }
+  if (!armpadFinishStr || !['BK','DVP','DCR','DN4','DJ4'].includes(armpadFinishStr)) armpadFinishStr = arm === 'N' ? 'N/A' : 'BK';
+  if (!['2109','2118','2119'].includes(leatherStr)) leatherStr = 'N/A';
+
+  // 主碼基底（用於亞洲線查表）
+  const mainCode = `AER${assembly}${size}${height}${tilt}`;
+  const armCombo = arm + armpad;  // NN/PW/PF/HW/HF/AW/AF/DW/DF
+  const baseLookupKey = mainCode + armCombo;
+
+  // 警告
+  const warnings = [];
+  if (size === 'A' && height !== '1') warnings.push(`A size 高度只能選低高度（1），您選了「${height}」。`);
+  if (size === 'C' && height === '1') warnings.push('C size 不支援低高度（1），建議選 2 或 3。');
+
+  return {
+    raw: clean,
+    assembly, size, height, tilt, arm, armpad, armCombo, mainCode, baseLookupKey,
+    model: `AER${assembly}${size}${height}${tilt}${arm}${armpad} ${back} ${frameStr} ${chassisStr} ${baseStr} ${casterStr} ${armpadFinishStr} ${pellicleStr}${leatherStr !== 'N/A' ? ' ' + leatherStr : ''}`,
+    values: { size, height, tilt, arms: arm, armpad, back, frame: frameStr, chassis: chassisStr, base: baseStr, caster: casterStr, armpadFinish: armpadFinishStr, pellicle: pellicleStr, leatherColor: leatherStr },
+    warnings
+  };
+}
+
+// 美國線計算（累加法）
+function _aeronCalcUS(parsed) {
+  const v = parsed.values;
+  const rows = []; let total = 0; const errors = [];
+
+  rows.push({ step:'Step 1', code:'AER', desc:'Aeron Work Chair', sub:'Type', price:null });
+  rows.push({ step:'Step 2', code:parsed.assembly, desc:parsed.assembly==='1'?'Fully assembled 已組裝':'Knocked down KD 待組裝', sub:'Assembly option', price:null });
+
+  const sz = AERON_STEPS[0].options[v.size];
+  rows.push({ step:'Step 3', code:v.size, desc:sz.desc, sub:'尺寸基礎定價', price:sz.price, isBase:true }); total += sz.price;
+
+  const addRow = (stepDef, key) => { const opt = stepDef.options[v[key]]; if(!opt){errors.push(`${stepDef.step} 代碼「${v[key]}」無效`);return;} rows.push({step:stepDef.step,code:v[key],desc:opt.desc,sub:stepDef.label,price:opt.price}); total+=opt.price; };
+  addRow(AERON_STEPS[1],'height'); addRow(AERON_STEPS[2],'tilt'); addRow(AERON_STEPS[3],'arms');
+  const ap = AERON_STEPS[4].options[v.armpad]; if(ap){ rows.push({step:'Step 7',code:v.armpad,desc:ap.desc,sub:'扶手墊材質',price:ap.price}); total+=ap.price; }
+  addRow(AERON_STEPS[5],'back');
+
+  // 美國線檢查：DN2/DJ2/MN2/MJ2 屬於亞洲線專屬
+  const asiaOnly = ['DN2','DJ2','MN2','MJ2'];
+  if (asiaOnly.includes(v.frame)) errors.push(`Step 9 框架「${v.frame}」是亞洲線專屬色系，美國線目前未確認支援`);
+  if (asiaOnly.includes(v.chassis)) errors.push(`Step 10 座盤「${v.chassis}」是亞洲線專屬色系`);
+  if (asiaOnly.includes(v.base)) errors.push(`Step 11 底座「${v.base}」是亞洲線專屬色系`);
+  if (['DN4','DJ4'].includes(v.armpadFinish)) errors.push(`Step 13 扶手墊色「${v.armpadFinish}」是亞洲線專屬色系`);
+  if (v.leatherColor === '2119') errors.push(`Step 15 皮革「2119 Dark Carbon」是亞洲線專屬色系`);
+
+  // Frame/Chassis/Base — 美國線只認原 spec 的選項
+  const usFrame = AERON_STEPS[6].options[v.frame];
+  if (usFrame) { rows.push({step:'Step 9',code:v.frame,desc:usFrame.desc,sub:'框架顏色',price:usFrame.price}); total+=usFrame.price; }
+  else if (!asiaOnly.includes(v.frame)) errors.push(`Step 9 框架代碼「${v.frame}」無效`);
+
+  const usChassis = AERON_STEPS[7].options[v.chassis];
+  if (usChassis) { rows.push({step:'Step 10',code:v.chassis,desc:usChassis.desc,sub:'座盤顏色',price:usChassis.price}); total+=usChassis.price; }
+  else if (!asiaOnly.includes(v.chassis)) errors.push(`Step 10 座盤代碼「${v.chassis}」無效`);
+
+  const usBase = AERON_STEPS[8].options[v.base];
+  if (usBase) { rows.push({step:'Step 11',code:v.base,desc:usBase.desc,sub:'底座顏色',price:usBase.price}); total+=usBase.price; }
+  else if (!asiaOnly.includes(v.base)) errors.push(`Step 11 底座代碼「${v.base}」無效`);
+
+  const usCaster = AERON_STEPS[9].options[v.caster];
+  if (usCaster) { rows.push({step:'Step 12',code:v.caster,desc:usCaster.desc,sub:'輪子',price:usCaster.price}); total+=usCaster.price; }
+  else errors.push(`Step 12 輪子代碼「${v.caster}」無效`);
+
+  if (v.arms !== 'N') {
+    const af = AERON_STEPS[10].options[v.armpadFinish];
+    if (af) { rows.push({step:'Step 13',code:v.armpadFinish,desc:af.desc,sub:'扶手墊顏色',price:af.price}); total+=af.price; }
+  }
+  const pel = AERON_STEPS[11].options[v.pellicle];
+  if (pel) { rows.push({step:'Step 14',code:v.pellicle,desc:pel.desc,sub:'8Z Pellicle 網布（Cat.1）',price:pel.price}); total+=pel.price; }
+
+  if (v.armpad === 'F' && v.leatherColor !== 'N/A') {
+    const lOpt = AERON_STEPS[12].options[v.leatherColor];
+    if (lOpt) { rows.push({step:'Step 15',code:v.leatherColor,desc:lOpt.desc,sub:'皮革扶手墊（Cat.9）',price:lOpt.price}); total+=lOpt.price; }
+  }
+
+  return { rows, total, errors };
+}
+
+// 亞洲線計算（查表 + 加價）
+function _aeronCalcAsia(parsed) {
+  const v = parsed.values;
+  const rows = []; let total = 0; const errors = [];
+
+  // Step 1-7 合併查表
+  const basePrice = AERON_ASIA_BASE_PRICES[parsed.baseLookupKey];
+  if (basePrice === undefined) {
+    errors.push(`亞洲線查表失敗：找不到 ${parsed.baseLookupKey}（A size 只有 height 1，C size 不能 height 1）`);
+    return { rows: [{step:'查表', code:parsed.baseLookupKey, desc:'⚠️ 亞洲線無此基礎組合', sub:'Step 1-7 合併計價', price:null}], total: null, errors };
+  }
+  total = basePrice;
+  const armComboDesc = {
+    'NN':'No arms / N/A','PW':'Fixed arm + 非皮墊','PF':'Fixed arm + 皮墊',
+    'HW':'Height-adj + 非皮墊','HF':'Height-adj + 皮墊',
+    'AW':'Height-adj + pivot + 非皮墊','AF':'Height-adj + pivot + 皮墊',
+    'DW':'Fully adjustable + 非皮墊','DF':'Fully adjustable + 皮墊'
+  }[parsed.armCombo] || parsed.armCombo;
+  rows.push({
+    step: '查表', code: parsed.baseLookupKey,
+    desc: `Asia 基礎價（含 Type+Assembly+Size+Height+Tilt+Arms+Armpad）`,
+    sub: `${parsed.size} size · ${parsed.assembly==='1'?'已組裝':'KD'} · 扶手:${armComboDesc}`,
+    price: basePrice, isBase: true
+  });
+
+  // Step 8 Back
+  const backInc = AERON_ASIA_BACK[v.back];
+  if (backInc !== undefined) {
+    if (backInc !== 0) total += backInc;
+    rows.push({step:'Step 8', code:v.back, desc:`背部支撐`, sub:_aeronBackDesc(v.back), price:backInc});
+  } else errors.push(`Step 8 背部支撐「${v.back}」無效`);
+
+  // Step 9 Frame
+  const frameTable = v.size === 'A' ? AERON_ASIA_FRAME_A : AERON_ASIA_FRAME_BC;
+  const frameInc = frameTable[v.frame];
+  if (frameInc !== undefined) {
+    if (frameInc !== 0) total += frameInc;
+    const hint = AERON_ASIA_COLOR_HINT[v.frame] ? ` · ${AERON_ASIA_COLOR_HINT[v.frame]}` : '';
+    const usOpt = AERON_STEPS[6].options[v.frame];
+    rows.push({step:'Step 9', code:v.frame, desc:(usOpt?usOpt.desc:v.frame)+hint, sub:'框架顏色', price:frameInc});
+  } else {
+    errors.push(`Step 9 框架「${v.frame}」不適用 ${v.size} size 亞洲線（${v.size==='A'?'Size A 不支援 CRB/MCR/VPR':'代碼錯誤'}）`);
+  }
+
+  // Step 10 Chassis
+  const chassisTable = v.size === 'A' ? AERON_ASIA_CHASSIS_A : AERON_ASIA_CHASSIS_BC;
+  const chassisInc = chassisTable[v.chassis];
+  if (chassisInc !== undefined) {
+    if (chassisInc !== 0) total += chassisInc;
+    const usOpt = AERON_STEPS[7].options[v.chassis];
+    rows.push({step:'Step 10', code:v.chassis, desc:usOpt?usOpt.desc:(AERON_ASIA_COLOR_HINT[v.chassis]||v.chassis), sub:'座盤顏色', price:chassisInc});
+  } else errors.push(`Step 10 座盤「${v.chassis}」不適用 ${v.size} size 亞洲線`);
+
+  // Step 11 Base
+  const baseTable = v.size === 'A' ? AERON_ASIA_BASE_A : AERON_ASIA_BASE_BC;
+  const baseInc = baseTable[v.base];
+  if (baseInc !== undefined) {
+    if (baseInc !== 0) total += baseInc;
+    const usOpt = AERON_STEPS[8].options[v.base];
+    rows.push({step:'Step 11', code:v.base, desc:usOpt?usOpt.desc:(AERON_ASIA_COLOR_HINT[v.base]||v.base), sub:'底座顏色', price:baseInc});
+  } else errors.push(`Step 11 底座「${v.base}」不適用 ${v.size} size 亞洲線`);
+
+  // Step 12 Caster — 亞洲線無 GF
+  if (v.caster === 'GF') {
+    errors.push(`Step 12 亞洲線不支援 GF（Glides 腳墊），請改用 BB/C7/DC1`);
+  } else {
+    const casterInc = AERON_ASIA_CASTER[v.caster];
+    if (casterInc !== undefined) {
+      if (casterInc !== 0) total += casterInc;
+      const usOpt = AERON_STEPS[9].options[v.caster];
+      rows.push({step:'Step 12', code:v.caster, desc:usOpt?usOpt.desc:v.caster, sub:'輪子', price:casterInc});
+    } else errors.push(`Step 12 輪子「${v.caster}」無效`);
+  }
+
+  // Step 13 Armpad finish (僅 v.arms !== 'N')
+  if (v.arms !== 'N') {
+    const armpadTable = v.size === 'A' ? AERON_ASIA_ARMPAD_FINISH_A : AERON_ASIA_ARMPAD_FINISH_C;
+    const apInc = armpadTable[v.armpadFinish];
+    if (apInc !== undefined) {
+      const hint = AERON_ASIA_COLOR_HINT[v.armpadFinish] ? ` · ${AERON_ASIA_COLOR_HINT[v.armpadFinish]}` : '';
+      const usOpt = AERON_STEPS[10].options[v.armpadFinish];
+      rows.push({step:'Step 13', code:v.armpadFinish, desc:(usOpt?usOpt.desc:v.armpadFinish)+hint, sub:'扶手墊顏色', price:apInc});
+    } else errors.push(`Step 13 扶手墊色「${v.armpadFinish}」不適用 ${v.size} size 亞洲線`);
+  }
+
+  // Step 14 Pellicle
+  const pelInc = AERON_ASIA_PELLICLE[v.pellicle];
+  if (pelInc !== undefined) {
+    const usOpt = AERON_STEPS[11].options[v.pellicle];
+    rows.push({step:'Step 14', code:v.pellicle, desc:usOpt?usOpt.desc:v.pellicle, sub:'8Z Pellicle 網布', price:pelInc});
+  }
+
+  // Step 15 Leather (Band 9, +90)
+  if (v.armpad === 'F' && v.leatherColor !== 'N/A') {
+    const lInc = AERON_ASIA_LEATHER[v.leatherColor];
+    if (lInc !== undefined) {
+      total += lInc;
+      const hint = AERON_ASIA_COLOR_HINT[v.leatherColor] ? ` · ${AERON_ASIA_COLOR_HINT[v.leatherColor]}` : '';
+      const labels = {'2109':'Black 黑色','2118':'Dark Mineral 深礦灰','2119':'Dark Carbon 深碳'};
+      rows.push({step:'Step 15', code:v.leatherColor, desc:`${labels[v.leatherColor]||v.leatherColor}${hint}`, sub:'皮革扶手墊（Band 9）', price:lInc});
+    } else errors.push(`Step 15 皮革「${v.leatherColor}」亞洲線無此選項`);
+  }
+
+  return { rows, total, errors };
+}
+
+function _aeronBackDesc(c) {
+  return ({'SZS':'Basic back support','ZSS':'Fixed PostureFit','AJ':'Adjustable lumbar','ALP':'Adjustable PostureFit SL'}[c]) || c;
+}
+
+// =========================================================
+// AERON — RENDER (雙線並列)
+// =========================================================
+function _aeronRenderDualLine(parsed) {
+  const usResult = _aeronCalcUS(parsed);
+  const asiaResult = _aeronCalcAsia(parsed);
+
+  document.getElementById('aeronBadgeModel').textContent = parsed.model;
+
+  // 線別 badges
+  document.getElementById('aeronUsPrice').textContent = usResult.total !== null ? `$${usResult.total.toLocaleString()}` : '—';
+  document.getElementById('aeronUsBadgeBox').classList.toggle('active', usResult.errors.length === 0);
+
+  if (asiaResult.total !== null) {
+    document.getElementById('aeronAsiaPrice').textContent = `$${asiaResult.total.toLocaleString()}`;
+    document.getElementById('aeronAsiaPrice').classList.remove('na');
+    document.getElementById('aeronAsiaBadgeBox').classList.toggle('active', asiaResult.errors.length === 0);
+    document.getElementById('aeronAsiaBadgeBox').classList.remove('unavailable');
+  } else {
+    document.getElementById('aeronAsiaPrice').textContent = '無對應料號';
+    document.getElementById('aeronAsiaPrice').classList.add('na');
+    document.getElementById('aeronAsiaBadgeBox').classList.add('unavailable');
+    document.getElementById('aeronAsiaBadgeBox').classList.remove('active');
+  }
+
+  // 雙線解析卡片
+  const area = document.getElementById('aeronParseArea');
+  area.innerHTML = _aeronRenderCard('🇺🇸 美國線解析（PB_AEN 累加法）', 'us', usResult)
+                 + _aeronRenderCard('🌏 亞洲線解析（80-day Asia 查表法）', 'asia', asiaResult);
+
+  document.getElementById('aeronResultBlock').classList.add('show');
+
+  // 警告
+  if (parsed.warnings.length > 0) {
+    const wEl = document.getElementById('aeronAlertWarn');
+    const mEl = document.getElementById('aeronAlertWarnMsg');
+    if (wEl && mEl) { mEl.innerHTML = parsed.warnings.map(w => `• ${w}`).join('<br>'); wEl.classList.add('show'); }
+  }
+}
+
+function _aeronRenderCard(title, lineClass, result) {
+  const headerClass = lineClass === 'asia' ? 'parse-header asia-h' : 'parse-header us-h';
+  const totalClass = lineClass === 'asia' ? 'total-row asia-total' : 'total-row us-total';
+
+  let errorHtml = '';
+  if (result.errors.length > 0) {
+    errorHtml = `<div style="background:var(--yellow-light);border-bottom:1px solid #fae5a0;padding:12px 16px;font-size:12px;color:var(--yellow);">
+      <strong>⚠️ 偵測到 ${result.errors.length} 個問題：</strong><br>${result.errors.map(e => `• ${e}`).join('<br>')}
+    </div>`;
+  }
+
+  let rowsHtml = result.rows.map(s => {
+    let priceCell;
+    if (s.price === null) priceCell = `<td class="step-price price-zero">—</td>`;
+    else if (s.isBase) priceCell = `<td class="step-price price-base">$${s.price.toLocaleString()}</td>`;
+    else if (s.price === 0) priceCell = `<td class="step-price price-zero">+$0</td>`;
+    else if (s.price < 0) priceCell = `<td class="step-price price-minus">-$${Math.abs(s.price).toLocaleString()}</td>`;
+    else priceCell = `<td class="step-price price-add">+$${s.price.toLocaleString()}</td>`;
+    const rowClass = s.isBase ? 'base-row' : '';
+    return `<tr class="${rowClass}"><td class="step-num">${s.step}</td><td><span class="step-code">${s.code}</span></td><td class="step-desc">${s.desc}<small>${s.sub||''}</small></td>${priceCell}</tr>`;
+  }).join('');
+
+  const totalHtml = result.total !== null ? `
+    <tr class="${totalClass}">
+      <td colspan="3" class="label">${lineClass === 'asia' ? '🌏 亞洲線' : '🇺🇸 美國線'} 單張定價合計</td>
+      <td class="amount">$${result.total.toLocaleString()}</td>
+    </tr>` : '';
+
+  return `<div class="parse-card">
+    <div class="${headerClass}"><span>${title}</span><span style="font-size:11px; opacity:0.85;">${result.rows.length} 行</span></div>
+    ${errorHtml}
+    <table class="steps-table">
+      <thead><tr><th style="width:72px">Step</th><th style="width:90px">代碼</th><th>說明</th><th style="width:120px">加價 (USD)</th></tr></thead>
+      <tbody>${rowsHtml}${totalHtml}</tbody>
+    </table>
+  </div>`;
+}
+
+function _aeronShowError(msg, suffix) {
+  const s = suffix === 'M' ? 'M' : '';
+  const target = document.getElementById('aeronAlertError' + s);
+  const tmsg = document.getElementById('aeronAlertError' + s + 'Msg');
+  if (target && tmsg) { tmsg.textContent = msg; target.classList.add('show'); }
+}
+
+function _aeronClearAlerts(suffix) {
+  ['aeronAlertError','aeronAlertWarn'].forEach(id => {
+    const el = document.getElementById(id + (suffix === 'M' ? 'M' : ''));
+    if (el) el.classList.remove('show');
+  });
+}
+
+// =========================================================
+// AERON MANUAL TAB（保留原本，仍然只算美國線 — 給設計時組型號用）
+// =========================================================
+function aeronBuildManualUI() {
+  const grid = document.getElementById('aeronConfigGrid');
+  grid.innerHTML = AERON_STEPS.map((step, si) => {
+    const opts = Object.entries(step.options).map(([code, data]) =>
+      `<option value="${code}">${code} — ${data.desc}${data.price > 0 ? ' (+$' + data.price + ')' : ''}</option>`
+    ).join('');
+    return `<div class="config-item">
+      <div class="config-item-label">${step.label}<span class="config-item-step">${step.step}</span></div>
+      <select class="config-select" id="aeronSel_${step.key}" onchange="aeronUpdateSelPrice('${step.key}',${si})">${opts}</select>
+      <div class="config-price-display" id="aeronSelPrice_${step.key}"></div>
+    </div>`;
+  }).join('');
+  const defs = { size:'B',height:'2',tilt:'3',arms:'D',armpad:'W',back:'ALP',frame:'G1',chassis:'G1',base:'G1',caster:'BB',armpadFinish:'BK',pellicle:'23103',leatherColor:'N/A' };
+  for (const [k, v] of Object.entries(defs)) { const el = document.getElementById('aeronSel_' + k); if (el) el.value = v; }
+}
+
+function aeronUpdateSelPrice(key, si) {
+  const sel = document.getElementById('aeronSel_' + key);
+  const disp = document.getElementById('aeronSelPrice_' + key);
+  if (!sel || !disp) return;
+  const opt = AERON_STEPS[si].options[sel.value];
+  if (!opt) { disp.textContent = ''; disp.classList.remove('has-price'); return; }
+  if (opt.price > 0) { disp.textContent = '+$' + opt.price.toLocaleString(); disp.classList.add('has-price'); }
+  else { disp.textContent = '+$0'; disp.classList.remove('has-price'); }
+}
+
+function aeronBuildFromSelects() {
+  _aeronClearAlerts('M');
+  document.getElementById('aeronResultBlockM').classList.remove('show');
+  const values = {};
+  for (const step of AERON_STEPS) { const el = document.getElementById('aeronSel_' + step.key); values[step.key] = el ? el.value : ''; }
+  const modelStr = `AER1${values.size}${values.height}${values.tilt}${values.arms}${values.armpad} ${values.back} ${values.frame} ${values.chassis} ${values.base} ${values.caster} ${values.armpadFinish} ${values.pellicle}${values.leatherColor !== 'N/A' ? ' ' + values.leatherColor : ''}`;
+  const cb = document.getElementById('aeronGeneratedCode'); cb.textContent = modelStr; cb.classList.add('show');
+
+  // 用模擬 parsed object 跑美國線計算
+  const fakeParsed = { assembly:'1', size:values.size, height:values.height, tilt:values.tilt, arm:values.arms, armpad:values.armpad, model:modelStr, values, warnings:[] };
+  const usResult = _aeronCalcUS(fakeParsed);
+  document.getElementById('aeronBadgeModelM').textContent = modelStr;
+  document.getElementById('aeronTotalModelM').textContent = modelStr;
+  document.getElementById('aeronTotalPriceM').textContent = usResult.total.toLocaleString();
+  const tbody = document.getElementById('aeronStepsBodyM');
+  tbody.innerHTML = usResult.rows.map(r => {
+    const pc = r.isBase ? 'price-base' : (r.price === null ? 'price-zero' : (r.price === 0 ? 'price-zero' : 'price-add'));
+    const ps = r.price === null ? '—' : (r.isBase ? `$${r.price.toLocaleString()}` : (r.price === 0 ? '+$0' : `+$${r.price.toLocaleString()}`));
+    const rc = r.isBase ? 'base-row' : '';
+    return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub||''}</small></td><td class="step-price ${pc}">${ps}</td></tr>`;
+  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">🇺🇸 美國線單張定價合計</td><td class="amount">$${usResult.total.toLocaleString()}</td></tr>`;
+  document.getElementById('aeronResultBlockM').classList.add('show');
+}
+
+function switchAeronTab(id) {
+  document.querySelectorAll('#product-aeron .tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#product-aeron .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('aeron-tab-' + id).classList.add('active');
+  document.querySelectorAll('#product-aeron .tab-btn').forEach(b => {
+    if (b.getAttribute('onclick').includes("'" + id + "'")) b.classList.add('active');
+  });
+}
+</script>
+<script>
+// =========================================================
+// COSM — DATA
+// =========================================================
+const COSM_SERIES_INFO = {
+  "FLC1": { name: "Cosm Work Chair（標準款）", us: true, asia: true,  type: "standard" },
+  "FLC2": { name: "Cosm Work Chair（KD 自行組裝）", us: true, asia: true,  type: "standard" },
+  "FLC3": { name: "Cosm Work Chair, Dipped in Color", us: true, asia: true,  type: "dic" },
+  "FLC4": { name: "Cosm Work Chair, DIC + KD", us: true, asia: true,  type: "dic", noLeaf: true },
+  "FLC7": { name: "Cosm Work Stool（吧檯椅）", us: true, asia: false, type: "stool" },
+  "FLC8": { name: "Cosm Work Stool, DIC（彩色吧檯椅）", us: true, asia: false, type: "stool-dic" }
+};
+
+const COSM_US_BACK_PRICE = {
+  "FLC1": { "4": 1714, "5": 1784, "6": 1892 },
+  "FLC2": { "4": 1714, "5": 1784, "6": 1892 },
+  "FLC3": { "4": 1996, "5": 2070, "6": 2177 },
+  "FLC4": { "4": 1996, "5": 2070, "6": 2177 },
+  "FLC7": { "4": 2097, "5": 2168 },
+  "FLC8": { "4": 2384, "5": 2453 }
+};
+
+const COSM_US_PRICING = {
+  arms: {
+    "N": { name: "no arms（無扶手）", price: 0 },
+    "P": { name: "fixed arms（固定扶手）", price: 126 },
+    "H": { name: "height-adjustable arms（高度可調扶手）", price: 246 },
+    "J": { name: "leaf arms（葉形扶手）", price: 301 }
+  },
+  frameStandard: {
+    "G1":  { name: "graphite (CP) 石墨色", price: 0 },
+    "CRB": { name: "carbon (CP) 碳色", price: 55 },
+    "98":  { name: "studio white (CP) 工作室白", price: 75 },
+    "MG1": { name: "graphite with MicrobeCare™", price: 70 },
+    "MCR": { name: "carbon with MicrobeCare™", price: 125 },
+    "M98": { name: "studio white with MicrobeCare™", price: 145 }
+  },
+  frameDIC: {
+    "DN2": { name: "nightfall 深藍", price: 0 },
+    "DB3": { name: "glacier 冰川藍", price: 0 },
+    "DR1": { name: "canyon 沙紅", price: 0 },
+    "MN2": { name: "nightfall with MicrobeCare™", price: 70 },
+    "MB3": { name: "glacier with MicrobeCare™", price: 70 },
+    "MR1": { name: "canyon with MicrobeCare™", price: 70 }
+  },
+  chassisStandard: {
+    "G1":  { name: "graphite", price: 0, allowedFrames: ["G1", "MG1"] },
+    "CRB": { name: "carbon",   price: 0, allowedFrames: ["CRB", "MCR"] },
+    "98":  { name: "studio white", price: 0, allowedFrames: ["98", "M98"] },
+    "L7":  { name: "silver alloy 銀合金（通用）", price: 40, allowedFrames: "ANY" }
+  },
+  chassisDIC: {
+    "DN2": { name: "nightfall", price: 0, allowedFrames: ["DN2", "MN2"] },
+    "DB3": { name: "glacier",   price: 0, allowedFrames: ["DB3", "MB3"] },
+    "DR1": { name: "canyon",    price: 0, allowedFrames: ["DR1", "MR1"] }
+  },
+  baseStandard: {
+    "G1":  { name: "graphite", price: 0, allowedFrames: ["G1", "MG1"] },
+    "CRB": { name: "carbon",   price: 0, allowedFrames: ["CRB", "MCR"] },
+    "VPR": { name: "mineral",  price: 0, allowedFrames: ["98", "M98"] },
+    "5Y":  { name: "semi-polished 拋光（通用）", price: 160, allowedFrames: "ANY" }
+  },
+  baseDIC: {
+    "DN2": { name: "nightfall", price: 0, allowedFrames: ["DN2", "MN2"] },
+    "DB3": { name: "glacier",   price: 0, allowedFrames: ["DB3", "MB3"] },
+    "DR1": { name: "canyon",    price: 0, allowedFrames: ["DR1", "MR1"] },
+    "5Y":  { name: "semi-polished 拋光（通用）", price: 160, allowedFrames: "ANY" }
+  },
+  castersStandard: {
+    "BKS": { name: "65mm 靜音腳輪（地毯專用）", price: 0 },
+    "GF":  { name: "65mm glides（硬地或地毯）", price: 25 },
+    "SC8": { name: "65mm 靜音腳輪（硬地或地毯）", price: 50 },
+    "OC":  { name: "65mm 中阻力靜音腳輪", price: 55 }
+  },
+  castersDIC: {
+    "BKS": { name: "65mm 靜音腳輪（地毯專用）", price: -55 },
+    "GF":  { name: "65mm glides（硬地或地毯）", price: -30 },
+    "SC8": { name: "65mm 靜音腳輪（硬地或地毯）", price: -5 },
+    "OC":  { name: "65mm 中阻力靜音腳輪", price: 0 },
+    "O2N": { name: "65mm nightfall 色腳輪", price: 0 },
+    "O2B": { name: "65mm glacier 色腳輪", price: 0 },
+    "O2R": { name: "65mm canyon 色腳輪", price: 0 }
+  },
+  armpadStandard: {
+    "BK":  { name: "black（黑色扶墊）", price: 0 },
+    "CRB": { name: "carbon（碳色扶墊）", price: 0 },
+    "VPR": { name: "mineral（礦物色扶墊）", price: 0 }
+  },
+  armpadDIC: {
+    "DN2": { name: "nightfall（同色扶墊）", price: 0 },
+    "DB3": { name: "glacier（同色扶墊）", price: 0 },
+    "DR1": { name: "canyon（同色扶墊）", price: 0 }
+  },
+  intercept: {
+    "84501": { name: "Graphite Intercept", price: 0 },
+    "84502": { name: "Carbon Intercept", price: 0 },
+    "84503": { name: "Mineral Intercept", price: 0 },
+    "84504": { name: "Nightfall Intercept", price: 0 },
+    "84505": { name: "Glacier Intercept", price: 0 },
+    "84506": { name: "Canyon Intercept", price: 0 }
+  }
+};
+
+const COSM_ASIA_BASE_PRICES = {
+  "FLC142YFN":1681,"FLC142YFP":1804,"FLC142YFH":1922,"FLC142YFJ":1976,
+  "FLC143YFN":1681,"FLC143YFP":1804,"FLC143YFH":1922,"FLC143YFJ":1976,
+  "FLC152YFN":1750,"FLC152YFP":1873,"FLC152YFH":1991,"FLC152YFJ":2045,
+  "FLC153YFN":1750,"FLC153YFP":1873,"FLC153YFH":1991,"FLC153YFJ":2045,
+  "FLC162YFN":1855,"FLC162YFP":1978,"FLC162YFH":2096,"FLC162YFJ":2150,
+  "FLC163YFN":1855,"FLC163YFP":1978,"FLC163YFH":2096,"FLC163YFJ":2150,
+  "FLC242YFN":1681,"FLC242YFP":1804,"FLC242YFH":1922,"FLC242YFJ":1976,
+  "FLC243YFN":1681,"FLC243YFP":1804,"FLC243YFH":1922,"FLC243YFJ":1976,
+  "FLC252YFN":1750,"FLC252YFP":1873,"FLC252YFH":1991,"FLC252YFJ":2045,
+  "FLC253YFN":1750,"FLC253YFP":1873,"FLC253YFH":1991,"FLC253YFJ":2045,
+  "FLC262YFN":1855,"FLC262YFP":1978,"FLC262YFH":2096,"FLC262YFJ":2150,
+  "FLC263YFN":1855,"FLC263YFP":1978,"FLC263YFH":2096,"FLC263YFJ":2150,
+  "FLC342YFN":1958,"FLC342YFP":2081,"FLC342YFH":2199,"FLC342YFJ":2253,
+  "FLC343YFN":1958,"FLC343YFP":2081,"FLC343YFH":2199,"FLC343YFJ":2253,
+  "FLC352YFN":2030,"FLC352YFP":2153,"FLC352YFH":2270,"FLC352YFJ":2325,
+  "FLC353YFN":2030,"FLC353YFP":2153,"FLC353YFH":2270,"FLC353YFJ":2325,
+  "FLC362YFN":2135,"FLC362YFP":2258,"FLC362YFH":2376,"FLC362YFJ":2430,
+  "FLC363YFN":2135,"FLC363YFP":2258,"FLC363YFH":2376,"FLC363YFJ":2430,
+  "FLC442YFN":1958,"FLC442YFP":2081,"FLC442YFH":2199,"FLC442YFJ":2253,
+  "FLC443YFN":1958,"FLC443YFP":2081,"FLC443YFH":2199,"FLC443YFJ":2253,
+  "FLC452YFN":2030,"FLC452YFP":2153,"FLC452YFH":2270,"FLC452YFJ":2325,
+  "FLC453YFN":2030,"FLC453YFP":2153,"FLC453YFH":2270,"FLC453YFJ":2325,
+  "FLC462YFN":2135,"FLC462YFP":2258,"FLC462YFH":2376,"FLC462YFJ":2430,
+  "FLC463YFN":2135,"FLC463YFP":2258,"FLC463YFH":2376,"FLC463YFJ":2430
+};
+
+const COSM_ASIA_INCREMENTAL = {
+  frameStandard: { "G1":0, "CRB":55, "98":75, "MG1":70, "MCR":125, "M98":145 },
+  frameDIC: { "DN2":0, "DB3":0, "DR1":0, "MN2":70, "MB3":70, "MR1":70 },
+  chassisStandard: { "G1":0, "CRB":0, "98":0, "L7":40 },
+  chassisDIC: { "DN2":0, "DB3":0, "DR1":0 },
+  baseStandard: { "G1":0, "CRB":0, "VPR":0, "5Y":160 },
+  baseDIC: { "DN2":0, "DB3":0, "DR1":0, "5Y":160 },
+  castersStandard: { "BKS":0, "GF":25, "SC8":50, "OC":55 },
+  castersDIC: { "BKS":-55, "GF":-30, "SC8":-5, "OC":0, "O2N":0, "O2B":0, "O2R":0 },
+  armpadStandard: { "BK":0, "CRB":0, "VPR":0 },
+  armpadDIC: { "DN2":0, "DB3":0, "DR1":0 },
+  intercept: { "84501":0, "84502":0, "84503":0, "84504":0, "84505":0, "84506":0 }
+};
+
+function _cosmParse(input) {
+  const cleaned = input.trim().toUpperCase().replace(/\s+/g, ' ');
+  if (!cleaned) return { ok: false, reason: "請輸入料號" };
+
+  const parts = cleaned.split(' ');
+  const main = parts[0];
+
+  if (!main.startsWith("FLC")) {
+    return { ok: false, reason: "料號必須以 FLC 開頭（Cosm 系列）" };
+  }
+  if (main.length !== 9) {
+    return { ok: false, reason: `主碼長度應為 9 字元（目前 ${main.length}）。範例：FLC162SFH` };
+  }
+
+  const seriesNum = main.substring(3, 4);
+  const seriesKey = `FLC${seriesNum}`;
+  const backHeight = main.substring(4, 5);
+  const heightAdj  = main.substring(5, 6);
+  const tilt       = main.substring(6, 7);
+  const seatDepth  = main.substring(7, 8);
+  const armsCode   = main.substring(8, 9);
+
+  const seriesInfo = COSM_SERIES_INFO[seriesKey];
+  if (!seriesInfo) {
+    return { ok: false, reason: `不支援的系列：${seriesKey}（支援 FLC1-FLC4, FLC7, FLC8）` };
+  }
+  if (!["S", "Y"].includes(tilt)) {
+    return { ok: false, reason: `Step 4 Tilt 代碼 "${tilt}" 不合法（應為 S=美國線 / Y=亞洲線）` };
+  }
+  if (!["F"].includes(seatDepth)) {
+    return { ok: false, reason: `Step 5 Seat Depth "${seatDepth}" 不合法（應為 F）` };
+  }
+  if (!["N", "P", "H", "J"].includes(armsCode)) {
+    return { ok: false, reason: `Step 6 扶手代碼 "${armsCode}" 不合法（應為 N/P/H/J）` };
+  }
+
+  const remaining = parts.slice(1);
+  const frame = remaining[0] || null;
+  const chassis = remaining[1] || null;
+  const base = remaining[2] || null;
+  const casters = remaining[3] || null;
+  let armpad = null, intercept = null;
+
+  if (remaining.length >= 5) {
+    const last = remaining[remaining.length - 1];
+    if (/^\d{5}$/.test(last)) {
+      intercept = last;
+      if (remaining.length >= 6 && armsCode === "H") {
+        armpad = remaining[remaining.length - 2];
+      }
+    } else if (armsCode === "H" && remaining.length >= 5) {
+      armpad = last;
+    }
+  }
+
+  return {
+    ok: true, raw: cleaned,
+    seriesKey, seriesInfo,
+    backHeight, heightAdj, tilt, seatDepth, armsCode,
+    frame, chassis, base, casters, armpad, intercept,
+    line: tilt === "S" ? "US" : (tilt === "Y" ? "ASIA" : "UNKNOWN")
+  };
+}
+
+function _cosmGetTables(seriesInfo) {
+  const isDIC = seriesInfo.type === "dic" || seriesInfo.type === "stool-dic";
+  return {
+    frame:   isDIC ? COSM_US_PRICING.frameDIC   : COSM_US_PRICING.frameStandard,
+    chassis: isDIC ? COSM_US_PRICING.chassisDIC : COSM_US_PRICING.chassisStandard,
+    base:    isDIC ? COSM_US_PRICING.baseDIC    : COSM_US_PRICING.baseStandard,
+    casters: isDIC ? COSM_US_PRICING.castersDIC : COSM_US_PRICING.castersStandard,
+    armpad:  isDIC ? COSM_US_PRICING.armpadDIC  : COSM_US_PRICING.armpadStandard,
+    asiaFrame:   isDIC ? COSM_ASIA_INCREMENTAL.frameDIC   : COSM_ASIA_INCREMENTAL.frameStandard,
+    asiaChassis: isDIC ? COSM_ASIA_INCREMENTAL.chassisDIC : COSM_ASIA_INCREMENTAL.chassisStandard,
+    asiaBase:    isDIC ? COSM_ASIA_INCREMENTAL.baseDIC    : COSM_ASIA_INCREMENTAL.baseStandard,
+    asiaCasters: isDIC ? COSM_ASIA_INCREMENTAL.castersDIC : COSM_ASIA_INCREMENTAL.castersStandard,
+    asiaArmpad:  isDIC ? COSM_ASIA_INCREMENTAL.armpadDIC  : COSM_ASIA_INCREMENTAL.armpadStandard
+  };
+}
+
+function _cosmCalcUS(parsed) {
+  const steps = [];
+  let total = 0;
+  const errors = [];
+  const tables = _cosmGetTables(parsed.seriesInfo);
+
+  steps.push({ pos: 1, code: parsed.seriesKey, step: "Step 1", category: "Type", desc: parsed.seriesInfo.name, price: null });
+
+  const bhPrice = COSM_US_BACK_PRICE[parsed.seriesKey][parsed.backHeight];
+  if (bhPrice !== undefined) {
+    const bhName = { "4":"low back（低背）", "5":"mid back（中背）", "6":"high back（高背）" }[parsed.backHeight];
+    steps.push({ pos: 2, code: parsed.backHeight, step: "Step 2", category: "Back Height", desc: bhName, price: bhPrice, isBase: true });
+    total += bhPrice;
+  } else {
+    errors.push(`Step 2 背高代碼 "${parsed.backHeight}" 不適用 ${parsed.seriesKey}`);
+  }
+
+  if (parsed.seriesInfo.type.startsWith("stool")) {
+    if (parsed.heightAdj !== "5") errors.push(`Step 3 Stool 高度只能為 5（extended height），目前 = "${parsed.heightAdj}"`);
+    steps.push({ pos: 3, code: parsed.heightAdj, step: "Step 3", category: "Height Adjust", desc: "stool extended height range", price: 0 });
+  } else {
+    if (!["2", "3"].includes(parsed.heightAdj)) errors.push(`Step 3 高度代碼 "${parsed.heightAdj}" 不合法（應為 2/3）`);
+    const haName = parsed.heightAdj === "2" ? "standard-height" : "high-height";
+    steps.push({ pos: 3, code: parsed.heightAdj, step: "Step 3", category: "Height Adjust", desc: haName, price: 0 });
+  }
+
+  steps.push({ pos: 4, code: "S", step: "Step 4", category: "Tilt", desc: "auto-harmonic tilt（美國線專屬）", price: 0 });
+
+  if (parsed.seatDepth === "F") {
+    steps.push({ pos: 5, code: "F", step: "Step 5", category: "Seat Depth", desc: "fixed seat depth", price: 0 });
+  } else {
+    errors.push(`Step 5 Seat Depth = "${parsed.seatDepth}"，應為 F`);
+  }
+
+  if (parsed.seriesInfo.noLeaf && parsed.armsCode === "J") {
+    errors.push(`Step 6 ${parsed.seriesKey} 無 Leaf 扶手（J）選項`);
+  }
+  const arm = COSM_US_PRICING.arms[parsed.armsCode];
+  if (arm) {
+    steps.push({ pos: 6, code: parsed.armsCode, step: "Step 6", category: "Arms", desc: arm.name, price: arm.price });
+    total += arm.price;
+  } else {
+    errors.push(`Step 6 扶手代碼 "${parsed.armsCode}" 不合法（應為 N/P/H/J）`);
+  }
+
+  if (parsed.frame) {
+    const fr = tables.frame[parsed.frame];
+    if (fr) {
+      steps.push({ pos: 7, code: parsed.frame, step: "Step 7", category: "Frame Finish", desc: fr.name, price: fr.price });
+      total += fr.price;
+    } else {
+      const isDIC = parsed.seriesInfo.type.includes("dic");
+      errors.push(`Step 7 Frame "${parsed.frame}" 不適用 ${parsed.seriesKey}（${isDIC ? "DIC 系列須用 DN2/DB3/DR1" : "標準款須用 G1/CRB/98"}）`);
+    }
+  }
+
+  if (parsed.chassis) {
+    const ch = tables.chassis[parsed.chassis];
+    if (ch) {
+      const allowed = ch.allowedFrames === "ANY" || ch.allowedFrames.includes(parsed.frame);
+      if (!allowed) errors.push(`Step 8 Chassis "${parsed.chassis}" 與 Frame "${parsed.frame}" 互斥`);
+      steps.push({ pos: 8, code: parsed.chassis, step: "Step 8", category: "Chassis Finish", desc: ch.name + (allowed ? "" : " ⚠️"), price: ch.price });
+      total += ch.price;
+    } else {
+      errors.push(`Step 8 Chassis "${parsed.chassis}" 不適用 ${parsed.seriesKey}`);
+    }
+  }
+
+  if (parsed.base) {
+    const ba = tables.base[parsed.base];
+    if (ba) {
+      const allowed = ba.allowedFrames === "ANY" || ba.allowedFrames.includes(parsed.frame);
+      if (!allowed) errors.push(`Step 9 Base "${parsed.base}" 與 Frame "${parsed.frame}" 互斥`);
+      steps.push({ pos: 9, code: parsed.base, step: "Step 9", category: "Base Finish", desc: ba.name + (allowed ? "" : " ⚠️"), price: ba.price });
+      total += ba.price;
+    } else {
+      errors.push(`Step 9 Base "${parsed.base}" 不適用 ${parsed.seriesKey}`);
+    }
+  }
+
+  if (parsed.casters) {
+    const ca = tables.casters[parsed.casters];
+    if (ca) {
+      steps.push({ pos: 10, code: parsed.casters, step: "Step 10", category: "Casters/Glides", desc: ca.name, price: ca.price });
+      total += ca.price;
+    } else {
+      errors.push(`Step 10 Casters "${parsed.casters}" 不適用 ${parsed.seriesKey}`);
+    }
+  }
+
+  if (parsed.armpad) {
+    if (parsed.armsCode !== "H") errors.push(`Step 11 Armpad finish 僅在 H 扶手才需要`);
+    const ap = tables.armpad[parsed.armpad];
+    if (ap) {
+      steps.push({ pos: 11, code: parsed.armpad, step: "Step 11", category: "Armpad Finish", desc: ap.name, price: ap.price });
+      total += ap.price;
+    } else {
+      errors.push(`Step 11 Armpad "${parsed.armpad}" 不適用 ${parsed.seriesKey}`);
+    }
+  }
+
+  if (parsed.intercept) {
+    const it = COSM_US_PRICING.intercept[parsed.intercept];
+    if (it) {
+      steps.push({ pos: 12, code: parsed.intercept, step: "Step 12", category: "Intercept", desc: it.name, price: it.price });
+      total += it.price;
+    } else {
+      errors.push(`Step 12 Intercept "${parsed.intercept}" 不合法`);
+    }
+  }
+
+  return { steps, total, errors };
+}
+
+function _cosmCalcAsia(parsed) {
+  const steps = [];
+  let total = 0;
+  const errors = [];
+
+  if (!parsed.seriesInfo.asia) {
+    return { steps: [], total: null, errors: [], unavailable: true, reason: `${parsed.seriesKey} 系列亞洲線無供應` };
+  }
+
+  const tables = _cosmGetTables(parsed.seriesInfo);
+  const baseKey = `FLC${parsed.seriesKey.substring(3)}${parsed.backHeight}${parsed.heightAdj}YF${parsed.armsCode}`;
+  const basePrice = COSM_ASIA_BASE_PRICES[baseKey];
+
+  steps.push({ pos: "1-6", code: baseKey, step: "查表", category: "🔵 基礎價（已內含 Step 1-6）",
+    desc: `Back Height + Height Adj + Tilt(Y) + Seat Depth + Arms 五項合併計價`, price: basePrice, isBase: true });
+
+  if (basePrice === undefined) {
+    errors.push(`亞洲線查表失敗：${baseKey}`);
+    return { steps, total: null, errors };
+  }
+  total = basePrice;
+
+  if (parsed.tilt === "S") {
+    steps[0].desc += " ⚠️ 實際下亞洲線需把 tilt 改為 Y";
+  }
+
+  const addStep = (cond, posNum, stepNum, cat, code, lookupTable, lookupValueTable) => {
+    if (!cond) return;
+    const price = lookupTable[code];
+    if (price === undefined) {
+      errors.push(`Step ${stepNum} ${cat} "${code}" 亞洲線無此選項`);
+      return;
+    }
+    const usEntry = lookupValueTable[code];
+    let allowed = true;
+    if (usEntry && usEntry.allowedFrames && usEntry.allowedFrames !== "ANY") {
+      allowed = usEntry.allowedFrames.includes(parsed.frame);
+      if (!allowed) errors.push(`Step ${stepNum} ${cat} "${code}" 與 Frame "${parsed.frame}" 互斥`);
+    }
+    const desc = (usEntry?.name || code) + (allowed ? "" : " ⚠️");
+    steps.push({ pos: posNum, code, step: `Step ${stepNum}`, category: cat, desc, price });
+    total += price;
+  };
+
+  addStep(parsed.frame,     7,  7,  "Frame Finish",   parsed.frame,     tables.asiaFrame,   tables.frame);
+  addStep(parsed.chassis,   8,  8,  "Chassis Finish", parsed.chassis,   tables.asiaChassis, tables.chassis);
+  addStep(parsed.base,      9,  9,  "Base Finish",    parsed.base,      tables.asiaBase,    tables.base);
+  addStep(parsed.casters,   10, 10, "Casters/Glides", parsed.casters,   tables.asiaCasters, tables.casters);
+  addStep(parsed.armpad,    11, 11, "Armpad Finish",  parsed.armpad,    tables.asiaArmpad,  tables.armpad);
+  addStep(parsed.intercept, 12, 12, "Intercept",      parsed.intercept, COSM_ASIA_INCREMENTAL.intercept, COSM_US_PRICING.intercept);
+
+  return { steps, total, errors };
+}
+
+function cosmRender() {
+  const input = document.getElementById('cosmInput').value;
+  const errEl = document.getElementById('cosmAlertError');
+  const errMsg = document.getElementById('cosmAlertErrorMsg');
+  const banner = document.getElementById('cosmSeriesBanner');
+  const resultBlock = document.getElementById('cosmResultBlock');
+
+  errEl.classList.remove('show');
+
+  if (!input.trim()) {
+    errMsg.textContent = '請輸入 Cosm 料號。';
+    errEl.classList.add('show');
+    banner.classList.remove('show');
+    resultBlock.classList.remove('show');
+    return;
+  }
+
+  const parsed = _cosmParse(input);
+  if (!parsed.ok) {
+    errMsg.textContent = parsed.reason;
+    errEl.classList.add('show');
+    banner.classList.remove('show');
+    resultBlock.classList.remove('show');
+    return;
+  }
+
+  // Series banner
+  banner.classList.add('show');
+  const tag = document.getElementById('cosmSeriesTag');
+  tag.textContent = parsed.seriesKey;
+  tag.className = `series-tag series-${parsed.seriesKey}`;
+  document.getElementById('cosmSeriesDesc').textContent = parsed.seriesInfo.name;
+
+  resultBlock.classList.add('show');
+
+  const usResult = _cosmCalcUS({ ...parsed, tilt: "S" });
+  const asiaResult = _cosmCalcAsia(parsed);
+
+  // US badge
+  const usBadge = document.getElementById('cosmUsBadge');
+  document.getElementById('cosmUsPrice').textContent = (usResult.total !== null && usResult.total !== undefined) ? `$${usResult.total.toLocaleString()}` : "—";
+  document.getElementById('cosmUsTag').classList.toggle('show', parsed.tilt === "S");
+  usBadge.classList.toggle('active', parsed.tilt === "S");
+
+  // Asia badge
+  const asiaBadge = document.getElementById('cosmAsiaBadge');
+  const asiaPriceEl = document.getElementById('cosmAsiaPrice');
+  if (asiaResult.unavailable) {
+    asiaPriceEl.textContent = "亞洲線無供應";
+    asiaPriceEl.classList.add('na');
+    asiaBadge.classList.add('unavailable');
+    asiaBadge.classList.remove('active');
+    document.getElementById('cosmAsiaTag').classList.remove('show');
+  } else {
+    asiaPriceEl.textContent = (asiaResult.total !== null) ? `$${asiaResult.total.toLocaleString()}` : "—";
+    asiaPriceEl.classList.remove('na');
+    asiaBadge.classList.remove('unavailable');
+    document.getElementById('cosmAsiaTag').classList.toggle('show', parsed.tilt === "Y");
+    asiaBadge.classList.toggle('active', parsed.tilt === "Y");
+  }
+
+  // Parse cards
+  const parseArea = document.getElementById('cosmParseArea');
+  let html = '';
+  html += _cosmRenderCard('🇺🇸 美國線解析（PB_CSM 累加法）', 'us', usResult);
+
+  if (asiaResult.unavailable) {
+    html += `<div class="parse-card">
+      <div class="parse-header unavailable"><span>🌏 亞洲線解析</span></div>
+      <div class="unavailable-card">
+        <strong>${asiaResult.reason}</strong><br><br>
+        Cosm Stool（FLC7/FLC8）目前 80-day Asia Seating 與 45-day Asia Seating 章節中均無對應料號，<br>
+        如客戶需求請走美國線進口流程（交期較長、需報關）。
+      </div>
+    </div>`;
+  } else {
+    html += _cosmRenderCard('🌏 亞洲線解析（80-day Asia 查表法）', 'asia', asiaResult);
+  }
+
+  parseArea.innerHTML = html;
+}
+
+function _cosmRenderCard(title, lineClass, result) {
+  const headerClass = lineClass === 'asia' ? 'parse-header asia-h' : 'parse-header us-h';
+  const totalClass = lineClass === 'asia' ? 'total-row asia-total' : 'total-row us-total';
+
+  let errorHtml = '';
+  if (result.errors.length > 0) {
+    errorHtml = `<div style="background:var(--yellow-light);border-bottom:1px solid #fae5a0;padding:12px 16px;font-size:12px;color:var(--yellow);">
+      <strong>⚠️ 偵測到 ${result.errors.length} 個問題：</strong><br>${result.errors.map(e => `• ${e}`).join('<br>')}
+    </div>`;
+  }
+
+  let rowsHtml = result.steps.map(s => {
+    let priceCell;
+    if (s.price === null) {
+      priceCell = `<td class="step-price price-zero">—</td>`;
+    } else if (s.isBase) {
+      priceCell = `<td class="step-price price-base">$${s.price.toLocaleString()}</td>`;
+    } else if (s.price === 0) {
+      priceCell = `<td class="step-price price-zero">$0</td>`;
+    } else if (s.price < 0) {
+      priceCell = `<td class="step-price price-minus">-$${Math.abs(s.price).toLocaleString()}</td>`;
+    } else {
+      priceCell = `<td class="step-price price-add">+$${s.price.toLocaleString()}</td>`;
+    }
+
+    const rowClass = s.isBase ? 'base-row' : '';
+    return `<tr class="${rowClass}">
+      <td class="step-num">${s.step}</td>
+      <td><span class="step-code">${s.code}</span></td>
+      <td class="step-desc">${s.desc}<small>${s.category}</small></td>
+      ${priceCell}
+    </tr>`;
+  }).join('');
+
+  const totalHtml = result.total !== null ? `
+    <tr class="${totalClass}">
+      <td colspan="3" class="label">${lineClass === 'asia' ? '🌏 亞洲線' : '🇺🇸 美國線'} 單張定價合計</td>
+      <td class="amount">$${result.total.toLocaleString()}</td>
+    </tr>` : '';
+
+  return `<div class="parse-card">
+    <div class="${headerClass}">
+      <span>${title}</span>
+      <span style="font-size:11px; opacity:0.85;">${result.steps.length} 個 Step</span>
+    </div>
+    ${errorHtml}
+    <table class="steps-table">
+      <thead>
+        <tr><th style="width:72px">Step</th><th style="width:90px">代碼</th><th>說明</th><th style="width:120px">加價 (USD)</th></tr>
+      </thead>
+      <tbody>${rowsHtml}${totalHtml}</tbody>
+    </table>
+  </div>`;
+}
+
+function cosmClear() {
+  document.getElementById('cosmInput').value = '';
+  document.getElementById('cosmAlertError').classList.remove('show');
+  document.getElementById('cosmSeriesBanner').classList.remove('show');
+  document.getElementById('cosmResultBlock').classList.remove('show');
+}
+
+function cosmSetExample(value) {
+  document.getElementById('cosmInput').value = value;
+  cosmRender();
+}
+</script>
+<script>
+// =========================================================
+// EAMES — DATA
+// =========================================================
+const EAMES_SHELLS = {
+  'OU':  {label:'胡桃木（OU / Walnut）',                    code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:0,    fixed:false},
+  'WHN': {label:'白橡木（WHN / White Oak）',                 code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:0,    fixed:false},
+  '5Q':  {label:'油胡桃（5Q / Oiled Walnut）',               code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:979,  fixed:false},
+  '9N':  {label:'桑托斯玫瑰木（9N / Santos Palisander）',    code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:1014, fixed:false},
+  '5D':  {label:'油桑托斯玫瑰木（5D / Oiled Santos）',       code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:1977, fixed:false},
+  '1E':  {label:'黑梣木（ES67071E，固定殼面）',              code:'ES67071E N',  surcharge:null, fixed:true,  tallCode:'ES67071E NT', classicBase:9273, tallBase:9602},
+  '1R':  {label:'白梣木（ES67071R，固定殼面）',              code:'ES67071R E',  surcharge:null, fixed:true,  tallCode:'ES67071R ET', classicBase:9273, tallBase:9602},
+};
+const EAMES_BASE_CLASSIC = {'OU':8462,'WHN':8462,'5Q':9441,'9N':9476,'5D':10439,'1E':9273,'1R':9273};
+const EAMES_BASE_TALL    = {'OU':8828,'WHN':8828,'5Q':9807,'9N':9842,'5D':10805,'1E':9602,'1R':9602};
+const EAMES_TALL_ADDER=366, EAMES_CAT9=734, EAMES_CAT11=1072;
+const EAMES_CAT9_LEATHERS=[
+  {code:'2115',name:'Alpine',      desc:'淺米白 / 奶油',  color:'#f5ecd7'},
+  {code:'2109',name:'Black',       desc:'黑色',           color:'#1a1a1a'},
+  {code:'2120',name:'Cranberry',   desc:'深紅 / 蔓越莓',  color:'#7a1a2a'},
+  {code:'2119',name:'Dark Carbon', desc:'深炭灰',         color:'#2e2e2e'},
+  {code:'2118',name:'Dark Mineral',desc:'煙灰藍綠',       color:'#4a5a5c'},
+  {code:'2121',name:'Deep Sea',    desc:'深海藍綠',       color:'#1c3a42'},
+  {code:'2111',name:'Graphite',    desc:'橄欖炭綠',       color:'#3d3f30'},
+  {code:'2116',name:'Haze',        desc:'淺沙米',         color:'#d4c4a8'},
+  {code:'2101',name:'Ivory',       desc:'象牙白',         color:'#f0e8d0'},
+  {code:'2112',name:'Khaki',       desc:'卡其駝',         color:'#b09060'},
+  {code:'2113',name:'Rattan',      desc:'藤黃棕',         color:'#9a7040'},
+  {code:'2117',name:'Sable Grey',  desc:'灰藍岩',         color:'#7a8090'},
+  {code:'2110',name:'Smoke',       desc:'橄欖灰',         color:'#6a6a5a'},
+  {code:'2114',name:'Truffle',     desc:'深巧克力棕',     color:'#3a2a1a'},
+];
+const EAMES_CAT11_LEATHERS=[
+  {code:'1NX13',name:'Balsa',     desc:'淺杏膚',   color:'#e8c9a0'},
+  {code:'1NX15',name:'Bricolage', desc:'銅棕',     color:'#8a5a3a'},
+  {code:'1NX03',name:'Essence',   desc:'沙漠灰綠', color:'#8a9078'},
+  {code:'1NX05',name:'Gambit',    desc:'深炭灰',   color:'#303030'},
+  {code:'1NX20',name:'Java',      desc:'深咖啡',   color:'#2e1a0e'},
+  {code:'1NX17',name:'Ledge',     desc:'中棕',     color:'#7a5040'},
+  {code:'1NX01',name:'Lotus',     desc:'米白奶油', color:'#ede0c8'},
+  {code:'1NX21',name:'Lute',      desc:'淺玫瑰米', color:'#ddbaa0'},
+  {code:'1NX19',name:'Mantra',    desc:'深酒紅棕', color:'#4a1a18'},
+  {code:'1NX06',name:'Obsidian',  desc:'近黑炭',   color:'#161616'},
+  {code:'1NX07',name:'Sail',      desc:'深海軍藍', color:'#1a2a42'},
+  {code:'1NX04',name:'Script',    desc:'中性暖灰', color:'#8c8070'},
+  {code:'1NX14',name:'Shore',     desc:'焦糖沙棕', color:'#b07840'},
+  {code:'1NX02',name:'Timbre',    desc:'米白亞麻', color:'#ddd0b8'},
+  {code:'1NX09',name:'Vine',      desc:'深橄欖綠', color:'#2a3820'},
+  {code:'1NX10',name:'Yarrow',    desc:'芥末金',   color:'#c8a030'},
+];
+let eamesSelectedLeather9=null, eamesSelectedLeather11=null, eamesLastTotal=0;
+
+function eamesBuildSwatches(containerId,leathers,selVar,nameId){
+  const c=document.getElementById(containerId); c.innerHTML='';
+  leathers.forEach(l=>{
+    const s=document.createElement('div'); s.className='swatch';
+    s.style.background=l.color; s.title=`${l.code} ${l.name} — ${l.desc}`; s.dataset.code=l.code;
+    s.onclick=()=>{
+      c.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active')); s.classList.add('active');
+      if(selVar==='9'){eamesSelectedLeather9=l; document.getElementById(nameId).textContent=`${l.code} ${l.name} (${l.desc})`;}
+      if(selVar==='11'){eamesSelectedLeather11=l; document.getElementById(nameId).textContent=`${l.code} ${l.name} (${l.desc})`;}
+    };
+    c.appendChild(s);
+  });
+}
+
+function eamesOnShellChange(){
+  const v=document.getElementById('eames_shell').value;
+  const s=EAMES_SHELLS[v]; const disp=document.getElementById('eamesPrice_shell');
+  if(s.fixed){disp.textContent='固定殼面型號';disp.classList.remove('has-price');}
+  else if(s.surcharge>0){disp.textContent=`+$${s.surcharge.toLocaleString()}`;disp.classList.add('has-price');}
+  else{disp.textContent='+$0';disp.classList.remove('has-price');}
+}
+function eamesOnSizeChange(){
+  const v=document.getElementById('eames_size').value; const disp=document.getElementById('eamesPrice_size');
+  if(v==='tall'){disp.textContent='+$366';disp.classList.add('has-price');}
+  else{disp.textContent='+$0';disp.classList.remove('has-price');}
+}
+function eamesOnCatChange(){
+  const v=document.getElementById('eames_cat').value; const disp=document.getElementById('eamesPrice_cat');
+  document.getElementById('eamesLeather9').style.display=v==='cat9'?'block':'none';
+  document.getElementById('eamesLeather11').style.display=v==='cat11'?'block':'none';
+  if(v==='cat9'){disp.textContent='+$734';disp.classList.add('has-price');}
+  else if(v==='cat11'){disp.textContent='+$1,072';disp.classList.add('has-price');}
+  else{disp.textContent='+$0';disp.classList.remove('has-price');}
+}
+
+function eamesCalcAll(){
+  const shellKey=document.getElementById('eames_shell').value;
+  const size=document.getElementById('eames_size').value;
+  const cat=document.getElementById('eames_cat').value;
+  const qty=parseInt(document.getElementById('eames_qty').value)||1;
+  const shell=EAMES_SHELLS[shellKey]; const warnings=[];
+  if(cat==='cat9'&&!eamesSelectedLeather9) warnings.push('您選擇了 Category 9 皮革，但尚未指定皮革顏色，建議選擇色碼後再報價。');
+  if(cat==='cat11'&&!eamesSelectedLeather11) warnings.push('您選擇了 Category 11 皮革，但尚未指定皮革顏色，建議選擇色碼後再報價。');
+  const wEl=document.getElementById('eamesAlertWarn'); const wMsg=document.getElementById('eamesAlertWarnMsg');
+  if(warnings.length>0){wMsg.innerHTML=warnings.map(w=>`• ${w}`).join('<br>');wEl.classList.add('show');}
+  else wEl.classList.remove('show');
+
+  const rows=[]; let total=0;
+  const isTall = size==='tall';
+  const base = isTall ? EAMES_BASE_TALL[shellKey] : EAMES_BASE_CLASSIC[shellKey];
+  const displayCode = isTall ? (shell.tallCode || shell.code) : shell.code;
+  rows.push({step:'Step 1–2',code:displayCode,desc:'基礎定價（套組：椅＋腳凳）',sub:`${shell.label} · ${isTall?'Tall':'Classic'} 尺寸（Tall 加價已內含）`,price:base,isBase:true}); total+=base;
+  if(!shell.fixed&&shell.surcharge>0){rows.push({step:'Step 3',code:shellKey,desc:'殼面加價 Shell Finish',sub:shell.label,price:shell.surcharge}); total+=shell.surcharge;}
+  if(cat==='cat9'){
+    const lName=eamesSelectedLeather9?`${eamesSelectedLeather9.code} ${eamesSelectedLeather9.name}（${eamesSelectedLeather9.desc}）`:'— 顏色待定 —';
+    rows.push({step:'Step 6',code:eamesSelectedLeather9?.code||'Cat.9',desc:'Category 9 皮革加價',sub:lName,price:EAMES_CAT9}); total+=EAMES_CAT9;
+  } else if(cat==='cat11'){
+    const lName=eamesSelectedLeather11?`${eamesSelectedLeather11.code} ${eamesSelectedLeather11.name}（${eamesSelectedLeather11.desc}）`:'— 顏色待定 —';
+    rows.push({step:'Step 6',code:eamesSelectedLeather11?.code||'Cat.11',desc:'Category 11 Prone 皮革加價',sub:lName,price:EAMES_CAT11}); total+=EAMES_CAT11;
+  }
+
+  let fullModel = displayCode;
+  if(!shell.fixed) fullModel += ' ' + shellKey;
+  if(cat==='cat9' && eamesSelectedLeather9) fullModel += ' ' + eamesSelectedLeather9.code;
+  else if(cat==='cat9') fullModel += ' \u2014';
+  if(cat==='cat11' && eamesSelectedLeather11) fullModel += ' ' + eamesSelectedLeather11.code;
+  else if(cat==='cat11') fullModel += ' \u2014';
+
+  document.getElementById('eamesBadgeModel').textContent=fullModel;
+  document.getElementById('eamesFullModel').textContent=fullModel;
+  document.getElementById('eamesTotalPrice').textContent=total.toLocaleString();
+  document.getElementById('eamesUsBadgePrice').textContent='$'+total.toLocaleString();
+
+  const tbody=document.getElementById('eamesStepsBody');
+  tbody.innerHTML=rows.map(r=>{
+    const pc=r.isBase?'price-base':r.price===0?'price-zero':'price-add';
+    const ps=r.isBase?`$${r.price.toLocaleString()}`:r.price===0?'+$0':`+$${r.price.toLocaleString()}`;
+    const rc=r.isBase?'base-row':'';
+    return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub}</small></td><td class="step-price ${pc}">${ps}</td></tr>`;
+  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">🇺🇸 美國線單套定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>`;
+
+  eamesLastTotal=total;
+  document.getElementById('eamesResultBlock').classList.add('show');
+  const multiBar=document.getElementById('eamesMultiBar');
+  if(qty>1){
+    document.getElementById('eamesMultiQtyLabel').textContent=qty;
+    document.getElementById('eamesMultiPrice').textContent=(total*qty).toLocaleString();
+    multiBar.style.display='flex';
+  } else multiBar.style.display='none';
+  document.getElementById('eamesQtyLabel').textContent=qty;
+  eamesRecalcTWD();
+  document.getElementById('eamesQtyTotal').textContent=qty>1?`× ${qty} 套 ＝ USD ${(total*qty).toLocaleString()}`:'';
+}
+
+function eamesRecalc(){ if(document.getElementById('eamesResultBlock').classList.contains('show')) eamesCalcAll(); }
+function eamesRecalcTWD(){
+  const rate=parseFloat(document.getElementById('eamesTwdRate').value)||40;
+  const qty=parseInt(document.getElementById('eames_qty').value)||1;
+  document.getElementById('eamesRateDisplay').textContent=rate.toFixed(1);
+  if(eamesLastTotal>0){
+    const twd=Math.ceil(eamesLastTotal*qty*rate/500)*500;
+    document.getElementById('eamesTwdPrice').textContent=twd.toLocaleString();
+  }
+}
+
+// =========================================================
+// SAYL — DATA (亞洲線 AS1YA only — Standard height 固定為 2)
+// =========================================================
+// Base price lookup: key = mainCode (AS1YA + height + tilt) + armCombo (arms + depth)
+// 來源：80-day Asia Seating PDF p.36
+// 固定條件：height = 2 (Standard)、fabric = Band 2，故只保留 AS1YA22 與 AS1YA23 兩主碼
+const SAYL_AS1YA_BASE = {
+  // AS1YA22 (Standard + Tilt limiter)
+  'AS1YA22NF':808, 'AS1YA22NA':873, 'AS1YA22PF':873, 'AS1YA22PA':943,
+  'AS1YA22HF':943, 'AS1YA22HA':1008, 'AS1YA22AF':1050, 'AS1YA22AA':1117,
+  // AS1YA23 (Standard + Tilt+forward)
+  'AS1YA23NF':861, 'AS1YA23NA':929, 'AS1YA23PF':929, 'AS1YA23PA':996,
+  'AS1YA23HF':996, 'AS1YA23HA':1063, 'AS1YA23AF':1105, 'AS1YA23AA':1172
+};
+
+// 框架/Y-Tower 顏色（8 色）— 標準 + MicrobeCare
+const SAYL_FRAME = [
+  { code:'BK',  name:'Black',                              desc:'黑框 + 黑 Y-Tower（標準）',            price:0,   color:'#1a1917', border:false },
+  { code:'65',  name:'Fog + Studio White',                 desc:'霧灰底座 + 白 Y-Tower',               price:45,  color:'#e8e6e1', border:true  },
+  { code:'68',  name:'Polished + Black',                   desc:'拋光鋁底座 + 黑 Y-Tower',             price:95,  color:'linear-gradient(135deg, #c8c4bc 0%, #c8c4bc 50%, #1a1917 50%, #1a1917 100%)', border:false },
+  { code:'67',  name:'Polished + Studio White',            desc:'拋光鋁底座 + 白 Y-Tower',             price:145, color:'linear-gradient(135deg, #c8c4bc 0%, #c8c4bc 50%, #f5f4f2 50%, #f5f4f2 100%)', border:true },
+  { code:'MBL', name:'Black + MicrobeCare',                desc:'黑框 + MicrobeCare™ 抗菌塗層',         price:70,  color:'#2a2826', border:false },
+  { code:'M65', name:'Fog/White + MicrobeCare',            desc:'霧灰/白 + MicrobeCare™',              price:115, color:'#d8d4cc', border:true  },
+  { code:'M68', name:'Polished/Black + MicrobeCare',       desc:'拋光鋁/黑 + MicrobeCare™',            price:165, color:'linear-gradient(135deg, #b8b4ac 0%, #b8b4ac 50%, #2a2826 50%, #2a2826 100%)', border:false },
+  { code:'M67', name:'Polished/White + MicrobeCare',       desc:'拋光鋁/白 + MicrobeCare™',            price:215, color:'linear-gradient(135deg, #b8b4ac 0%, #b8b4ac 50%, #ebe9e3 50%, #ebe9e3 100%)', border:true }
+];
+
+// 網背 Suspension 色（7 色）
+const SAYL_SUSPENSION = [
+  { code:'BK', name:'Black',       desc:'黑色網背（標準）', price:0,  color:'#1a1917', border:false },
+  { code:'63', name:'Fog',         desc:'霧灰網背',         price:15, color:'#a8a59f', border:false },
+  { code:'SG', name:'Slate Grey',  desc:'石板灰網背',       price:15, color:'#6b6860', border:false },
+  { code:'98', name:'Studio White',desc:'工作室白網背',     price:41, color:'#f0efe9', border:true  },
+  { code:'RO', name:'Red',         desc:'紅色網背',         price:41, color:'#c0392b', border:false },
+  { code:'3M', name:'Berry Blue',  desc:'莓藍網背',         price:41, color:'#1F4E78', border:false },
+  { code:'79', name:'Green Apple', desc:'青蘋果綠網背',     price:41, color:'#7a9a3a', border:false }
+];
+
+// 扶手墊 Armpad 色（3 色，全部 +$0）
+const SAYL_ARMPAD = [
+  { code:'BK', name:'Black',     desc:'黑色扶手墊（標準）', price:0, color:'#1a1917', border:false },
+  { code:'63', name:'Fog',       desc:'霧灰扶手墊',         price:0, color:'#a8a59f', border:false },
+  { code:'SG', name:'Slate Grey',desc:'石板灰扶手墊',       price:0, color:'#6b6860', border:false }
+];
+
+// 當前選擇
+let saylSelectedFrame = SAYL_FRAME[0];
+let saylSelectedSusp  = SAYL_SUSPENSION[0];
+let saylSelectedArmpad= SAYL_ARMPAD[0];
+
+// =========================================================
+// SAYL — Build colour swatches
+// =========================================================
+function saylBuildSwatches(containerId, items, group, nameId) {
+  const c = document.getElementById(containerId);
+  if (!c) return;
+  c.innerHTML = '';
+  items.forEach((it, idx) => {
+    const s = document.createElement('div');
+    s.className = 'swatch' + (idx === 0 ? ' active' : '');
+    s.style.background = it.color;
+    if (it.border) s.style.borderColor = '#c8c4bc';
+    s.title = `${it.code} — ${it.name}（${it.desc}）${it.price>0?' +$'+it.price:''}`;
+    s.dataset.code = it.code;
+    s.onclick = () => {
+      c.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      const labelText = `${it.code} — ${it.name}（${it.desc}）${it.price>0?' +$'+it.price:''}`;
+      document.getElementById(nameId).textContent = labelText;
+      if (group === 'frame')   saylSelectedFrame  = it;
+      if (group === 'susp')    saylSelectedSusp   = it;
+      if (group === 'armpad')  saylSelectedArmpad = it;
+      saylRecalc();
+    };
+    c.appendChild(s);
+  });
+}
+
+// 程式化選色（給 parser 用）
+function saylSetSwatchByCode(group, code) {
+  const items = group === 'frame' ? SAYL_FRAME : (group === 'susp' ? SAYL_SUSPENSION : SAYL_ARMPAD);
+  const containerId = group === 'frame' ? 'saylFrameSwatches' : (group === 'susp' ? 'saylSuspSwatches' : 'saylArmpadSwatches');
+  const nameId = group === 'frame' ? 'saylFrameName' : (group === 'susp' ? 'saylSuspName' : 'saylArmpadName');
+  const found = items.find(x => x.code === code);
+  if (!found) return false;
+  if (group === 'frame')  saylSelectedFrame  = found;
+  if (group === 'susp')   saylSelectedSusp   = found;
+  if (group === 'armpad') saylSelectedArmpad = found;
+  const c = document.getElementById(containerId);
+  if (c) {
+    c.querySelectorAll('.swatch').forEach(x => {
+      x.classList.toggle('active', x.dataset.code === code);
+    });
+  }
+  const nameEl = document.getElementById(nameId);
+  if (nameEl) nameEl.textContent = `${found.code} — ${found.name}（${found.desc}）${found.price>0?' +$'+found.price:''}`;
+  return true;
+}
+
+// =========================================================
+// SAYL — Parser (貼料號 → 解析 → 套到 UI → 計價)
+// =========================================================
+let saylParsedFabricCode = '';  // 記錄 parser 抓到的布料色號（顯示用）
+
+function saylParseModel() {
+  _saylClearAlert();
+  saylParsedFabricCode = '';
+  const raw = document.getElementById('saylModelInput').value;
+  if (!raw.trim()) { _saylShowError('請輸入 Sayl AS1YA 料號。'); return; }
+
+  // 1) 主碼必須 AS1YA22 或 AS1YA23 + arms(NPHA) + depth(FA)
+  const clean = raw.replace(/\s+/g, ' ').trim().toUpperCase();
+  const parts = clean.split(' ');
+  const main = parts[0];
+
+  const m = main.match(/^AS1YA(2)([23])([NPHA])([FA])$/);
+  if (!m) {
+    _saylShowError(`主碼格式錯誤。應為 AS1YA2{2|3}{N|P|H|A}{F|A}（高度固定為 2 = Standard），例如 AS1YA22AF。輸入值：「${main}」`);
+    return;
+  }
+  const tilt = m[2], arms = m[3], depth = m[4];
+
+  // 2) 後段欄位順序：back / frame / caster / susp / armpad / fabric
+  const KNOWN_BACK    = ['N2','AJ'];
+  const KNOWN_FRAME   = ['BK','65','68','67','MBL','M65','M68','M67'];
+  const KNOWN_CASTER  = ['BB','C7'];
+  const KNOWN_SUSP    = ['BK','63','SG','98','RO','3M','79'];
+  const KNOWN_ARMPAD  = ['BK','63','SG'];
+  // 4 碼以上純數字色號 = Band 2 布料色號（亞洲線實際下單格式，不影響價格）
+  const FABRIC_NUM_REGEX = /^\d{4,5}$/;
+  // 也支援手冊上的字母+#格式
+  const FABRIC_BAND2_REGEX = /^(1HA|59S|73|78|91|CAE|ZMA)#?$/;
+
+  const remaining = parts.slice(1);
+
+  // 解析後段（以位置為主，但對重複代碼採「第幾次出現」判斷）
+  let back = 'N2', frame = 'BK', caster = 'BB', susp = 'BK', armpad = 'BK';
+  let fabric = '';  // 抓到實際布料色號就填
+  let cursor = 0;
+
+  // back
+  if (remaining[cursor] && KNOWN_BACK.includes(remaining[cursor])) {
+    back = remaining[cursor]; cursor++;
+  }
+  // frame
+  if (remaining[cursor] && KNOWN_FRAME.includes(remaining[cursor])) {
+    frame = remaining[cursor]; cursor++;
+  }
+  // caster
+  if (remaining[cursor] && KNOWN_CASTER.includes(remaining[cursor])) {
+    caster = remaining[cursor]; cursor++;
+  }
+  // susp
+  if (remaining[cursor] && KNOWN_SUSP.includes(remaining[cursor])) {
+    susp = remaining[cursor]; cursor++;
+  }
+  // armpad（只有有扶手時才需）
+  if (arms !== 'N' && remaining[cursor] && KNOWN_ARMPAD.includes(remaining[cursor])) {
+    armpad = remaining[cursor]; cursor++;
+  }
+  // fabric — 接受 4-5 碼純數字（亞洲線色號）或手冊字母#格式
+  while (cursor < remaining.length) {
+    const tok = remaining[cursor];
+    if (FABRIC_NUM_REGEX.test(tok) || FABRIC_BAND2_REGEX.test(tok)) {
+      fabric = tok; cursor++; break;
+    }
+    cursor++;
+  }
+  saylParsedFabricCode = fabric;
+
+  // 3) 把解析結果套到 UI
+  document.getElementById('sayl_height').value = '2';
+  document.getElementById('sayl_tilt').value   = tilt;
+  document.getElementById('sayl_arms').value   = arms;
+  document.getElementById('sayl_depth').value  = depth;
+  document.getElementById('sayl_back').value   = back;
+  document.getElementById('sayl_caster').value = caster;
+  saylSetSwatchByCode('frame',  frame);
+  saylSetSwatchByCode('susp',   susp);
+  if (arms !== 'N') saylSetSwatchByCode('armpad', armpad);
+
+  // 4) 計算（含完整型號）
+  saylRecalc();
+}
+
+function saylClearAll() {
+  document.getElementById('saylModelInput').value = '';
+  saylParsedFabricCode = '';
+  _saylClearAlert();
+}
+
+function saylSetExample(modelStr) {
+  document.getElementById('saylModelInput').value = modelStr;
+  saylParseModel();
+}
+
+function _saylShowError(msg) {
+  const el = document.getElementById('saylAlertError');
+  const m = document.getElementById('saylAlertErrorMsg');
+  if (el && m) { m.innerHTML = msg; el.classList.add('show'); }
+}
+function _saylClearAlert() {
+  const el = document.getElementById('saylAlertError');
+  if (el) el.classList.remove('show');
+}
+
+// =========================================================
+// SAYL — Calculate
+// =========================================================
+function saylRecalc() {
+  const height = '2';  // 固定
+  const tilt   = document.getElementById('sayl_tilt').value;
+  const arms   = document.getElementById('sayl_arms').value;
+  const depth  = document.getElementById('sayl_depth').value;
+  const back   = document.getElementById('sayl_back').value;
+  const caster = document.getElementById('sayl_caster').value;
+
+  const mainCode = `AS1YA${height}${tilt}`;
+  const armCombo = arms + depth;
+  const lookupKey = mainCode + armCombo;
+  const basePrice = SAYL_AS1YA_BASE[lookupKey];
+
+  const rows = [];
+  let total = 0;
+
+  // Step 1-7 base
+  if (basePrice === undefined) {
+    rows.push({step:'查表', code:lookupKey, desc:'⚠️ 查表失敗，請檢查組合', sub:'Step 1-7 合併計價', price:null});
+    document.getElementById('saylAsiaPrice').textContent = '—';
+    document.getElementById('saylTotalPrice').textContent = '—';
+  } else {
+    const tiltDesc   = {'2':'Tilt limiter','3':'Tilt limiter + forward tilt'}[tilt];
+    const armsDesc   = {'N':'No arms','P':'Fixed arms','H':'Height-adj arms','A':'Fully adj arms'}[arms];
+    const depthDesc  = {'F':'Fixed seat','A':'Adjustable seat'}[depth];
+    rows.push({
+      step:'查表', code:lookupKey,
+      desc:`Asia 基礎價（含 Type+Assembly+Back style+Height+Tilt+Arms+Seat depth）`,
+      sub:`Standard height · ${tiltDesc} · ${armsDesc} · ${depthDesc}`,
+      price:basePrice, isBase:true
+    });
+    total = basePrice;
+  }
+
+  // Step 8: Back support
+  if (back === 'AJ') {
+    rows.push({step:'Step 8', code:'AJ', desc:'Adjustable lumbar 可調腰椎', sub:'背部支撐', price:57});
+    total += 57;
+  } else {
+    rows.push({step:'Step 8', code:'N2', desc:'No additional support 標準（含 PostureFit）', sub:'背部支撐', price:0});
+  }
+
+  // Step 9: Frame finish
+  rows.push({
+    step:'Step 9', code:saylSelectedFrame.code,
+    desc:`${saylSelectedFrame.name} ${saylSelectedFrame.desc}`,
+    sub:'框架 / Y-Tower 顏色',
+    price:saylSelectedFrame.price
+  });
+  total += saylSelectedFrame.price;
+
+  // Step 10: Castors
+  if (caster === 'C7') {
+    rows.push({step:'Step 10', code:'C7', desc:'65mm castors hard floor/carpet 硬地或地毯', sub:'輪子', price:51});
+    total += 51;
+  } else {
+    rows.push({step:'Step 10', code:'BB', desc:'65mm castors carpet 地毯專用（標準）', sub:'輪子', price:0});
+  }
+
+  // Step 11: Suspension finish
+  rows.push({
+    step:'Step 11', code:saylSelectedSusp.code,
+    desc:`${saylSelectedSusp.name} ${saylSelectedSusp.desc}`,
+    sub:'網背顏色 Suspension',
+    price:saylSelectedSusp.price
+  });
+  total += saylSelectedSusp.price;
+
+  // Step 12: Armpad finish (only if arms != N)
+  if (arms !== 'N') {
+    rows.push({
+      step:'Step 12', code:saylSelectedArmpad.code,
+      desc:`${saylSelectedArmpad.name} ${saylSelectedArmpad.desc}`,
+      sub:'扶手墊顏色 Armpad',
+      price:saylSelectedArmpad.price
+    });
+    total += saylSelectedArmpad.price;
+  }
+
+  // Step 13: Fabric (固定 Band 2)
+  const fabricDisplay = saylParsedFabricCode
+    ? `${saylParsedFabricCode}（亞洲線色號 · Band 2）`
+    : 'Band 2 標準布料（Medley/Sprint/Zen/Crossover/Cosmo/Era）';
+  rows.push({step:'Step 13', code:saylParsedFabricCode || 'Band 2', desc:fabricDisplay, sub:'座墊布料 Band 2（不加價）', price:0});
+
+  // 組完整型號
+  const armpadStr = arms !== 'N' ? ' ' + saylSelectedArmpad.code : '';
+  const fabricStr = ' ' + (saylParsedFabricCode || '1HA#');
+  const fullModel = `${mainCode}${arms}${depth} ${back} ${saylSelectedFrame.code} ${caster} ${saylSelectedSusp.code}${armpadStr}${fabricStr}`;
+
+  document.getElementById('saylBadgeModel').textContent = fullModel;
+  document.getElementById('saylAsiaPrice').textContent = (basePrice !== undefined) ? '$' + total.toLocaleString() : '—';
+  document.getElementById('saylTotalPrice').textContent = (basePrice !== undefined) ? total.toLocaleString() : '—';
+
+  // 隱藏/顯示扶手墊區塊（無扶手時）
+  const armpadSec = document.getElementById('saylArmpadSection');
+  if (arms === 'N') armpadSec.style.opacity = '0.4';
+  else armpadSec.style.opacity = '1';
+
+  // 渲染解析表
+  const tbody = document.getElementById('saylStepsBody');
+  tbody.innerHTML = rows.map(r => {
+    let priceCell;
+    if (r.price === null)       priceCell = `<td class="step-price price-zero">—</td>`;
+    else if (r.isBase)          priceCell = `<td class="step-price price-base">$${r.price.toLocaleString()}</td>`;
+    else if (r.price === 0)     priceCell = `<td class="step-price price-zero">+$0</td>`;
+    else                        priceCell = `<td class="step-price price-add">+$${r.price.toLocaleString()}</td>`;
+    const rc = r.isBase ? 'base-row' : '';
+    return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub||''}</small></td>${priceCell}</tr>`;
+  }).join('') + (basePrice !== undefined ? `<tr class="total-row asia-total"><td colspan="3" class="label">🌏 亞洲線單張定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>` : '');
+
+  // 渲染完整功能說明
+  saylRenderFeatureDetails({tilt, arms, depth, back, caster});
+}
+
+// =========================================================
+// SAYL — 渲染完整功能說明（給客戶看的功能清單）
+// =========================================================
+function saylRenderFeatureDetails(cfg) {
+  const body = document.getElementById('saylFeatureBody');
+  if (!body) return;
+
+  const tiltDesc = cfg.tilt === '3'
+    ? 'Tilt limiter + forward tilt — 可限制傾仰範圍，並選擇 5° 前傾座面（適合長時間打字、往前伏案作業）'
+    : 'Tilt limiter — 可限制傾仰範圍（將椅背鎖定於直立位置）';
+
+  const armsDesc = ({
+    'N': 'No arms — 無扶手（最簡潔、節省空間）',
+    'P': 'Fixed arms — 固定扶手（高度位置不可調）',
+    'H': 'Height-adjustable arms — 高度可調扶手（垂直 100mm 範圍）',
+    'A': 'Fully adjustable arms — 全功能可調（垂直 100mm + 水平 40mm + 前後 50mm + 內外旋轉 ±10°）'
+  })[cfg.arms];
+
+  const depthDesc = cfg.depth === 'A'
+    ? 'Adjustable seat depth — 座深可調 390-440mm（依使用者腿長微調）'
+    : 'Fixed seat depth — 固定座深';
+
+  const backDesc = cfg.back === 'AJ'
+    ? 'Adjustable lumbar — 額外加裝可調腰椎墊，垂直高度可調 100mm（除標準 PostureFit 之外的進階支撐）'
+    : 'No additional support — 標準 PostureFit® 骨盆支撐（直接內建於網背強度結構，提供下背低點針對性支撐）';
+
+  const casterDesc = cfg.caster === 'C7'
+    ? 'C7 — 65mm 軟質聚氨酯腳輪，適用硬地板與地毯（混合地材辦公空間）'
+    : 'BB — 65mm 硬質尼龍腳輪，地毯專用（純地毯空間）';
+
+  const frameDesc = `${saylSelectedFrame.code} — ${saylSelectedFrame.name}（${saylSelectedFrame.desc}）`;
+  const suspDesc = `${saylSelectedSusp.code} — ${saylSelectedSusp.name}（${saylSelectedSusp.desc}）`;
+  const armpadDesc = cfg.arms === 'N'
+    ? '（無扶手，本項不適用）'
+    : `${saylSelectedArmpad.code} — ${saylSelectedArmpad.name}（${saylSelectedArmpad.desc}）`;
+
+  body.innerHTML = `
+    <h4>🪑 椅體核心結構</h4>
+    <div class="feat-row"><span class="feat-code">3D Suspension</span><span class="feat-desc">無框架式 3D Intelligent® 懸浮網背 — 隨身體動作自由變形、提供針對性支撐、有效散熱</span></div>
+    <div class="feat-row"><span class="feat-code">Y-Tower®</span><span class="feat-desc">Y 形脊柱結構支撐網背中軸，搭配 ArcSpan® 底部錨定點</span></div>
+    <div class="feat-row"><span class="feat-code">PostureFit®</span><span class="feat-desc">內建於網背的被動式骨盆支撐，協助維持健康坐姿、改善下背舒適度</span></div>
+    <div class="feat-row"><span class="feat-code">Synchronous Tilt</span><span class="feat-desc">同步傾仰機構，身體前傾後仰時以腳踝/膝蓋/髖關節三軸自然樞紐</span></div>
+    <div class="feat-row"><span class="feat-code">5-star Base</span><span class="feat-desc">五星底座（標配）</span></div>
+
+    <h4>⚙️ 本配置選項</h4>
+    <div class="feat-row"><span class="feat-code">高度範圍</span><span class="feat-desc">Standard height range — 座面高度可調 406-521mm（適合 95% 一般成人身高）</span></div>
+    <div class="feat-row"><span class="feat-code">傾仰</span><span class="feat-desc">${tiltDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">扶手</span><span class="feat-desc">${armsDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">座深</span><span class="feat-desc">${depthDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">背部支撐</span><span class="feat-desc">${backDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">輪子</span><span class="feat-desc">${casterDesc}</span></div>
+
+    <h4>🎨 顏色配置</h4>
+    <div class="feat-row"><span class="feat-code">框架/底座</span><span class="feat-desc">${frameDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">網背</span><span class="feat-desc">${suspDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">扶手墊</span><span class="feat-desc">${armpadDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">座墊布料</span><span class="feat-desc">${saylParsedFabricCode || 'Band 2 標準'}（亞洲線 Band 2 不加價）</span></div>
+
+    <h4>📦 出貨與保固</h4>
+    <div class="feat-row"><span class="feat-code">出貨形式</span><span class="feat-desc">Fully assembled — 整裝出貨（AS1YA = Work Chair / 整裝；KD 自組裝為 AS2YA）</span></div>
+    <div class="feat-row"><span class="feat-code">承重</span><span class="feat-desc">158 kg 以下（Tested and warranted for persons 158kg and under）</span></div>
+    <div class="feat-row"><span class="feat-code">扶手拆卸</span><span class="feat-desc">扶手可現場徒手拆卸，無需工具</span></div>
+    <div class="feat-row"><span class="feat-code">產線</span><span class="feat-desc">80-day HM Asia Seating（亞洲線、新加坡出貨）</span></div>
+  `;
+}
+
+// =========================================================
+// MIRRA 2 — DATA & LOGIC（亞洲線 80-day Asia 查表法）
+// =========================================================
+
+// 🎨 背套色（6 色）— 影響：背框 / 腰帶 / 蝴蝶布料 / 座墊
+// 椅架色獨立，這份只決定「背相關」+「座墊」的顏色
+const MIRRA_BACK_COLORS = [
+  { code:'G1',  name:'Graphite',     desc:'石墨黑（標準）', surcharge:0,
+    color:'#3a3935', border:false,
+    butterflyCode:'8M17', airweaveCode:'1A703' },
+  { code:'ZM',  name:'Alpine',       desc:'雪白',           surcharge:63,
+    color:'#ebe9e3', border:true,
+    butterflyCode:'8M10', airweaveCode:'1A701' },
+  { code:'CRV', name:'Cordovan',     desc:'酒紅棕',         surcharge:63,
+    color:'#5a2a2a', border:false,
+    butterflyCode:'8M27', airweaveCode:'1A709' },
+  { code:'CRE', name:'Ochre',        desc:'赭黃',           surcharge:63,
+    color:'#a07820', border:false,
+    butterflyCode:'8M28', airweaveCode:'1A710' },
+  { code:'TRA', name:'Ultra-marine', desc:'深寶藍',         surcharge:63,
+    color:'#1c3a6c', border:false,
+    butterflyCode:'8M29', airweaveCode:'1A711' },
+  { code:'OLF', name:'Olive',        desc:'橄欖綠',         surcharge:63,
+    color:'#5a6028', border:false,
+    butterflyCode:'8M30', airweaveCode:'1A712' }
+];
+
+// 🪑 椅架套色（2 色）— 影響：椅架 / 扶手墊 / 底盤（除非另選 L7P 銀色）
+const MIRRA_FRAME_COLORS = [
+  { code:'G1', name:'Graphite', desc:'石墨黑（標準）', surcharge:0,
+    color:'#3a3935', border:false, armpadCode:'BK', armpadName:'Black 黑色' },
+  { code:'ZM', name:'Alpine',   desc:'雪白',           surcharge:75,
+    color:'#ebe9e3', border:true,  armpadCode:'ZM', armpadName:'Alpine 雪白' }
+];
+
+// Base 表（USD）— 9 種「Tilt × Arms」組合 × 4 種「Seat × Back」組合
+const MIRRA_BASE = {
+  '1NN': {AF:1487, AP:1354, FF:1384, FP:1251},
+  '1PW': {AF:1672, AP:1539, FF:1568, FP:1435},
+  '1AW': {AF:1781, AP:1648, FF:1678, FP:1545},
+  '2NN': {AF:1550, AP:1417, FF:1446, FP:1313},
+  '2PW': {AF:1734, AP:1601, FF:1631, FP:1498},
+  '2AW': {AF:1844, AP:1711, FF:1740, FP:1607},
+  '3NN': {AF:1606, AP:1473, FF:1503, FP:1369},
+  '3PW': {AF:1791, AP:1657, FF:1687, FP:1554},
+  '3AW': {AF:1900, AP:1767, FF:1797, FP:1664}
+};
+
+// Step 增量定價
+const MIRRA_BACK_FINISH_INCR = 63;   // 背框 ZM/CRV/CRE/TRA/OLF (G1=0)
+const MIRRA_FRAME_INCR_ZM = 75;      // 椅架 ZM 加價
+const MIRRA_BASE_FINISH_L7P = 93;    // Silver alloy
+const MIRRA_SUPPORT_INCR = { 'SZS':0, 'N2':45, 'AJ':75 };
+const MIRRA_CASTER_INCR = { 'BB':0, 'GF':25, 'C7':50, 'C9':50, 'SC8':50 };
+
+// 當前選擇 — 兩組獨立
+let mirraSelectedBack = MIRRA_BACK_COLORS[0];   // 背套色
+let mirraSelectedFrame = MIRRA_FRAME_COLORS[0]; // 椅架套色
+
+// =========================================================
+// MIRRA — Build colour swatches（兩組獨立色塊）
+// =========================================================
+
+// 🎨 背套色塊（6 色）
+function mirraBuildBackColorSwatches() {
+  const c = document.getElementById('mirraBackColorSwatches');
+  if (!c) return;
+  c.innerHTML = '';
+  MIRRA_BACK_COLORS.forEach((it, idx) => {
+    const s = document.createElement('div');
+    s.className = 'swatch' + (idx === 0 ? ' active' : '');
+    s.style.background = it.color;
+    if (it.border) s.style.borderColor = '#c8c4bc';
+    const surcharge = it.surcharge > 0 ? ' +$' + it.surcharge : '';
+    s.title = `${it.code} — ${it.name}（${it.desc}）${surcharge}`;
+    s.dataset.code = it.code;
+    s.onclick = () => {
+      c.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      mirraSelectedBack = it;
+      const lbl = document.getElementById('mirraBackColorName');
+      if (lbl) lbl.textContent = `${it.code} — ${it.name} ${it.desc}${surcharge}`;
+      mirraRecalc();
+    };
+    c.appendChild(s);
+  });
+}
+
+// 🪑 椅架套色塊（2 色）
+function mirraBuildFrameColorSwatches() {
+  const c = document.getElementById('mirraFrameColorSwatches');
+  if (!c) return;
+  c.innerHTML = '';
+  MIRRA_FRAME_COLORS.forEach((it, idx) => {
+    const s = document.createElement('div');
+    s.className = 'swatch' + (idx === 0 ? ' active' : '');
+    s.style.background = it.color;
+    if (it.border) s.style.borderColor = '#c8c4bc';
+    const surcharge = it.surcharge > 0 ? ' +$' + it.surcharge : '';
+    s.title = `${it.code} — ${it.name}（${it.desc}）${surcharge}（扶手墊→${it.armpadName}）`;
+    s.dataset.code = it.code;
+    s.onclick = () => {
+      c.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      mirraSelectedFrame = it;
+      const lbl = document.getElementById('mirraFrameColorName');
+      if (lbl) lbl.textContent = `${it.code} — ${it.name} ${it.desc}${surcharge}（扶手墊→${it.armpadName}）`;
+      mirraRecalc();
+    };
+    c.appendChild(s);
+  });
+}
+
+// 程式化選色（給 parser 用）
+function mirraSetBackColorByCode(code) {
+  const found = MIRRA_BACK_COLORS.find(x => x.code === code);
+  if (!found) return false;
+  mirraSelectedBack = found;
+  const c = document.getElementById('mirraBackColorSwatches');
+  if (c) c.querySelectorAll('.swatch').forEach(x => x.classList.toggle('active', x.dataset.code === code));
+  const lbl = document.getElementById('mirraBackColorName');
+  if (lbl) {
+    const sur = found.surcharge > 0 ? ' +$' + found.surcharge : '';
+    lbl.textContent = `${found.code} — ${found.name} ${found.desc}${sur}`;
+  }
+  return true;
+}
+
+function mirraSetFrameColorByCode(code) {
+  const found = MIRRA_FRAME_COLORS.find(x => x.code === code);
+  if (!found) return false;
+  mirraSelectedFrame = found;
+  const c = document.getElementById('mirraFrameColorSwatches');
+  if (c) c.querySelectorAll('.swatch').forEach(x => x.classList.toggle('active', x.dataset.code === code));
+  const lbl = document.getElementById('mirraFrameColorName');
+  if (lbl) {
+    const sur = found.surcharge > 0 ? ' +$' + found.surcharge : '';
+    lbl.textContent = `${found.code} — ${found.name} ${found.desc}${sur}（扶手墊→${found.armpadName}）`;
+  }
+  return true;
+}
+
+// =========================================================
+// MIRRA — UI 響應
+// =========================================================
+function mirraOnArmsChange() {
+  // 扶手墊跟椅架同色，不再有獨立區塊；無扶手只是計算結果不顯示扶手墊
+  mirraRecalc();
+}
+
+function mirraOnBackChange() {
+  // TriFlex 背 (P) 時提示蝴蝶布料色不適用
+  mirraUpdateHints();
+  mirraRecalc();
+}
+
+function mirraOnSupportChange() {
+  mirraUpdateHints();
+  mirraRecalc();
+}
+
+function mirraUpdateHints() {
+  const back = document.getElementById('mirra_back').value;
+  const support = document.getElementById('mirra_support').value;
+  const hintsBox = document.getElementById('mirraHints');
+  const hintsText = document.getElementById('mirraHintsText');
+  const hints = [];
+  if (back === 'P') {
+    hints.push('您選了 <b>TriFlex 聚合物背</b>：成套色仍會套用「背框色 + 椅架 + 座墊 + 腰帶」，但蝴蝶背布料色（Step 14）不適用。');
+  }
+  if (support === 'SZS' || support === 'N2') {
+    hints.push('您選了 <b>' + (support === 'SZS' ? 'Basic 基本' : 'Non-adjustable 固定') + ' 腰靠</b>：腰帶顏色（Step 13）不適用，計價時不計入。');
+  }
+  if (hints.length > 0) {
+    hintsText.innerHTML = hints.map(h => '• ' + h).join('<br>');
+    hintsBox.style.display = 'block';
+  } else {
+    hintsBox.style.display = 'none';
+  }
+}
+
+// =========================================================
+// MIRRA — 計算
+// =========================================================
+function mirraCalc() {
+  const asm     = document.getElementById('mirra_assembly').value;
+  const height  = document.getElementById('mirra_height').value;
+  const tilt    = document.getElementById('mirra_tilt').value;
+  const arms    = document.getElementById('mirra_arms').value;
+  const seat    = document.getElementById('mirra_seat').value;   // A or F
+  const back    = document.getElementById('mirra_back').value;   // F or P
+  const support = document.getElementById('mirra_support').value;
+  const baseSel = document.getElementById('mirra_base').value;
+  const caster  = document.getElementById('mirra_caster').value;
+
+  // 兩組獨立色
+  const backColor = mirraSelectedBack;     // 背套色
+  const frameColor = mirraSelectedFrame;   // 椅架套色
+
+  // === 1. 主碼組合 ===
+  const armpadFlag = (arms === 'N') ? 'N' : 'W';   // N→N, P/A→W
+  const seatBack = seat + back;                    // AF / AP / FF / FP
+  const mainCode = `MRFN${asm}${height}${tilt}${arms}${armpadFlag}${seatBack}`;
+
+  // === 2. Base 查表 ===
+  const baseKey = `${tilt}${arms}${armpadFlag}`;
+  const baseRow = MIRRA_BASE[baseKey];
+  const basePrice = baseRow ? baseRow[seatBack] : 0;
+
+  const rows = [];
+  rows.push({ step:'Step 2-8', code:mainCode, desc:'Base（組裝/高度/傾仰/扶手/座深/背材一次定價）', price:basePrice, isBase:true });
+
+  let total = basePrice;
+
+  // === 3. Step 9 Back finish（背框色，跟著背套色） ===
+  if (backColor.code !== 'G1') {
+    rows.push({ step:'Step 9', code:backColor.code, desc:`背框 Back finish: ${backColor.name}`, price:MIRRA_BACK_FINISH_INCR });
+    total += MIRRA_BACK_FINISH_INCR;
+  } else {
+    rows.push({ step:'Step 9', code:'G1', desc:'背框 Back finish: Graphite（標準）', price:0 });
+  }
+
+  // === 4. Step 10 Frame finish（椅架色，獨立選） ===
+  if (frameColor.code === 'ZM') {
+    rows.push({ step:'Step 10', code:'ZM', desc:'椅架 Frame finish: Alpine 雪白', price:MIRRA_FRAME_INCR_ZM });
+    total += MIRRA_FRAME_INCR_ZM;
+  } else {
+    rows.push({ step:'Step 10', code:'G1', desc:'椅架 Frame finish: Graphite（標準）', price:0 });
+  }
+
+  // === 5. Step 11 Armpad finish（扶手墊跟著椅架色） ===
+  const armpadCode = frameColor.armpadCode;
+  const armpadName = frameColor.armpadName;
+  if (arms !== 'N') {
+    rows.push({ step:'Step 11', code:armpadCode, desc:`扶手墊 Armpad finish: ${armpadName}（跟隨椅架色）`, price:0 });
+  } else {
+    rows.push({ step:'Step 11', code:'NA', desc:'扶手墊 — 無扶手不適用', price:0 });
+  }
+
+  // === 6. Step 12 Base finish（底盤色，預設跟椅架，可選 L7P） ===
+  let baseFinishCode;
+  let baseFinishDesc;
+  let baseFinishPrice = 0;
+  if (baseSel === 'L7P') {
+    baseFinishCode = 'L7P';
+    baseFinishDesc = '底盤 Base finish: L7P Silver Alloy 銀色';
+    baseFinishPrice = MIRRA_BASE_FINISH_L7P;
+  } else {
+    baseFinishCode = frameColor.code;
+    baseFinishDesc = `底盤 Base finish: ${frameColor.code === 'ZM' ? 'Alpine 雪白' : 'Graphite 石墨'}（跟隨椅架色）`;
+  }
+  rows.push({ step:'Step 12', code:baseFinishCode, desc:baseFinishDesc, price:baseFinishPrice });
+  total += baseFinishPrice;
+
+  // === 7. Step 13 Back support（腰靠類型） ===
+  const supportLabel = { 'SZS':'Basic 基本', 'N2':'Non-adjustable 固定', 'AJ':'Adjustable 可調' }[support];
+  const supportPrice = MIRRA_SUPPORT_INCR[support];
+  rows.push({ step:'Step 13', code:support, desc:`腰靠 Back support: ${supportLabel}`, price:supportPrice });
+  total += supportPrice;
+
+  // === 8. Step 14 Lumbar strap finish（腰帶色，跟著背套色，僅 AJ 適用） ===
+  if (support === 'AJ') {
+    rows.push({ step:'Step 14', code:backColor.code, desc:`腰帶 Lumbar strap: ${backColor.name}（跟隨背套色）`, price:0 });
+  } else {
+    rows.push({ step:'Step 14', code:'NA', desc:'腰帶 — 非可調腰靠不適用', price:0 });
+  }
+
+  // === 9. Step 15 Butterfly back colour（蝴蝶布料色，跟著背套色，僅 F 適用） ===
+  if (back === 'F') {
+    rows.push({ step:'Step 15', code:backColor.butterflyCode, desc:`蝴蝶布料 Butterfly back: ${backColor.name} (${backColor.butterflyCode})`, price:0 });
+  } else {
+    rows.push({ step:'Step 15', code:'NA', desc:'蝴蝶布料 — TriFlex 背不適用', price:0 });
+  }
+
+  // === 10. Step 16 AireWeave 2 seat（座墊色，跟著背套色） ===
+  rows.push({ step:'Step 16', code:backColor.airweaveCode, desc:`座墊 AireWeave 2: ${backColor.name} (${backColor.airweaveCode})`, price:0 });
+
+  // === 11. Step 17 Castors / glides ===
+  const casterLabel = {
+    'BB':'BB 65mm 地毯專用',
+    'GF':'GF 65mm Glide 滑墊',
+    'C7':'C7 65mm 硬地/地毯',
+    'C9':'C9 65mm 煞車',
+    'SC8':'SC8 65mm 靜音'
+  }[caster];
+  const casterPrice = MIRRA_CASTER_INCR[caster];
+  rows.push({ step:'Step 17', code:caster, desc:`輪子 Castors: ${casterLabel}`, price:casterPrice });
+  total += casterPrice;
+
+  // === 12. 完整型號（含尾段） ===
+  const lumbarStrap = (support === 'AJ') ? backColor.code : 'NA';
+  const butterflyColor = (back === 'F') ? backColor.butterflyCode : 'NA';
+  const armpadDisplay = (arms !== 'N') ? armpadCode : 'NA';
+  const fullCode = `${mainCode} ${backColor.code} ${frameColor.code} ${armpadDisplay} ${baseFinishCode} ${support} ${lumbarStrap} ${butterflyColor} ${backColor.airweaveCode} ${caster}`;
+
+  return { mainCode, fullCode, basePrice, total, rows };
+}
+
+function mirraRecalc() {
+  const r = mirraCalc();
+
+  // 結果區
+  document.getElementById('mirraAsiaPrice').textContent = '$' + r.total.toLocaleString();
+  document.getElementById('mirraTotalPrice').textContent = r.total.toLocaleString();
+  document.getElementById('mirraBadgeModel').textContent = r.fullCode;
+
+  // Steps 表格
+  const tbody = document.getElementById('mirraStepsBody');
+  tbody.innerHTML = r.rows.map(row => {
+    const priceCell = row.isBase
+      ? `<b>$${row.price.toLocaleString()}</b>`
+      : (row.price > 0 ? `+$${row.price.toLocaleString()}` : '<span style="color:#999">+$0</span>');
+    return `<tr>
+      <td><b>${row.step}</b></td>
+      <td><code>${row.code}</code></td>
+      <td>${row.desc}</td>
+      <td style="text-align:right;">${priceCell}</td>
+    </tr>`;
+  }).join('');
+
+  // 功能說明
+  mirraRenderFeatureList();
+
+  // 隱藏 alerts
+  document.getElementById('mirraAlertError').classList.remove('show');
+}
+
+function mirraRenderFeatureList() {
+  const asm     = document.getElementById('mirra_assembly').value;
+  const height  = document.getElementById('mirra_height').value;
+  const tilt    = document.getElementById('mirra_tilt').value;
+  const arms    = document.getElementById('mirra_arms').value;
+  const seat    = document.getElementById('mirra_seat').value;
+  const back    = document.getElementById('mirra_back').value;
+  const support = document.getElementById('mirra_support').value;
+  const caster  = document.getElementById('mirra_caster').value;
+  const backColor   = mirraSelectedBack;
+  const frameColor  = mirraSelectedFrame;
+
+  const asmDesc = asm === '1' ? 'Fully assembled 整裝出貨' : 'Knock-down 自組裝（無工具需求）';
+  const heightDesc = height === '2' ? 'Standard 406-521mm（適合 95% 一般成人身高）' : 'High 425-565mm（適合身材較高者）';
+  const tiltDesc = { '1':'Standard tilt 標準傾仰', '2':'Tilt limiter 傾仰限制', '3':'Tilt limiter + Forward tilt 5° 傾仰限制＋前傾' }[tilt];
+  const armsDesc = { 'N':'No arms 無扶手', 'P':'Fixed arms 固定扶手', 'A':'Fully adjustable 4D 全方位可調扶手（垂直 140mm／水平 29mm／前後 50mm／內外旋 20°）' }[arms];
+  const seatDesc = seat === 'A' ? 'FlexFront 可調座深 413-457mm' : 'Fixed 固定座深 413mm';
+  const backDesc = back === 'F' ? 'Butterfly™ 蝴蝶背（聚合物殼+布料融合，最高舒適度）' : 'TriFlex™ 100% 聚合物背（無布料、易清潔，符合嚴格清潔規範）';
+  const supportDesc = { 'SZS':'Basic back support 基本支撐（含 PostureFit® 骶部支撐）', 'N2':'Non-adjustable 固定腰靠（含 PostureFit）', 'AJ':'Adjustable lumbar 可調腰靠（高度 114mm／深度 25mm 範圍）' }[support];
+  const casterDesc = {
+    'BB':'BB 65mm 硬輪／地毯專用',
+    'GF':'GF 65mm Glide 滑墊／硬地或地毯',
+    'C7':'C7 65mm 軟輪／硬地或地毯',
+    'C9':'C9 65mm 煞車輪／硬地或地毯',
+    'SC8':'SC8 65mm 靜音輪／硬地或地毯（quiet roll technology）'
+  }[caster];
+
+  document.getElementById('mirraFeatureBody').innerHTML = `
+    <h4>🪑 標配功能（不可選）</h4>
+    <div class="feat-row"><span class="feat-code">PostureFit®</span><span class="feat-desc">被動骶部支撐（所有腰靠選項皆含）</span></div>
+    <div class="feat-row"><span class="feat-code">Harmonic™ 2</span><span class="feat-desc">和諧 2 傾仰機構（leaf-spring 設計，承重 90-159kg 平衡感佳）</span></div>
+    <div class="feat-row"><span class="feat-code">AireWeave™ 2</span><span class="feat-desc">透氣懸浮座墊（溫度中性、不蓄熱）</span></div>
+    <div class="feat-row"><span class="feat-code">Loop Spine</span><span class="feat-desc">迴圈脊椎設計（提供側向扭轉彈性，伸展更自然）</span></div>
+    <div class="feat-row"><span class="feat-code">5-star Base</span><span class="feat-desc">五星底座（標配）</span></div>
+
+    <h4>⚙️ 本配置選項</h4>
+    <div class="feat-row"><span class="feat-code">出貨形式</span><span class="feat-desc">${asmDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">高度範圍</span><span class="feat-desc">${heightDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">傾仰</span><span class="feat-desc">${tiltDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">扶手</span><span class="feat-desc">${armsDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">座深</span><span class="feat-desc">${seatDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">背材</span><span class="feat-desc">${backDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">腰靠</span><span class="feat-desc">${supportDesc}</span></div>
+    <div class="feat-row"><span class="feat-code">輪子</span><span class="feat-desc">${casterDesc}</span></div>
+
+    <h4>🎨 顏色配置</h4>
+    <div class="feat-row"><span class="feat-code">背套色</span><span class="feat-desc">${backColor.code} ${backColor.name} ${backColor.desc}（背框 + 腰帶${back==='F'?' + 蝴蝶布料':''} + 座墊 同色）</span></div>
+    <div class="feat-row"><span class="feat-code">椅架套色</span><span class="feat-desc">${frameColor.code} ${frameColor.name} ${frameColor.desc}（椅架 + 扶手墊 + 底盤 同色）</span></div>
+    ${arms !== 'N' ? `<div class="feat-row"><span class="feat-code">扶手墊</span><span class="feat-desc">${frameColor.armpadCode} ${frameColor.armpadName}（自動配對椅架色）</span></div>` : ''}
+
+    <h4>📦 出貨與保固</h4>
+    <div class="feat-row"><span class="feat-code">承重</span><span class="feat-desc">350 lbs / 159 kg 以下</span></div>
+    <div class="feat-row"><span class="feat-code">適用人群</span><span class="feat-desc">5th–95th Percentile（涵蓋一般人體尺寸 5%-95%）</span></div>
+    <div class="feat-row"><span class="feat-code">產線</span><span class="feat-desc">80-day HM Asia Seating（亞洲線、新加坡出貨）</span></div>
+  `;
+}
+
+// =========================================================
+// MIRRA — Parser（貼料號 → 解析 → 套到 UI → 計價）
+// B 案：每次解析前先把所有欄位重置為「最低配預設」，避免殘留污染
+// =========================================================
+function mirraParseModel() {
+  const errEl = document.getElementById('mirraAlertError');
+  const errMsg = document.getElementById('mirraAlertErrorMsg');
+  const warnEl = document.getElementById('mirraAlertWarn');
+  const warnMsg = document.getElementById('mirraAlertWarnMsg');
+  errEl.classList.remove('show');
+  warnEl.classList.remove('show');
+
+  const raw = document.getElementById('mirraModelInput').value;
+  if (!raw.trim()) {
+    errMsg.textContent = '請輸入 Mirra 2 MRFN 料號。';
+    errEl.classList.add('show');
+    return;
+  }
+
+  // ===== B 案核心：先把所有「料號可指定」的欄位重置為最低配預設 =====
+  // 這樣料號內沒寫的欄位 = 最低配，不會被上次的 UI 設定污染
+  document.getElementById('mirra_support').value = 'SZS';   // 基本腰靠
+  document.getElementById('mirra_base').value = 'MATCH';    // 跟隨框架色
+  document.getElementById('mirra_caster').value = 'BB';     // 地毯專用 (最便宜)
+  // 兩組顏色重置為 G1
+  mirraSetBackColorByCode('G1');
+  mirraSetFrameColorByCode('G1');
+
+  const clean = raw.replace(/\s+/g, ' ').trim().toUpperCase();
+  const parts = clean.split(' ');
+  let main = parts[0];
+  const warnings = [];
+
+  // === 容錯 1: 修正 typo MRF → MRFN ===
+  if (main.startsWith('MRF') && !main.startsWith('MRFN')) {
+    const fixed = 'MRFN' + main.slice(3);
+    warnings.push(`偵測到主碼缺少 N：已自動修正 <code>${main}</code> → <code>${fixed}</code>`);
+    main = fixed;
+  }
+
+  if (!main.startsWith('MRFN')) {
+    errMsg.innerHTML = '主碼必須以 <code>MRFN</code> 開頭。範例：<code>MRFN122AWAF</code> 或 <code>MRFN2AWAF</code>（亞洲線預設整裝+Standard）';
+    errEl.classList.add('show');
+    return;
+  }
+
+  // === 解析主碼（多種寫法都吃） ===
+  // 完整 11 碼：MRFN122AWAF (asm+H+T+arms+armpad+seat+back)
+  // 簡化 9 碼：MRFN122AW (省略 seat+back，預設 AF)
+  // 超簡 8 碼：MRFN2AWAF (省略 asm+H 直接 Tilt 開始) — 但 12 寫死所以 asm=1 H=2
+  // 超簡 6 碼：MRFN2AW (只有 Tilt+arms+armpad)
+
+  let asm, height, tilt, arms, armpadFlag, seat, back;
+  let m;
+
+  // 試 11 碼：MRFN[1-2][2-3][1-3][NPA][NW][AF/AP/FF/FP]
+  m = main.match(/^MRFN([12])([23])([123])([NPA])([NW])(AF|AP|FF|FP)$/);
+  if (m) {
+    [, asm, height, tilt, arms, armpadFlag] = m;
+    seat = m[6][0]; back = m[6][1];
+  } else {
+    // 試 9 碼：MRFN[1-2][2-3][1-3][NPA][NW]
+    m = main.match(/^MRFN([12])([23])([123])([NPA])([NW])$/);
+    if (m) {
+      [, asm, height, tilt, arms, armpadFlag] = m;
+      seat = 'A'; back = 'F'; // 預設可調座深+蝴蝶背
+      warnings.push('主碼省略了座深+背材尾段，自動補預設 <code>AF</code>（可調座深+蝴蝶背）');
+    } else {
+      // 試 8 碼：MRFN[1-3][NPA][NW][AF/AP/FF/FP] — 省略 asm+H
+      m = main.match(/^MRFN([123])([NPA])([NW])(AF|AP|FF|FP)$/);
+      if (m) {
+        asm = '1'; height = '2'; // 寫死亞洲線標準
+        [, tilt, arms, armpadFlag] = m;
+        seat = m[4][0]; back = m[4][1];
+        warnings.push('主碼省略了組裝+高度前綴，自動補 <code>12</code>（Fully assembled + Standard height）');
+      } else {
+        // 試 6 碼：MRFN[1-3][NPA][NW]
+        m = main.match(/^MRFN([123])([NPA])([NW])$/);
+        if (m) {
+          asm = '1'; height = '2';
+          [, tilt, arms, armpadFlag] = m;
+          seat = 'A'; back = 'F';
+          warnings.push('主碼省略了組裝+高度前綴及座深+背材尾段，自動補 <code>12...AF</code>');
+        } else {
+          errMsg.innerHTML = `主碼格式錯誤：<code>${main}</code><br>
+            支援格式（任一）：<br>
+            • <code>MRFN122AWAF</code>（完整 11 碼）<br>
+            • <code>MRFN122AW</code>（9 碼，自動補座深+背材）<br>
+            • <code>MRFN2AWAF</code>（8 碼，自動補組裝+高度）<br>
+            • <code>MRFN2AW</code>（6 碼最精簡，全自動補）<br>
+            其中 [1-3]=Tilt、[N/P/A]=Arms、[N/W]=Armpad、[AF/AP/FF/FP]=Seat+Back`;
+          errEl.classList.add('show');
+          return;
+        }
+      }
+    }
+  }
+
+  // === 強制亞洲線只能 asm=1, height=2 ===
+  if (asm !== '1') {
+    warnings.push(`亞洲線只能訂 Fully assembled (asm=1)，自動修正：${asm}→1`);
+    asm = '1';
+  }
+  if (height !== '2') {
+    warnings.push(`亞洲線只能訂 Standard height (H=2)，自動修正：${height}→2`);
+    height = '2';
+  }
+
+  // === 校驗：arms-armpad 對應 ===
+  if (arms === 'N' && armpadFlag !== 'N') {
+    warnings.push('無扶手 (arms=N) 需配 armpad=N，已自動修正');
+    armpadFlag = 'N';
+  }
+  if (arms !== 'N' && armpadFlag !== 'W') {
+    warnings.push(`有扶手 (arms=${arms}) 需配 armpad=W，已自動修正`);
+    armpadFlag = 'W';
+  }
+
+  // === 套到 UI ===
+  document.getElementById('mirra_assembly').value = asm;
+  document.getElementById('mirra_height').value = height;
+  document.getElementById('mirra_tilt').value = tilt;
+  document.getElementById('mirra_arms').value = arms;
+  document.getElementById('mirra_seat').value = seat;
+  document.getElementById('mirra_back').value = back;
+
+  // === 解析尾段 ===
+  // tail[0]=背框色 / tail[1]=椅架色 / tail[2]=扶手墊 / tail[3]=底盤 / tail[4]=腰靠 / tail[5]=腰帶 / tail[6]=蝴蝶布料 / tail[7]=座墊 / tail[8]=輪子
+  const tail = parts.slice(1);
+
+  // tail[0] = 背套色（Back finish）
+  let backColorCode = 'G1';
+  if (tail[0] && ['G1','ZM','CRV','CRE','TRA','OLF'].includes(tail[0])) backColorCode = tail[0];
+  mirraSetBackColorByCode(backColorCode);
+
+  // tail[1] = 椅架套色（Frame finish）— 只能 G1 或 ZM
+  let frameColorCode = 'G1';
+  if (tail[1] && ['G1','ZM'].includes(tail[1])) frameColorCode = tail[1];
+  mirraSetFrameColorByCode(frameColorCode);
+
+  // tail[2] = 扶手墊色 — 自動跟椅架，但若料號有寫且跟椅架不符要警告
+  if (arms !== 'N' && tail[2] && ['BK','ZM'].includes(tail[2])) {
+    const expectedArmpad = (frameColorCode === 'ZM') ? 'ZM' : 'BK';
+    if (tail[2] !== expectedArmpad) {
+      warnings.push(`扶手墊色 <code>${tail[2]}</code> 跟椅架色 <code>${frameColorCode}</code> 不搭，已自動對應為 <code>${expectedArmpad}</code>`);
+    }
+  }
+
+  // tail[3] = 底盤色（L7P 或跟椅架）
+  let baseSel = 'MATCH';
+  if (tail[3] === 'L7P') baseSel = 'L7P';
+  document.getElementById('mirra_base').value = baseSel;
+
+  // tail[4] = 腰靠類型
+  if (tail[4] && ['SZS','N2','AJ'].includes(tail[4])) {
+    document.getElementById('mirra_support').value = tail[4];
+  }
+
+  // tail[8] = 輪子
+  if (tail[8] && ['BB','GF','C7','C9','SC8'].includes(tail[8])) {
+    document.getElementById('mirra_caster').value = tail[8];
+  }
+
+  // 顯示警告（如有）
+  if (warnings.length > 0) {
+    warnMsg.innerHTML = warnings.map(w => '• ' + w).join('<br>');
+    warnEl.classList.add('show');
+  }
+
+  // 觸發響應
+  mirraOnArmsChange();
+  mirraOnBackChange();
+  mirraOnSupportChange();
+  mirraRecalc();
+}
+
+function mirraSetExample(s) {
+  document.getElementById('mirraModelInput').value = s;
+  mirraParseModel();
+}
+
+function mirraClearAll() {
+  document.getElementById('mirraModelInput').value = '';
+  document.getElementById('mirraAlertError').classList.remove('show');
+  document.getElementById('mirraAlertWarn').classList.remove('show');
+  // 重置為預設（門市零售常用配置：G1 + 中階）
+  document.getElementById('mirra_assembly').value = '1';
+  document.getElementById('mirra_height').value = '2';
+  document.getElementById('mirra_tilt').value = '2';
+  document.getElementById('mirra_arms').value = 'A';
+  document.getElementById('mirra_seat').value = 'A';
+  document.getElementById('mirra_back').value = 'F';
+  document.getElementById('mirra_support').value = 'AJ';
+  document.getElementById('mirra_base').value = 'MATCH';
+  document.getElementById('mirra_caster').value = 'BB';
+  mirraSetBackColorByCode('G1');
+  mirraSetFrameColorByCode('G1');
+  mirraOnArmsChange();
+  mirraOnBackChange();
+  mirraOnSupportChange();
+  mirraRecalc();
+}
+
+// =========================================================
+// INIT
+// =========================================================
+aeronBuildManualUI();
+eamesBuildSwatches('eamesSwatches9', EAMES_CAT9_LEATHERS, '9', 'eamesLeather9Name');
+eamesBuildSwatches('eamesSwatches11', EAMES_CAT11_LEATHERS, '11', 'eamesLeather11Name');
+eamesOnShellChange(); eamesOnSizeChange(); eamesOnCatChange();
+
+// Build Sayl swatches
+saylBuildSwatches('saylFrameSwatches',  SAYL_FRAME,      'frame',  'saylFrameName');
+saylBuildSwatches('saylSuspSwatches',   SAYL_SUSPENSION, 'susp',   'saylSuspName');
+saylBuildSwatches('saylArmpadSwatches', SAYL_ARMPAD,     'armpad', 'saylArmpadName');
+
+// Build Mirra swatches
+mirraBuildBackColorSwatches();
+mirraBuildFrameColorSwatches();
+
+// Pre-fill Aeron demo
+document.getElementById('aeronModelInput').value='AER1B23DW ALP G1 G1 G1 BB BK 23103';
+aeronParseModel();
+
+// Pre-fill Cosm demo (silent — only shows when user opens that tab)
+document.getElementById('cosmInput').value='FLC162SFH G1 G1 G1 SC8 BK 84501';
+cosmRender();
+
+// Pre-calc Eames (silent)
+eamesCalcAll();
+
+// Pre-calc Sayl: 預貼一個範例料號示範
+document.getElementById('saylModelInput').value='AS1YA22HA N2 65 BB 98 63 9105';
+saylParseModel();
+
+// Pre-calc Mirra: 預貼一個範例料號示範
+document.getElementById('mirraModelInput').value='MRFN2AWAF G1 G1 BK G1 AJ G1 8M17 1A703 BB';
+mirraParseModel();
+
+// =========================================================
+// 操作回饋（v6.1）
+//  1) 下拉選取 → 該欄卡片邊框閃示 0.4s
+//  2) 計算/確認 → 對應結果區頂端跳出「已更新 · 時間」橫條，2.4s 後自動淡出
+// 單一維護點：用事件代理 + 函式包裹，不逐一改各面板 onchange
+// =========================================================
+(function(){
+  // ---- 1. 欄位選取閃示 ----
+  document.addEventListener('change', function(e){
+    const sel = e.target;
+    if (!sel || sel.tagName !== 'SELECT') return;
+    const card = sel.closest('.config-item, .eames-config-item, .sayl-config-item');
+    if (!card) return;
+    card.classList.remove('just-changed');
+    void card.offsetWidth;            // 強制重繪，連續點同欄也會再閃
+    card.classList.add('just-changed');
+    setTimeout(() => card.classList.remove('just-changed'), 420);
+  }, true);
+
+  // ---- 2. 計算後時間戳橫條 ----
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+  function nowStr(){
+    const d = new Date();
+    return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  }
+  function stamp(blockId){
+    const block = document.getElementById(blockId);
+    if (!block) return;
+    let bar = block.querySelector(':scope > .update-stamp');
+    if (!bar){
+      bar = document.createElement('div');
+      bar.className = 'update-stamp';
+      bar.innerHTML = '<span class="dot"></span><span class="msg">已更新　報價已重新計算</span><span class="ts"></span>';
+      block.insertBefore(bar, block.firstChild);
+    }
+    bar.querySelector('.ts').textContent = nowStr();
+    bar.classList.remove('show');
+    void bar.offsetWidth;
+    bar.classList.add('show');
+    clearTimeout(bar._t);
+    bar._t = setTimeout(() => bar.classList.remove('show'), 2400);
+  }
+
+  // 把「會產出報價結果」的進入點包一層，結束後蓋時間戳
+  // 對應：函式名 → 結果區塊 id
+  const HOOKS = {
+    aeronParseModel:    'aeronResultBlock',
+    aeronBuildFromSelects:'aeronResultBlockM',
+    cosmRender:         'cosmResultBlock',
+    saylParseModel:     'saylResultBlock',
+    saylRecalc:         'saylResultBlock',
+    mirraParseModel:    'mirraResultBlock',
+    mirraRecalc:        'mirraResultBlock',
+    eamesCalcAll:       'eamesResultBlock'
+  };
+  let _ready = false;   // 略過載入時的預跑，避免一開頁就閃時間戳
+  for (const fn in HOOKS){
+    if (typeof window[fn] !== 'function') continue;
+    const orig = window[fn];
+    const blockId = HOOKS[fn];
+    window[fn] = function(){
+      const r = orig.apply(this, arguments);
+      if (_ready){
+        const blk = document.getElementById(blockId);
+        if (blk && blk.classList.contains('show')) stamp(blockId);
+      }
+      return r;
+    };
+  }
+  setTimeout(() => { _ready = true; }, 0);
+})();
+
+</script>
+</body>
+</html>
