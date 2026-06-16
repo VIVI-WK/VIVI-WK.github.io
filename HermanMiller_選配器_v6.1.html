@@ -752,6 +752,7 @@
     <button class="product-tab-btn" onclick="switchProduct('sayl')">Sayl</button>
     <button class="product-tab-btn" onclick="switchProduct('mirra')">Mirra 2</button>
     <button class="product-tab-btn" onclick="switchProduct('eames')">Eames</button>
+    <button class="product-tab-btn" onclick="switchProduct('eamesstool')">Eames Stool</button>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -1525,6 +1526,162 @@
     </div></details>
 
   </div><!-- /product-eames -->
+
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL: EAMES TURNED STOOL
+  ══════════════════════════════════════════ -->
+  <style>
+  #product-eamesstool .shape-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:6px; }
+  @media (max-width:600px){ #product-eamesstool .shape-grid { grid-template-columns:1fr 1fr; } }
+  #product-eamesstool .shape-card {
+    border:1.5px solid var(--border); border-radius:8px; background:var(--surface);
+    padding:8px; cursor:pointer; text-align:center; transition:border-color .15s, box-shadow .15s;
+  }
+  #product-eamesstool .shape-card:hover { border-color:var(--border-strong); }
+  #product-eamesstool .shape-card.active { border-color:var(--accent); box-shadow:0 0 0 2px rgba(26,25,23,0.16); }
+  #product-eamesstool .shape-card img { width:100%; height:108px; object-fit:contain; background:var(--step-bg); border-radius:6px; }
+  #product-eamesstool .shape-card .sc-fallback {
+    display:none; height:108px; align-items:center; justify-content:center; text-align:center;
+    background:var(--step-bg); border-radius:6px; color:var(--text-muted); font-size:11px; line-height:1.4; padding:4px;
+  }
+  #product-eamesstool .shape-card .sc-name { font-size:13px; font-weight:700; margin-top:6px; color:var(--accent); font-family:'Consolas',monospace; }
+  #product-eamesstool .shape-card .sc-sub { font-size:10px; color:var(--text-muted); margin-top:1px; }
+  #product-eamesstool .shape-card .sc-tag { font-size:9px; color:var(--green); font-weight:700; margin-top:3px; letter-spacing:.05em; }
+  #product-eamesstool .img-credit { font-size:10px; color:var(--text-muted); margin:2px 0 0; }
+  #product-eamesstool .img-credit a { color:var(--us-line); }
+  </style>
+
+  <div id="product-eamesstool" class="product-panel">
+
+    <div class="config-wrapper">
+      <div class="section-title">Step 2 — 選擇造型 Shape（41 固定；四款同價，外型與重量不同）</div>
+      <div class="shape-grid">
+        <div class="shape-card" data-shape="A" onclick="selectStoolShape('A')">
+          <img src="https://images.hermanmiller.group/m/ea2e1db53cc94dea/W-HM_237_103701_walnut_f.png?w=420&auto=format" alt="Shape A" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape A</div>
+          <div class="sc-sub">411 · 15.5 lbs / 7.0 kg</div>
+          <div class="sc-tag">暢銷</div>
+        </div>
+        <div class="shape-card" data-shape="B" onclick="selectStoolShape('B')">
+          <img src="https://images.hermanmiller.group/m/6ff776eba44645ab/W-HM_OCC_41760.png?w=420&auto=format" alt="Shape B" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape B</div>
+          <div class="sc-sub">412 · 15.5 lbs / 7.0 kg</div>
+          <div class="sc-tag">暢銷</div>
+        </div>
+        <div class="shape-card" data-shape="C" onclick="selectStoolShape('C')">
+          <img src="https://images.hermanmiller.group/m/4018189dd45b5105/W-HM_OCC_41769.png?w=420&auto=format" alt="Shape C" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape C</div>
+          <div class="sc-sub">413 · 17.75 lbs / 8.1 kg</div>
+          <div class="sc-tag">暢銷</div>
+        </div>
+        <div class="shape-card" data-shape="D" onclick="selectStoolShape('D')">
+          <img src="https://images.hermanmiller.group/m/3725cc71fc832a4f/W-HM_OCC_41758.png?w=420&auto=format" alt="Shape D" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape D</div>
+          <div class="sc-sub">414 · 17.75 lbs / 8.1 kg</div>
+          <div class="sc-tag">新增造型</div>
+        </div>
+      </div>
+      <p class="img-credit">圖片來源：Herman Miller 官方圖庫（需連網載入）。完整外觀／實境圖／線圖見
+        <a href="https://store.hermanmiller.com/collection-eames-turned-stool?lang=en_US" target="_blank">官網產品頁</a>。</p>
+
+      <div class="section-title" style="margin-top:14px;">Step 3 — 木材飾面 Finish（EN／OU／WHN，決定價格）</div>
+      <div class="eames-config-item">
+        <div class="config-item-label">木材飾面 Finish <span class="config-item-step">Step 3</span></div>
+        <select class="eames-select" id="stool_finish" onchange="stoolOnChange()">
+          <option value="Walnut">胡桃木（OU / Walnut）— $2,010</option>
+          <option value="White Oak">白橡木（WHN / White Oak）— $1,932</option>
+          <option value="Ebony">黑檀（EN / Ebony）— $1,558</option>
+        </select>
+        <div class="config-price-display has-price" id="stoolFinishPrice">列價 $2,010</div>
+      </div>
+
+      <div class="qty-row">
+        <span class="qty-label">訂購數量（張）</span>
+        <input type="number" class="qty-input" id="stool_qty" value="1" min="1" max="999" onchange="stoolRecalc()">
+        <span class="qty-total" id="stoolQtyTotal"></span>
+      </div>
+
+      <button class="btn-calc" onclick="stoolCalc()">計算總價</button>
+    </div><!-- /config-wrapper -->
+
+    <div class="alert alert-warn" id="stoolAlertWarn"><div id="stoolAlertWarnMsg"></div></div>
+
+    <div class="result-block" id="stoolResultBlock">
+      <div class="line-badges">
+        <div class="line-badge us active">
+          <div class="line-name">美國線</div>
+          <div class="line-price" id="stoolUsBadgePrice">—</div>
+          <div class="line-method">單張 = 飾面列價（造型同價）</div>
+        </div>
+        <div class="line-badge asia pending">
+          <div class="line-name">亞洲線</div>
+          <div class="line-price na">需確認 / 走美國線進口</div>
+          <div class="line-method">Ancillary 不在 80-day Asia 手冊</div>
+        </div>
+      </div>
+
+      <div class="model-badge"><span class="model-badge-label">型號</span><span id="stoolBadgeModel">—</span></div>
+
+      <div class="parse-card">
+        <div class="parse-header us-h"><span>美國線解析</span></div>
+        <table class="steps-table">
+          <thead><tr>
+            <th style="width:72px">Step</th>
+            <th style="width:100px">代碼</th>
+            <th>說明</th>
+            <th style="width:130px">金額 (USD)</th>
+          </tr></thead>
+          <tbody id="stoolStepsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="total-bar">
+        <div>
+          <div class="total-label">美國線單張定價（USD）</div>
+          <div class="total-sub">造型同價，飾面決定價格</div>
+        </div>
+        <div class="total-price"><span class="total-currency">USD</span><span id="stoolTotalPrice">—</span></div>
+      </div>
+
+      <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:12px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);font-weight:600;white-space:nowrap;">完整型號</span>
+        <span id="stoolFullModel" style="font-family:'Consolas',monospace;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:0.05em;word-break:break-all;text-align:right;">—</span>
+      </div>
+
+      <div class="twd-bar">
+        <div>
+          <div class="twd-label">台幣換算（含 <span id="stoolQtyLabel">1</span> 張）</div>
+          <div class="twd-rate">匯率：1 USD ＝ <span id="stoolRateDisplay">40</span> TWD（500 進位）</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="twd-price">NT$ <span id="stoolTwdPrice">—</span></div>
+          <div class="twd-input-row" style="justify-content:flex-end; margin-top:6px;">
+            <span style="font-size:11px; color:var(--text-muted);">匯率</span>
+            <input type="number" class="twd-input" id="stoolTwdRate" value="40" step="0.5" min="1" onchange="stoolRecalcTWD()">
+            <span style="font-size:11px; color:var(--text-muted);">TWD</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /stoolResultBlock -->
+
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
+      ※ 型號 41 Eames® Turned Stool（Herman Miller Ancillary—Stools），設計 Charles &amp; Ray Eames（1960）。實木、整張組裝完成、5 年保固；尺寸 高 15"（約 38 cm）、座面直徑 13"（約 33 cm），椅凳／邊桌兩用。<br>
+      ※ 型號組成：41 ＋ 造型 1-4 ＋ 飾面碼（EN／OU／WHN）。例：411OU ＝ a shape 胡桃木。<br>
+      ※ 造型 a/b/c/d（411／412／413／414）<b>四款同價</b>，價格由飾面決定（Steps 1-3 合併列價）：<b>OU 胡桃木 $2,010、WHN 白橡木 $1,932、EN 黑檀 $1,558</b>。<br>
+      ※ 來源：使用者提供之 2026 Herman Miller Ancillary Price Book（美國線合約列價，USD）。亞洲線 80-day Asia Seating 為辦公椅手冊，不含 Ancillary，客戶需求走美國線進口。<br>
+      ※ 所有定價為美金 USD 合約列價，不含稅、運費及其他費用。台幣換算僅供參考（500 進位）。
+    </div></details>
+
+  </div><!-- /product-eamesstool -->
 
 </div><!-- /container -->
 
@@ -4122,5 +4279,97 @@ mirraParseModel();
 })();
 
 </script>
+
+<script>
+// =========================================================
+// EAMES TURNED STOOL (Model 237)
+// =========================================================
+const STOOL_SHAPES = {
+  A:{num:'1',model:'411',shape:'a',lb:'15.5',kg:'7.0'}, B:{num:'2',model:'412',shape:'b',lb:'15.5',kg:'7.0'},
+  C:{num:'3',model:'413',shape:'c',lb:'17.75',kg:'8.1'}, D:{num:'4',model:'414',shape:'d',lb:'17.75',kg:'8.1'}
+};
+const STOOL_FINISH = {
+  'Walnut':   {usd:2010, zh:'胡桃木', code:'OU',  confirmed:true},
+  'White Oak':{usd:1932, zh:'白橡木', code:'WHN', confirmed:true},
+  'Ebony':    {usd:1558, zh:'黑檀',   code:'EN',  confirmed:true}
+};
+let stoolShape = 'A';
+function stoolUSD(n){ return '$' + n.toLocaleString('en-US'); }
+
+function selectStoolShape(s){
+  stoolShape = s;
+  document.querySelectorAll('#product-eamesstool .shape-card').forEach(c => {
+    c.classList.toggle('active', c.dataset.shape === s);
+  });
+  stoolRecalc();
+}
+function stoolOnChange(){
+  const f = STOOL_FINISH[document.getElementById('stool_finish').value];
+  const el = document.getElementById('stoolFinishPrice');
+  el.textContent = f.confirmed ? ('列價 ' + stoolUSD(f.usd))
+                                : ('待確認（' + stoolUSD(f.usd) + '，官網下限）');
+  el.className = 'config-price-display ' + (f.confirmed ? 'has-price' : '');
+  stoolRecalc();
+}
+function stoolRecalc(){
+  if(document.getElementById('stoolResultBlock').classList.contains('show')) stoolCalc();
+}
+function stoolCalc(){
+  const sh = STOOL_SHAPES[stoolShape];
+  const fkey = document.getElementById('stool_finish').value;
+  const f = STOOL_FINISH[fkey];
+  const qty = Math.max(1, parseInt(document.getElementById('stool_qty').value)||1);
+  const unit = f.usd;
+  const star = f.confirmed ? '' : ' *';
+
+  const fullModel = sh.model + f.code;
+  let rows = '';
+  rows += '<tr><td class="step-num">Step 1</td>'
+        + '<td><span class="step-code">41</span></td>'
+        + '<td class="step-desc">Eames Turned Stool</td>'
+        + '<td class="step-price price-zero">—</td></tr>';
+  rows += '<tr><td class="step-num">Step 2</td>'
+        + '<td><span class="step-code">' + sh.num + '</span></td>'
+        + '<td class="step-desc">造型 ' + sh.shape + ' shape（Shape ' + stoolShape + '）<small>型號 ' + sh.model + '・重 ' + sh.lb + ' lbs / ' + sh.kg + ' kg・四款同價</small></td>'
+        + '<td class="step-price price-zero">同價</td></tr>';
+  rows += '<tr class="base-row"><td class="step-num">Step 3</td>'
+        + '<td><span class="step-code">' + f.code + '</span></td>'
+        + '<td class="step-desc">' + f.zh + '（' + fkey + '）<small>Steps 1-3 合併列價</small></td>'
+        + '<td class="step-price price-base">' + stoolUSD(unit) + star + '</td></tr>';
+  document.getElementById('stoolStepsBody').innerHTML = rows;
+
+  document.getElementById('stoolBadgeModel').textContent = fullModel + '（' + fkey + '）';
+  document.getElementById('stoolFullModel').textContent = fullModel;
+  document.getElementById('stoolUsBadgePrice').textContent = stoolUSD(unit) + star;
+  document.getElementById('stoolTotalPrice').textContent = stoolUSD(unit) + star;
+  document.getElementById('stoolQtyTotal').textContent = qty > 1 ? (qty + ' 張 = ' + stoolUSD(unit*qty)) : '';
+
+  const warn = document.getElementById('stoolAlertWarn');
+  const wmsg = document.getElementById('stoolAlertWarnMsg');
+  if(!f.confirmed){
+    warn.classList.add('show');
+    wmsg.innerHTML = '⚠ ' + fkey + ' 官網僅顯示系列區間，此處先取下限 ' + stoolUSD(unit)
+      + '（$1,095–$1,420）。標「*」為待確認，<b>實際列價請以 2026-5-1 Price Book 覆蓋</b>。';
+  } else {
+    warn.classList.remove('show');
+  }
+  document.getElementById('stoolResultBlock').classList.add('show');
+  stoolRecalcTWD();
+}
+function stoolRecalcTWD(){
+  const fkey = document.getElementById('stool_finish').value;
+  const unit = STOOL_FINISH[fkey].usd;
+  const qty = Math.max(1, parseInt(document.getElementById('stool_qty').value)||1);
+  const rate = parseFloat(document.getElementById('stoolTwdRate').value)||40;
+  document.getElementById('stoolRateDisplay').textContent = rate;
+  document.getElementById('stoolQtyLabel').textContent = qty;
+  const twd = Math.ceil(unit*qty*rate/500)*500;
+  document.getElementById('stoolTwdPrice').textContent = twd.toLocaleString('en-US');
+}
+// init (不展開結果，只標好預設造型與飾面價)
+document.querySelector('#product-eamesstool .shape-card[data-shape="A"]').classList.add('active');
+stoolOnChange();
+</script>
+
 </body>
 </html>
