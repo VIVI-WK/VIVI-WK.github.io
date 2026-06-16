@@ -742,7 +742,7 @@
   <div class="header">
     <span class="header-brand">HermanMiller</span>
     <h1>選配計算器</h1>
-    <span class="header-version">v6.4 · PB_AEN 6/26 · 美亞雙線</span>
+    <span class="header-version">v6.6 · PB_AEN 6/26 · 美亞雙線</span>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
@@ -857,7 +857,7 @@
       ※ 本計算器依據 Herman Miller Aeron® Chairs Price Book (6/26) AER1 美國線 + 80-day HM Asia Seating 2026 亞洲線雙線定價。<br>
       ※ 亞洲線採「查表法」：以 5 碼主碼 + 9 種 arm+armpad 組合（如 AER1B23DW = $2,347，已含 Type+Assembly+Size+Height+Tilt+Arms+Armpad，不含背靠）為基礎，再加 Step 8-15 incremental。<br>
       ※ DN2 Nightfall（暮藍）、DJ2 Jasper（碧玉綠）：框架 +$175、同色底座 +$150、同色座盤 +$0、扶手墊色 DN4/DJ4 +$0。美亞雙線加價金額一致，均已由各自價格書（PB_AEN 6/26 第 7-8 頁、80-day Asia Seating 第 9 頁）逐項核實。<br>
-      ※ <b>材質群組鎖定（依型錄第 10 頁 Materials，美亞雙線共用）</b>：手動配置分頁以<b>框架顏色</b>為入口，選定框架即反推材質群組，自動帶出網布料號（鎖定）與扶手墊色（鎖定），底座則給該群組合法選項。六群組為 Mineral（框 VPR/MVR，底 DVP/SNA，墊 DVP，網布 23101）、Carbon（框 CRB/MCR，底 DCR/SNC，墊 DCR，23102）、Graphite（框 G1/MG1/ZB，墊 BK，23103）、Onyx（框 BK/MBL，底 BLX，墊 BK，23105）、Nightfall（框 DN2，底 DN2，墊 DN4，23120）、Jasper（框 DJ2，底 DJ2，墊 DJ4，23121）。底座另放行通用色 CD（拋光鋁）/ G1（石墨黑），預設跳 G1（原廠配置器實證）；座盤不綁群組（型錄欄名為 Frame/Base Finish，座盤為獨立結構件色）。料號直接輸入時，違反群組搭配會報錯擋下，與下拉連動互為雙重防線。<br>
+      ※ <b>材質群組鎖定（依型錄第 10 頁 Materials，美亞雙線共用）</b>：手動配置分頁以<b>框架顏色</b>為入口，選定框架即反推材質群組，自動帶出網布料號（鎖定）與扶手墊色（鎖定），底座則給該群組合法選項。六群組為 Mineral（框 VPR/MVR，底 DVP/SNA，墊 DVP，網布 23101）、Carbon（框 CRB/MCR，底 DCR/SNC，墊 DCR，23102）、Graphite（框 G1/MG1/ZB，墊 BK，23103）、Onyx（框 BK/MBL，底 BLX，墊 BK，23105）、Nightfall（框 DN2，底 DN2，墊 DN4，23120）、Jasper（框 DJ2，底 DJ2，墊 DJ4，23121）。底座由座盤決定（價格書 Step 10 依座盤色分組）；座盤由框架決定（價格書 Step 9 依框架色分組）。三層連動：選框架後座盤下拉只留該群組合法座盤，選座盤後底座下拉只留該座盤合法底座。例：VPR 框架座盤只能 SNA/CD，座盤選 SNA 時底座可 DVP/SNA/CD、選 CD 時底座只能 CD。CD 為每組通用座盤與通用底座。料號直接輸入時，違反群組搭配會報錯擋下，與下拉連動互為雙重防線。<br>
       ※ 亞洲線無 GF（Glides 腳墊）。Size A 選項受限：框架僅 G1/BK/MBL/MG1、座盤僅 G1/CD/BLX、底座僅 G1/CD/BK/BLX、扶手墊色僅 BK、網布僅 23103/23105/23120/23121、皮革僅 2109。<br>
       ※ 真皮扶手墊（皮革選項 F）適用 Price Category / Band 9 加價 +$90。依 Herman Miller 官方買家指南，<b>皮革扶手墊與非皮革款採相同顏色組合，同樣由框架顏色（材質群組）決定</b>，非業務自由選色：黑色 2109 隨 Graphite / Onyx / Carbon 框架、Dark Mineral 2118 隨 Mineral 框架、Dark Carbon 2119（亞洲線）。Nightfall / Jasper 皮革對應料號以 PB_AEN 價格書 Step 14 Armpad Leather 為準。<br>
       ※ 8Z Pellicle 網布 6 色：23103 Graphite / 23101 Mineral / 23102 Carbon / 23105 Black / 23120 Nightfall / 23121 Jasper（均屬 Cat.1，加價 +$0）。<br>
@@ -1601,58 +1601,70 @@ const AERON_STEPS = [
 // 但為 G1/CRB/VPR/BK 的抗菌版，依推論歸入對應群組，避免抗菌款全被擋。
 // =========================================================
 const AERON_UNIVERSAL_FINISH = ['CD'];           // 框架通用色（型錄事實：六群皆列 CD）
-const AERON_UNIVERSAL_BASE   = ['CD','G1'];       // 底座通用色：CD 拋光鋁 + G1 石墨黑
-// 依據原廠線上配置器（yaho SharePoint）實證：
+const AERON_UNIVERSAL_BASE   = ['CD'];            // 底座通用色：僅 CD 拋光鋁（跨六群組通用）
+// 規則來源＝價格書 Step 10/11 Base Finish 條件分組（依框架色分組列出合法底座）。
+// 每個框架群組底下價格書均列 CD polished aluminum +$250，證實 CD 為跨群組通用底座。
+// 重要：G1 並非通用底座。價格書 Step 10/11 中 G1 僅出現在 graphite (G1) 框架那一組，
+//   故 G1 底座只在 Graphite 群組合法（由該群組 frames 含 G1 自然帶出，無需列入通用）。
+// 原廠線上配置器實證（CD 通用）：
 //   AER1B23DW ALP DJ2 CD CD BB DJ4 23121 = US$2,952（Jasper 框 + CD 底，合法）
 //   AER1B23DW ALP DJ2 DJ2 DJ2 BB DJ4 23121 = US$2,767（Jasper 框 + DJ2 底，合法）
-// 證實底座搭配自由度高於型錄第 10 頁同色系呈現，CD/G1 為跨群組通用底座。
 
+// 三層連動規則（價格書 Step 9 Chassis → Step 10 Base）：
+//   框架色決定群組 → 群組決定可選座盤(chassisMap 的 keys)
+//   → 選定座盤再決定可選底座(chassisMap[座盤])。
+// 注意：座盤同色碼 ≠ 框架碼。VPR框→座盤SNA、CRB框→座盤SNC、BK框→座盤BLX；
+//   G1/DN2/DJ2 框架則座盤同碼。CD 為每組通用座盤，且座盤選 CD 時底座只能 CD。
 const AERON_MATERIAL_GROUPS = {
   '23101': {  // Mineral
     name: 'Mineral 礦石灰',
-    frames: ['VPR','MVR'],               // 框架：VPR Mineral（+ MicrobeCare MVR）
-    bases:  ['DVP','SNA'],               // 群組專屬底座：Dark Mineral / Satin Aluminum
-    armpad: 'DVP'                        // 扶手墊：Dark Mineral
+    frames: ['VPR','MVR'],                       // 框架：VPR Mineral（+ MicrobeCare MVR）
+    chassisMap: { 'SNA': ['DVP','SNA','CD'], 'CD': ['CD'] },  // 座盤 SNA/CD；SNA→底座DVP/SNA/CD，CD→底座CD
+    armpad: 'DVP'                                // 扶手墊：Dark Mineral
   },
   '23102': {  // Carbon
     name: 'Carbon 碳黑',
-    frames: ['CRB','MCR'],               // 框架：CRB Carbon（+ MicrobeCare MCR）
-    bases:  ['DCR','SNC'],               // 群組專屬底座：Dark Carbon / Satin Carbon
-    armpad: 'DCR'                        // 扶手墊：Dark Carbon
+    frames: ['CRB','MCR'],                       // 框架：CRB Carbon（+ MicrobeCare MCR）
+    chassisMap: { 'SNC': ['DCR','SNC','CD'], 'CD': ['CD'] },  // 座盤 SNC/CD
+    armpad: 'DCR'                                // 扶手墊：Dark Carbon
   },
   '23103': {  // Graphite
     name: 'Graphite 石墨黑',
-    frames: ['G1','MG1','ZB'],           // 框架：G1 Graphite（+ MicrobeCare MG1 + Appliqué ZB）
-    bases:  [],                          // 群組專屬底座：無（型錄僅 G1/CD，均屬通用色）
-    armpad: 'BK'                         // 扶手墊：Black
+    frames: ['G1','MG1','ZB'],                   // 框架：G1（+ MicrobeCare MG1 + Appliqué ZB）
+    chassisMap: { 'G1': ['G1','CD'], 'CD': ['CD'] },          // 座盤 G1/CD
+    armpad: 'BK'                                 // 扶手墊：Black
   },
   '23105': {  // Onyx
     name: 'Onyx 極黑',
-    frames: ['BK','MBL'],                // 框架：Black（+ MicrobeCare MBL）
-    bases:  ['BLX'],                     // 群組專屬底座：Onyx Ultra Matte
-    armpad: 'BK'                         // 扶手墊：Black
+    frames: ['BK','MBL'],                        // 框架：Black（+ MicrobeCare MBL）
+    chassisMap: { 'BLX': ['BK','BLX','CD'], 'CD': ['CD'] },   // 座盤 BLX/CD
+    armpad: 'BK'                                 // 扶手墊：Black
   },
   '23120': {  // Nightfall
     name: 'Nightfall 暮藍',
-    frames: ['DN2'],                     // 框架：Nightfall
-    bases:  ['DN2'],                     // 群組專屬底座：Nightfall（DN2/CD 由通用色處理）
-    armpad: 'DN4'                        // 扶手墊：Dark Nightfall
+    frames: ['DN2','MN2'],                       // 框架：Nightfall（+ MicrobeCare MN2）
+    chassisMap: { 'DN2': ['DN2','CD'], 'CD': ['CD'] },        // 座盤 DN2/CD
+    armpad: 'DN4'                                // 扶手墊：Dark Nightfall
   },
   '23121': {  // Jasper
     name: 'Jasper 碧玉綠',
-    frames: ['DJ2'],                     // 框架：Jasper
-    bases:  ['DJ2'],                     // 群組專屬底座：Jasper
-    armpad: 'DJ4'                        // 扶手墊：Dark Jasper
+    frames: ['DJ2','MJ2'],                       // 框架：Jasper（+ MicrobeCare MJ2）
+    chassisMap: { 'DJ2': ['DJ2','CD'], 'CD': ['CD'] },        // 座盤 DJ2/CD
+    armpad: 'DJ4'                                // 扶手墊：Dark Jasper
   }
 };
 
-// 群組合法底座 = 群組框架色（同色底座，如 DN2/DN2）+ 群組專屬底座 + 通用 CD/G1
-function _aeronGroupBases(g) {
-  return [...new Set([...g.frames, ...(g.bases || []), ...AERON_UNIVERSAL_BASE])];
+// 群組可選座盤 = chassisMap 的 keys
+function _aeronGroupChassis(g) { return Object.keys(g.chassisMap); }
+// 給定座盤，回傳合法底座清單（座盤不合法時回空陣列）
+function _aeronGroupBases(g, chassis) {
+  if (chassis && g.chassisMap[chassis]) return g.chassisMap[chassis].slice();
+  // 未指定座盤時回傳全群組底座聯集（供概覽/錯誤訊息用）
+  return [...new Set(Object.values(g.chassisMap).flat())];
 }
 
-// 共用群組校驗：把違反型錄第 10 頁群組搭配的組合收集成 errors。
-// 在美國線與亞洲線計算函式內呼叫，維持單一維護點。
+// 共用群組校驗：把違反價格書 Step 9/10 群組搭配的組合收集成 errors。
+// 美國線與亞洲線計算函式共用，維持單一維護點。
 function _aeronCheckMaterialGroup(v) {
   const errs = [];
   const g = AERON_MATERIAL_GROUPS[v.pellicle];
@@ -1666,13 +1678,19 @@ function _aeronCheckMaterialGroup(v) {
     errs.push(`框架「${v.frame}」不屬於 ${g.name}（網布 ${v.pellicle}）群組。此網布僅可搭框架：${g.frames.join(' / ')}`);
   }
 
-  // 底座：群組合法底座清單（同色 + 群組專屬 + 通用 CD/G1）
-  const okBases = _aeronGroupBases(g);
-  if (!okBases.includes(v.base)) {
-    errs.push(`底座「${v.base}」不屬於 ${g.name} 群組。此網布僅可搭底座：${okBases.join(' / ')}`);
+  // 座盤：必須在群組可選座盤清單內（價格書 Step 9）
+  const okChassis = _aeronGroupChassis(g);
+  if (!okChassis.includes(v.chassis)) {
+    errs.push(`座盤「${v.chassis}」不屬於 ${g.name} 群組。此框架僅可搭座盤：${okChassis.join(' / ')}`);
   }
 
-  // 座盤（Chassis）不納入群組鎖：型錄欄名為 Frame/Base Finish，座盤為獨立結構件色。
+  // 底座：由所選座盤決定（價格書 Step 10 依座盤色分組）
+  if (okChassis.includes(v.chassis)) {
+    const okBases = _aeronGroupBases(g, v.chassis);
+    if (!okBases.includes(v.base)) {
+      errs.push(`底座「${v.base}」不符座盤「${v.chassis}」。此座盤僅可搭底座：${okBases.join(' / ')}`);
+    }
+  }
 
   // 扶手墊由群組唯一決定（無手臂時略過）
   if (v.arms !== 'N' && v.armpadFinish && v.armpadFinish !== 'N/A' && v.armpadFinish !== g.armpad) {
@@ -2144,10 +2162,16 @@ function aeronBuildManualUI() {
     const opts = Object.entries(step.options).map(([code, data]) =>
       `<option value="${code}">${code} — ${data.desc}${data.price > 0 ? ' (+$' + data.price + ')' : ''}</option>`
     ).join('');
-    // 框架為群組入口：onchange 先反推群組重建相依下拉，再更新價格
-    const onchange = step.key === 'frame'
-      ? `aeronApplyGroupLock();aeronUpdateSelPrice('${step.key}',${si})`
-      : `aeronUpdateSelPrice('${step.key}',${si})`;
+    // 框架為群組入口：onchange 先反推群組重建相依下拉（座盤/底座/網布/扶手墊），再更新價格
+    // 座盤改變時：重建底座下拉（價格書 Step 10 底座依座盤色決定）
+    let onchange;
+    if (step.key === 'frame') {
+      onchange = `aeronApplyGroupLock();aeronUpdateSelPrice('${step.key}',${si})`;
+    } else if (step.key === 'chassis') {
+      onchange = `_aeronApplyBaseFromChassis();aeronUpdateSelPrice('${step.key}',${si})`;
+    } else {
+      onchange = `aeronUpdateSelPrice('${step.key}',${si})`;
+    }
     return `<div class="config-item">
       <div class="config-item-label">${step.label}<span class="config-item-step">${step.step}</span></div>
       <select class="config-select" id="aeronSel_${step.key}" onchange="${onchange}">${opts}</select>
@@ -2197,9 +2221,9 @@ function aeronUpdateSelPrice(key, si) {
 // 手動分頁 — 材質群組連動（v6.3，框架主控）
 // 業務先選框架顏色（看得到的顏色），系統反推材質群組，
 // 自動帶出：網布（一對一，鎖死只顯示）、扶手墊（群組唯一，鎖死）、
-// 底座（群組色 + 通用 CD/G1，可選，預設 G1）。
-// 規則來源同 _aeronCheckMaterialGroup（型錄第 10 頁 + 原廠配置器實證）。
-// 座盤不連動（型錄未將座盤綁群組）。
+// 底座（群組色 + 通用 CD，可選，預設為群組首個合法底座）。
+// 規則來源＝價格書 Step 10/11 Base Finish 條件分組。
+// 座盤不連動（價格書 Step 9 Chassis 不分框架色，僅 G1/CD 兩色）。
 // =========================================================
 
 // 框架色 → 所屬群組網布料號（反查表，由 AERON_MATERIAL_GROUPS 推導）
@@ -2248,17 +2272,37 @@ function aeronApplyGroupLock() {
     apSel.title = '扶手墊顏色由框架顏色自動決定，不可單獨更改';
   }
 
-  // 底座：群組合法底座（同色 + 群組專屬 + 通用 CD/G1），可選，預設 G1
-  const baseSel = document.getElementById('aeronSel_base');
-  const baseCodes = _aeronGroupBases(g);
-  const keep = baseSel && baseCodes.includes(baseSel.value) ? baseSel.value : 'G1';
-  _aeronRebuildOption('aeronSel_base', baseCodes, 8, keep);
+  // 座盤：群組可選座盤（價格書 Step 9），框架決定。預設保留現值或取第一個合法座盤。
+  const chSel = document.getElementById('aeronSel_chassis');
+  const chCodes = _aeronGroupChassis(g);
+  const keepCh = chSel && chCodes.includes(chSel.value) ? chSel.value : chCodes[0];
+  _aeronRebuildOption('aeronSel_chassis', chCodes, 7, keepCh);
+
+  // 底座：由所選座盤決定（價格書 Step 10），座盤決定。預設保留現值或取第一個合法底座。
+  _aeronApplyBaseFromChassis();
 
   // 重算各相依欄加價顯示
-  ['pellicle','armpadFinish','base'].forEach(k => {
+  ['pellicle','armpadFinish','chassis','base'].forEach(k => {
     const idx = AERON_STEPS.findIndex(s => s.key === k);
     aeronUpdateSelPrice(k, idx);
   });
+}
+
+// 座盤 → 底座連動：依目前框架群組 + 座盤選擇，重建底座下拉。
+// 由框架 onchange（經 aeronApplyGroupLock）與座盤 onchange 共同呼叫。
+function _aeronApplyBaseFromChassis() {
+  const frameSel = document.getElementById('aeronSel_frame');
+  const chSel = document.getElementById('aeronSel_chassis');
+  const baseSel = document.getElementById('aeronSel_base');
+  if (!frameSel || !chSel || !baseSel) return;
+  const pel = _aeronFrameToPellicle(frameSel.value);
+  if (!pel) return;
+  const g = AERON_MATERIAL_GROUPS[pel];
+  const baseCodes = _aeronGroupBases(g, chSel.value);
+  const keep = baseCodes.includes(baseSel.value) ? baseSel.value : baseCodes[0];
+  _aeronRebuildOption('aeronSel_base', baseCodes, 8, keep);
+  const idx = AERON_STEPS.findIndex(s => s.key === 'base');
+  aeronUpdateSelPrice('base', idx);
 }
 
 function aeronBuildFromSelects() {
