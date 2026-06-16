@@ -742,7 +742,7 @@
   <div class="header">
     <span class="header-brand">HermanMiller</span>
     <h1>選配計算器</h1>
-    <span class="header-version">Price Book 4/26 · 美亞雙線</span>
+    <span class="header-version">v6.4 · PB_AEN 6/26 · 美亞雙線</span>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
@@ -854,11 +854,12 @@
     </div><!-- /aeron-tab-manual -->
 
     <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
-      ※ 本計算器依據 Herman Miller New Aeron® Chairs Price Book (4/26) AER1 美國線 + 80-day Asia Seating (4/26) 亞洲線雙線定價。<br>
-      ※ 亞洲線採「查表法」：以 5 碼主碼 + 9 種 arm+armpad 組合（如 AER1B23DW = $2,347）為基礎，再加 Step 8-15 incremental。<br>
-      ※ 亞洲線專屬色系：DN2 Nightfall（暮藍）、DJ2 Jasper（碧玉綠）、MN2/MJ2 加 MicrobeCare、扶手墊色 DN4/DJ4、皮革 2119 Dark Carbon。美國線目前未確認支援這些色號。<br>
-      ※ 亞洲線無 GF（Glides 腳墊）選項；Size A 無 CRB / MCR / VPR 框架色。<br>
-      ※ 真皮扶手墊（皮革選項 F）適用 Price Category / Band 9 加價 +$90；九級皮革（黑色 2109 / 灰色 2118 / 亞洲深碳 2119）由您提供。<br>
+      ※ 本計算器依據 Herman Miller Aeron® Chairs Price Book (6/26) AER1 美國線 + 80-day HM Asia Seating 2026 亞洲線雙線定價。<br>
+      ※ 亞洲線採「查表法」：以 5 碼主碼 + 9 種 arm+armpad 組合（如 AER1B23DW = $2,347，已含 Type+Assembly+Size+Height+Tilt+Arms+Armpad，不含背靠）為基礎，再加 Step 8-15 incremental。<br>
+      ※ DN2 Nightfall（暮藍）、DJ2 Jasper（碧玉綠）：框架 +$175、同色底座 +$150、同色座盤 +$0、扶手墊色 DN4/DJ4 +$0。美亞雙線加價金額一致，均已由各自價格書（PB_AEN 6/26 第 7-8 頁、80-day Asia Seating 第 9 頁）逐項核實。<br>
+      ※ <b>材質群組鎖定（依型錄第 10 頁 Materials，美亞雙線共用）</b>：手動配置分頁以<b>框架顏色</b>為入口，選定框架即反推材質群組，自動帶出網布料號（鎖定）與扶手墊色（鎖定），底座則給該群組合法選項。六群組為 Mineral（框 VPR/MVR，底 DVP/SNA，墊 DVP，網布 23101）、Carbon（框 CRB/MCR，底 DCR/SNC，墊 DCR，23102）、Graphite（框 G1/MG1/ZB，墊 BK，23103）、Onyx（框 BK/MBL，底 BLX，墊 BK，23105）、Nightfall（框 DN2，底 DN2，墊 DN4，23120）、Jasper（框 DJ2，底 DJ2，墊 DJ4，23121）。底座另放行通用色 CD（拋光鋁）/ G1（石墨黑），預設跳 G1（原廠配置器實證）；座盤不綁群組（型錄欄名為 Frame/Base Finish，座盤為獨立結構件色）。料號直接輸入時，違反群組搭配會報錯擋下，與下拉連動互為雙重防線。<br>
+      ※ 亞洲線無 GF（Glides 腳墊）。Size A 選項受限：框架僅 G1/BK/MBL/MG1、座盤僅 G1/CD/BLX、底座僅 G1/CD/BK/BLX、扶手墊色僅 BK、網布僅 23103/23105/23120/23121、皮革僅 2109。<br>
+      ※ 真皮扶手墊（皮革選項 F）適用 Price Category / Band 9 加價 +$90。依 Herman Miller 官方買家指南，<b>皮革扶手墊與非皮革款採相同顏色組合，同樣由框架顏色（材質群組）決定</b>，非業務自由選色：黑色 2109 隨 Graphite / Onyx / Carbon 框架、Dark Mineral 2118 隨 Mineral 框架、Dark Carbon 2119（亞洲線）。Nightfall / Jasper 皮革對應料號以 PB_AEN 價格書 Step 14 Armpad Leather 為準。<br>
       ※ 8Z Pellicle 網布 6 色：23103 Graphite / 23101 Mineral / 23102 Carbon / 23105 Black / 23120 Nightfall / 23121 Jasper（均屬 Cat.1，加價 +$0）。<br>
       ※ 所有定價為美金 USD，不含稅、運費及其他費用。
     </div></details>
@@ -1558,23 +1559,128 @@ const AERON_STEPS = [
   { key:'back',   step:'Step 8',  label:'背部支撐 Back Support',
     options:{ 'SZS':{desc:'Basic back support 基本背部支撐',price:0},'ZSS':{desc:'PostureFit® 骨盆支撐',price:45},'AJ':{desc:'Adjustable lumbar support 可調腰椎支撐',price:65},'ALP':{desc:'Adjustable PostureFit SL® 可調骨盆＋腰椎支撐',price:95} } },
   { key:'frame',  step:'Step 9',  label:'框架顏色 Frame Finish',
-    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CRB':{desc:'Carbon (CP) 碳黑',price:85},'VPR':{desc:'Mineral 礦石灰',price:175},'BK':{desc:'Black 黑色',price:175},'MG1':{desc:'Graphite + MicrobeCare™',price:70},'MCR':{desc:'Carbon + MicrobeCare™',price:155},'MVR':{desc:'Mineral + MicrobeCare™',price:245},'MBL':{desc:'Black + MicrobeCare™',price:200},'ZB':{desc:'Graphite + Graphite Appliqué',price:175} } },
+    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CRB':{desc:'Carbon (CP) 碳黑',price:85},'VPR':{desc:'Mineral 礦石灰',price:175},'BK':{desc:'Black 黑色',price:175},'DN2':{desc:'Nightfall 暮藍',price:175},'DJ2':{desc:'Jasper 碧玉綠',price:175},'MG1':{desc:'Graphite + MicrobeCare™',price:70},'MCR':{desc:'Carbon + MicrobeCare™',price:155},'MVR':{desc:'Mineral + MicrobeCare™',price:245},'MBL':{desc:'Black + MicrobeCare™',price:200},'MN2':{desc:'Nightfall + MicrobeCare™',price:245},'MJ2':{desc:'Jasper + MicrobeCare™',price:245},'ZB':{desc:'Graphite + Graphite Appliqué',price:175} } },
   { key:'chassis',step:'Step 10', label:'座盤顏色 Chassis Finish',
-    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CD':{desc:'Polished aluminum 拋光鋁',price:85},'SNC':{desc:'Satin carbon 緞面碳黑',price:0},'SNA':{desc:'Satin aluminum 緞面鋁',price:0},'BLX':{desc:'Onyx ultra matte 極黑啞光',price:0} } },
+    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CD':{desc:'Polished aluminum 拋光鋁',price:85},'SNC':{desc:'Satin carbon 緞面碳黑',price:0},'SNA':{desc:'Satin aluminum 緞面鋁',price:0},'BLX':{desc:'Onyx ultra matte 極黑啞光',price:0},'DN2':{desc:'Nightfall 暮藍',price:0},'DJ2':{desc:'Jasper 碧玉綠',price:0} } },
   { key:'base',   step:'Step 11', label:'底座顏色 Base Finish',
-    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CD':{desc:'Polished aluminum 拋光鋁',price:250},'DCR':{desc:'Dark carbon 深碳黑',price:0},'SNC':{desc:'Satin carbon 緞面碳黑',price:80},'DVP':{desc:'Dark mineral 深礦石灰',price:0},'SNA':{desc:'Satin aluminum 緞面鋁',price:150},'BK':{desc:'Black 黑色',price:0},'BLX':{desc:'Onyx ultra matte 極黑啞光',price:150} } },
+    options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CD':{desc:'Polished aluminum 拋光鋁',price:250},'DCR':{desc:'Dark carbon 深碳黑',price:0},'SNC':{desc:'Satin carbon 緞面碳黑',price:80},'DVP':{desc:'Dark mineral 深礦石灰',price:0},'SNA':{desc:'Satin aluminum 緞面鋁',price:150},'BK':{desc:'Black 黑色',price:0},'BLX':{desc:'Onyx ultra matte 極黑啞光',price:150},'DN2':{desc:'Nightfall 暮藍',price:150},'DJ2':{desc:'Jasper 碧玉綠',price:150} } },
   { key:'caster', step:'Step 12', label:'輪子 Casters/Glides',
     options:{ 'BB':{desc:'2½" Hard caster, carpet only 硬輪（地毯專用）',price:0},'GF':{desc:'2½" Glide 腳墊（硬地/地毯）',price:25},'C7':{desc:'2½" Soft caster, hard floors or carpet 軟輪（硬地/地毯）',price:50},'DC1':{desc:'2½" Braking caster 制動軟輪（靜音）',price:75} } },
   { key:'armpadFinish', step:'Step 13', label:'扶手墊顏色 Armpad Finish',
-    options:{ 'BK':{desc:'Black 黑色（隨 G1 / BK 框架）',price:0},'DVP':{desc:'Dark mineral 深礦石灰（隨 VPR 框架）',price:0},'DCR':{desc:'Dark carbon 深碳黑（隨 CRB 框架）',price:0} },
-    note:'無手臂時此項不適用' },
+    options:{
+      'BK':{desc:'Black 黑色 — 隨 Graphite(G1) / Onyx(BK) 框架',price:0},
+      'DCR':{desc:'Dark Carbon 深碳黑 — 隨 Carbon(CRB) 框架',price:0},
+      'DVP':{desc:'Dark Mineral 深礦石灰 — 隨 Mineral(VPR) 框架',price:0},
+      'DN4':{desc:'Dark Nightfall 深暮藍 — 隨 Nightfall(DN2) 框架',price:0},
+      'DJ4':{desc:'Dark Jasper 深碧玉綠 — 隨 Jasper(DJ2) 框架',price:0}
+    },
+    note:'扶手墊顏色由框架顏色（材質群組）自動決定，無手臂時此項不適用' },
   { key:'pellicle', step:'Step 14', label:'8Z Pellicle 網布顏色',
     options:{ '23103':{desc:'Graphite 石墨黑網布',price:0},'23101':{desc:'Mineral 礦石灰網布',price:0},'23102':{desc:'Carbon 碳黑網布',price:0},'23105':{desc:'Black / Onyx 黑色網布',price:0},'23120':{desc:'Nightfall 暮藍網布',price:0},'23121':{desc:'Jasper 碧玉綠網布',price:0} },
     note:'8Z Pellicle 6 色均為 Price Category 1，加價 +$0' },
   { key:'leatherColor', step:'Step 15', label:'皮革扶手墊顏色 Armpad Leather',
-    options:{ 'N/A':{desc:'不適用（非皮革扶手）',price:0},'2109':{desc:'九級皮革 黑色 2109',price:90},'2118':{desc:'九級皮革 灰色 2118',price:90} },
+    options:{ 'N/A':{desc:'不適用（非皮革扶手）',price:0},'2109':{desc:'九級皮革 Black 黑色 2109（隨 Graphite / Onyx / Carbon 框架）',price:90},'2118':{desc:'九級皮革 Dark Mineral 深礦灰 2118（隨 Mineral 框架）',price:90},'2119':{desc:'九級皮革 Dark Carbon 深碳黑 2119（亞洲線）',price:90} },
     note:'僅當 Step 7 選擇 F（皮革扶手墊）時計費' },
 ];
+
+// =========================================================
+// AERON — 材質群組鎖定（單一事實來源）
+// 依據：Aeron Chairs Brochure (© 2026 MillerKnoll) 第 10 頁 Materials 表。
+// 型錄按六個材質群組呈現，每群以 8Z Pellicle 網布料號為錨點，
+// 綁定 Frame/Base Finish 與 Armpad Finish。網布 = 群組身分。
+//
+// 鎖定規則（美國線、亞洲線共用此表）：
+//   1. 網布料號決定群組。
+//   2. 框架顏色必須屬於該群組允許清單（CD 除外，見下）。
+//   3. 底座顏色與框架共用同一份允許清單（型錄欄名為 Frame/Base Finish）。
+//   4. 扶手墊顏色由群組唯一決定。
+//   5. CD（Polished Aluminum）為六群通用 Frame/Base 色，型錄每群皆列，
+//      故不受群組鎖限制 —— 這是型錄明文事實，非自創例外。
+//
+// MicrobeCare 框架（MG1/MCR/MVR/MBL）型錄第 10 頁未列，
+// 但為 G1/CRB/VPR/BK 的抗菌版，依推論歸入對應群組，避免抗菌款全被擋。
+// =========================================================
+const AERON_UNIVERSAL_FINISH = ['CD'];           // 框架通用色（型錄事實：六群皆列 CD）
+const AERON_UNIVERSAL_BASE   = ['CD','G1'];       // 底座通用色：CD 拋光鋁 + G1 石墨黑
+// 依據原廠線上配置器（yaho SharePoint）實證：
+//   AER1B23DW ALP DJ2 CD CD BB DJ4 23121 = US$2,952（Jasper 框 + CD 底，合法）
+//   AER1B23DW ALP DJ2 DJ2 DJ2 BB DJ4 23121 = US$2,767（Jasper 框 + DJ2 底，合法）
+// 證實底座搭配自由度高於型錄第 10 頁同色系呈現，CD/G1 為跨群組通用底座。
+
+const AERON_MATERIAL_GROUPS = {
+  '23101': {  // Mineral
+    name: 'Mineral 礦石灰',
+    frames: ['VPR','MVR'],               // 框架：VPR Mineral（+ MicrobeCare MVR）
+    bases:  ['DVP','SNA'],               // 群組專屬底座：Dark Mineral / Satin Aluminum
+    armpad: 'DVP'                        // 扶手墊：Dark Mineral
+  },
+  '23102': {  // Carbon
+    name: 'Carbon 碳黑',
+    frames: ['CRB','MCR'],               // 框架：CRB Carbon（+ MicrobeCare MCR）
+    bases:  ['DCR','SNC'],               // 群組專屬底座：Dark Carbon / Satin Carbon
+    armpad: 'DCR'                        // 扶手墊：Dark Carbon
+  },
+  '23103': {  // Graphite
+    name: 'Graphite 石墨黑',
+    frames: ['G1','MG1','ZB'],           // 框架：G1 Graphite（+ MicrobeCare MG1 + Appliqué ZB）
+    bases:  [],                          // 群組專屬底座：無（型錄僅 G1/CD，均屬通用色）
+    armpad: 'BK'                         // 扶手墊：Black
+  },
+  '23105': {  // Onyx
+    name: 'Onyx 極黑',
+    frames: ['BK','MBL'],                // 框架：Black（+ MicrobeCare MBL）
+    bases:  ['BLX'],                     // 群組專屬底座：Onyx Ultra Matte
+    armpad: 'BK'                         // 扶手墊：Black
+  },
+  '23120': {  // Nightfall
+    name: 'Nightfall 暮藍',
+    frames: ['DN2'],                     // 框架：Nightfall
+    bases:  ['DN2'],                     // 群組專屬底座：Nightfall（DN2/CD 由通用色處理）
+    armpad: 'DN4'                        // 扶手墊：Dark Nightfall
+  },
+  '23121': {  // Jasper
+    name: 'Jasper 碧玉綠',
+    frames: ['DJ2'],                     // 框架：Jasper
+    bases:  ['DJ2'],                     // 群組專屬底座：Jasper
+    armpad: 'DJ4'                        // 扶手墊：Dark Jasper
+  }
+};
+
+// 群組合法底座 = 群組框架色（同色底座，如 DN2/DN2）+ 群組專屬底座 + 通用 CD/G1
+function _aeronGroupBases(g) {
+  return [...new Set([...g.frames, ...(g.bases || []), ...AERON_UNIVERSAL_BASE])];
+}
+
+// 共用群組校驗：把違反型錄第 10 頁群組搭配的組合收集成 errors。
+// 在美國線與亞洲線計算函式內呼叫，維持單一維護點。
+function _aeronCheckMaterialGroup(v) {
+  const errs = [];
+  const g = AERON_MATERIAL_GROUPS[v.pellicle];
+  if (!g) {
+    errs.push(`Step 14 網布「${v.pellicle}」不在六大材質群組內（23101/23102/23103/23105/23120/23121）`);
+    return errs;
+  }
+
+  // 框架必須屬於該群組框架清單
+  if (!g.frames.includes(v.frame)) {
+    errs.push(`框架「${v.frame}」不屬於 ${g.name}（網布 ${v.pellicle}）群組。此網布僅可搭框架：${g.frames.join(' / ')}`);
+  }
+
+  // 底座：群組合法底座清單（同色 + 群組專屬 + 通用 CD/G1）
+  const okBases = _aeronGroupBases(g);
+  if (!okBases.includes(v.base)) {
+    errs.push(`底座「${v.base}」不屬於 ${g.name} 群組。此網布僅可搭底座：${okBases.join(' / ')}`);
+  }
+
+  // 座盤（Chassis）不納入群組鎖：型錄欄名為 Frame/Base Finish，座盤為獨立結構件色。
+
+  // 扶手墊由群組唯一決定（無手臂時略過）
+  if (v.arms !== 'N' && v.armpadFinish && v.armpadFinish !== 'N/A' && v.armpadFinish !== g.armpad) {
+    errs.push(`扶手墊色「${v.armpadFinish}」不符 ${g.name} 群組，應為「${g.armpad}」`);
+  }
+
+  return errs;
+}
 
 // =========================================================
 // AERON — ASIA LINE DATA (80-day Asia 查表法)
@@ -1628,36 +1734,53 @@ const AERON_ASIA_BASE_PRICES = {
 };
 
 
-// 亞洲線專屬：Nightfall (DN2) / Jasper (DJ2) 主題系列加價
-// 亞洲線 incremental 表（從 PDF 第 5/8/10 頁）— 所有加價金額均跟美國線相同，
-// 但選項組合不同：Size A 沒有 CRB/MCR/VPR；亞洲線多 DN2/DJ2/MN2/MJ2
+// =========================================================
+// 亞洲線 incremental 表
+// 唯一依據：80-day HM Asia Seating 2026 (USD) — Aeron 第 4-11 頁
+// 規格頁明列各尺寸「可選色」，incremental 頁明列「加價金額」。
+// 凡規格頁未列的色 = 該尺寸不支援；incremental 頁未列 = +0。
+// 已移除舊版自創的 MN2/MJ2（價格書全章節無此框架碼）。
+// =========================================================
 const AERON_ASIA_BACK = { 'SZS':0, 'ZSS':45, 'AJ':65, 'ALP':95 };
-const AERON_ASIA_FRAME_A = {  // Size A 適用（少 CRB/MCR/VPR）
-  'G1':0, 'BK':175, 'MBL':200, 'MG1':70, 'MVR':245,
-  'DN2':0, 'DJ2':0, 'MN2':70, 'MJ2':70  // 亞洲線專屬色系
+
+// Step 9 框架顏色（規格頁列可選色；incremental 頁列加價）
+const AERON_ASIA_FRAME_A = {  // p.4：A 尺寸僅 G1/BK/MBL/MG1
+  'G1':0, 'BK':175, 'MBL':200, 'MG1':70
 };
-const AERON_ASIA_FRAME_BC = {  // Size B/C 適用（全色）
+const AERON_ASIA_FRAME_BC = {  // p.7/p.10：B/C 全色，含 Nightfall/Jasper +175
   'G1':0, 'BK':175, 'CRB':85, 'MCR':155, 'MBL':200, 'MG1':70, 'VPR':175, 'MVR':245,
-  'DN2':0, 'DJ2':0, 'MN2':70, 'MJ2':70
+  'DN2':175, 'DJ2':175
 };
-const AERON_ASIA_CHASSIS_A = { 'G1':0, 'CD':85, 'DN2':0, 'DJ2':0 };
+
+// Step 10 座盤顏色（incremental 頁 chassis 區塊僅列 CD +85；其餘規格頁有列 = +0）
+const AERON_ASIA_CHASSIS_A = { 'G1':0, 'CD':85, 'BLX':0 };  // p.4：A 僅 G1/CD/BLX
 const AERON_ASIA_CHASSIS_BC = { 'G1':0, 'SNC':0, 'SNA':0, 'CD':85, 'BLX':0, 'DN2':0, 'DJ2':0 };
-const AERON_ASIA_BASE_A = { 'G1':0, 'BK':0, 'CD':250, 'DN2':0, 'DJ2':0 };
-const AERON_ASIA_BASE_BC = { 'G1':0, 'DCR':0, 'DVP':0, 'SNC':80, 'SNA':150, 'CD':250, 'BK':0, 'BLX':150, 'DN2':0, 'DJ2':0 };
-const AERON_ASIA_CASTER = { 'BB':0, 'C7':50, 'DC1':75 };  // 注意：亞洲線無 GF（Glides）
-const AERON_ASIA_ARMPAD_FINISH_A = { 'BK':0, 'DN4':0, 'DJ4':0 };  // Size A 用色：BK + 亞洲線專屬 DN4/DJ4
-const AERON_ASIA_ARMPAD_FINISH_C = { 'BK':0, 'DCR':0, 'DVP':0, 'DN4':0, 'DJ4':0 };  // Size C 多 DCR/DVP
-const AERON_ASIA_PELLICLE = { '23103':0, '23101':0, '23102':0, '23105':0, '23120':0, '23121':0 };
-const AERON_ASIA_LEATHER = { 'N/A':0, '2109':90, '2118':90, '2119':90 };  // 亞洲線多 2119 Dark carbon
+
+// Step 11 底座顏色（incremental 頁 base 區塊列 SNC/SNA/CD/BLX/DN2/DJ2 加價）
+const AERON_ASIA_BASE_A = { 'G1':0, 'CD':250, 'BK':0, 'BLX':150 };  // p.4：A 僅 G1/CD/BK/BLX
+const AERON_ASIA_BASE_BC = { 'G1':0, 'DCR':0, 'DVP':0, 'SNC':80, 'SNA':150, 'CD':250, 'BK':0, 'BLX':150, 'DN2':150, 'DJ2':150 };
+
+const AERON_ASIA_CASTER = { 'BB':0, 'C7':50, 'DC1':75 };  // 亞洲線無 GF（Glides）
+
+// Step 13 扶手墊顏色（規格頁第 13 項）
+const AERON_ASIA_ARMPAD_FINISH_A = { 'BK':0 };  // p.4：A 僅 BK
+const AERON_ASIA_ARMPAD_FINISH_BC = { 'BK':0, 'DCR':0, 'DVP':0, 'DN4':0, 'DJ4':0 };  // p.7/p.10：B/C 同
+
+// Step 14 Pellicle 網布（規格頁第 14 項）
+const AERON_ASIA_PELLICLE_A = { '23103':0, '23105':0, '23120':0, '23121':0 };  // p.4：A 無 Carbon/Mineral 網布
+const AERON_ASIA_PELLICLE_BC = { '23103':0, '23102':0, '23101':0, '23105':0, '23120':0, '23121':0 };  // p.7/p.10：6 色全
+
+// Step 15/16 皮革扶手墊（Band 9，+90）
+const AERON_ASIA_LEATHER_A = { 'N/A':0, '2109':90 };  // p.4：A 僅黑色皮革 2109
+const AERON_ASIA_LEATHER_BC = { 'N/A':0, '2109':90, '2118':90, '2119':90 };  // p.7/p.10：含 2118/2119
 
 const AERON_ASIA_COLOR_HINT = {
-  'DN2': 'Nightfall 暮藍（亞洲線專屬色系）',
-  'DJ2': 'Jasper 碧玉綠（亞洲線專屬色系）',
-  'MN2': 'Nightfall + MicrobeCare（亞洲線專屬）',
-  'MJ2': 'Jasper + MicrobeCare（亞洲線專屬）',
-  'DN4': 'Dark Nightfall 扶手墊色（亞洲線專屬）',
-  'DJ4': 'Dark Jasper 扶手墊色（亞洲線專屬）',
-  '2119': 'Dark Carbon Leather（亞洲線專屬）'
+  'DN2': 'Nightfall 暮藍',
+  'DJ2': 'Jasper 碧玉綠',
+  'DN4': 'Dark Nightfall 扶手墊色',
+  'DJ4': 'Dark Jasper 扶手墊色',
+  '2118': 'Dark Mineral Leather',
+  '2119': 'Dark Carbon Leather'
 };
 
 // =========================================================
@@ -1694,7 +1817,7 @@ function _aeronParse(raw) {
 
   // 拆解後續代碼
   const KNOWN = ['ALP','SZS','ZSS','AJ',
-    'MG1','MCR','MVR','MBL','MN2','MJ2',  // MicrobeCare frames
+    'MG1','MCR','MVR','MBL',  // MicrobeCare frames
     'CRB','VPR','BK','G1','ZB','DN2','DJ2',  // 標準 frame
     'SNC','SNA','BLX','CD','DCR','DVP',  // chassis/base/armpad finish
     'DN4','DJ4',  // 亞洲線扶手墊色
@@ -1711,20 +1834,27 @@ function _aeronParse(raw) {
   }
 
   const [back, frameStr, chassisStr, baseStr, casterStr] = extracted;
-  let armpadFinishStr = extracted[5];
-  let pellicleStr = extracted[6];
-  let leatherStr = extracted[7] || 'N/A';
+
+  // 尾段（caster 之後）可能含：扶手墊 finish 色、網布(5碼)、皮革(4碼)，
+  // 且皮革款無扶手墊 finish 色段，故不可用固定索引，改按內容特徵定位。
+  const tail = extracted.slice(5);
+  const PELLICLE_CODES = ['23103','23101','23102','23105','23120','23121'];
+  const ARMPAD_FINISH_CODES = ['BK','DVP','DCR','DN4','DJ4'];
+  const LEATHER_CODES = ['2109','2118','2119'];
+  let armpadFinishStr = tail.find(t => ARMPAD_FINISH_CODES.includes(t)) || null;
+  let pellicleStr = tail.find(t => PELLICLE_CODES.includes(t)) || null;
+  let leatherStr = tail.find(t => LEATHER_CODES.includes(t)) || 'N/A';
 
   if (!['SZS','ZSS','AJ','ALP'].includes(back)) return { error: `Step 8 背部支撐「${back}」無效。` };
   if (!frameStr) return { error: 'Step 9 框架顏色代碼缺失。' };
   if (!chassisStr) return { error: 'Step 10 座盤顏色代碼缺失。' };
   if (!baseStr) return { error: 'Step 11 底座顏色代碼缺失。' };
   if (!casterStr) return { error: 'Step 12 輪子代碼缺失。' };
-  if (!pellicleStr || !['23103','23101','23102','23105','23120','23121'].includes(pellicleStr)) {
+  if (!pellicleStr || !PELLICLE_CODES.includes(pellicleStr)) {
     return { error: `Step 14 網布代碼「${pellicleStr || '缺失'}」無效（應為 23101/23102/23103/23105/23120/23121）。` };
   }
-  if (!armpadFinishStr || !['BK','DVP','DCR','DN4','DJ4'].includes(armpadFinishStr)) armpadFinishStr = arm === 'N' ? 'N/A' : 'BK';
-  if (!['2109','2118','2119'].includes(leatherStr)) leatherStr = 'N/A';
+  if (!armpadFinishStr || !ARMPAD_FINISH_CODES.includes(armpadFinishStr)) armpadFinishStr = arm === 'N' ? 'N/A' : 'BK';
+  if (!LEATHER_CODES.includes(leatherStr)) leatherStr = 'N/A';
 
   // 主碼基底（用於亞洲線查表）
   const mainCode = `AER${assembly}${size}${height}${tilt}`;
@@ -1761,26 +1891,24 @@ function _aeronCalcUS(parsed) {
   const ap = AERON_STEPS[4].options[v.armpad]; if(ap){ rows.push({step:'Step 7',code:v.armpad,desc:ap.desc,sub:'扶手墊材質',price:ap.price}); total+=ap.price; }
   addRow(AERON_STEPS[5],'back');
 
-  // 美國線檢查：DN2/DJ2/MN2/MJ2 屬於亞洲線專屬
-  const asiaOnly = ['DN2','DJ2','MN2','MJ2'];
-  if (asiaOnly.includes(v.frame)) errors.push(`Step 9 框架「${v.frame}」是亞洲線專屬色系，美國線目前未確認支援`);
-  if (asiaOnly.includes(v.chassis)) errors.push(`Step 10 座盤「${v.chassis}」是亞洲線專屬色系`);
-  if (asiaOnly.includes(v.base)) errors.push(`Step 11 底座「${v.base}」是亞洲線專屬色系`);
-  if (['DN4','DJ4'].includes(v.armpadFinish)) errors.push(`Step 13 扶手墊色「${v.armpadFinish}」是亞洲線專屬色系`);
-  if (v.leatherColor === '2119') errors.push(`Step 15 皮革「2119 Dark Carbon」是亞洲線專屬色系`);
+  // DN2 Nightfall / DJ2 Jasper：美國線加價已由 PB_AEN Price Book (6/26) 核實。
+  // Step 9 框架 +$175、Step 11 底座（同色）+$150、Step 10 座盤（同色）+$0。
+
+  // 材質群組鎖定（型錄第 10 頁，美國線/亞洲線共用）
+  _aeronCheckMaterialGroup(v).forEach(e => errors.push('【群組】' + e));
 
   // Frame/Chassis/Base — 美國線只認原 spec 的選項
   const usFrame = AERON_STEPS[6].options[v.frame];
   if (usFrame) { rows.push({step:'Step 9',code:v.frame,desc:usFrame.desc,sub:'框架顏色',price:usFrame.price}); total+=usFrame.price; }
-  else if (!asiaOnly.includes(v.frame)) errors.push(`Step 9 框架代碼「${v.frame}」無效`);
+  else errors.push(`Step 9 框架代碼「${v.frame}」無效`);
 
   const usChassis = AERON_STEPS[7].options[v.chassis];
   if (usChassis) { rows.push({step:'Step 10',code:v.chassis,desc:usChassis.desc,sub:'座盤顏色',price:usChassis.price}); total+=usChassis.price; }
-  else if (!asiaOnly.includes(v.chassis)) errors.push(`Step 10 座盤代碼「${v.chassis}」無效`);
+  else errors.push(`Step 10 座盤代碼「${v.chassis}」無效`);
 
   const usBase = AERON_STEPS[8].options[v.base];
   if (usBase) { rows.push({step:'Step 11',code:v.base,desc:usBase.desc,sub:'底座顏色',price:usBase.price}); total+=usBase.price; }
-  else if (!asiaOnly.includes(v.base)) errors.push(`Step 11 底座代碼「${v.base}」無效`);
+  else errors.push(`Step 11 底座代碼「${v.base}」無效`);
 
   const usCaster = AERON_STEPS[9].options[v.caster];
   if (usCaster) { rows.push({step:'Step 12',code:v.caster,desc:usCaster.desc,sub:'輪子',price:usCaster.price}); total+=usCaster.price; }
@@ -1813,6 +1941,8 @@ function _aeronCalcAsia(parsed) {
     return { rows: [{step:'查表', code:parsed.baseLookupKey, desc:'亞洲線無此基礎組合', sub:'Step 1-7 合併計價', price:null}], total: null, errors };
   }
   total = basePrice;
+  // 材質群組鎖定（型錄第 10 頁，美國線/亞洲線共用）
+  _aeronCheckMaterialGroup(v).forEach(e => errors.push('【群組】' + e));
   const armComboDesc = {
     'NN':'No arms / N/A','PW':'Fixed arm + 非皮墊','PF':'Fixed arm + 皮墊',
     'HW':'Height-adj + 非皮墊','HF':'Height-adj + 皮墊',
@@ -1877,25 +2007,27 @@ function _aeronCalcAsia(parsed) {
 
   // Step 13 Armpad finish (僅 v.arms !== 'N')
   if (v.arms !== 'N') {
-    const armpadTable = v.size === 'A' ? AERON_ASIA_ARMPAD_FINISH_A : AERON_ASIA_ARMPAD_FINISH_C;
+    const armpadTable = v.size === 'A' ? AERON_ASIA_ARMPAD_FINISH_A : AERON_ASIA_ARMPAD_FINISH_BC;
     const apInc = armpadTable[v.armpadFinish];
     if (apInc !== undefined) {
       const hint = AERON_ASIA_COLOR_HINT[v.armpadFinish] ? ` · ${AERON_ASIA_COLOR_HINT[v.armpadFinish]}` : '';
       const usOpt = AERON_STEPS[10].options[v.armpadFinish];
       rows.push({step:'Step 13', code:v.armpadFinish, desc:(usOpt?usOpt.desc:v.armpadFinish)+hint, sub:'扶手墊顏色', price:apInc});
-    } else errors.push(`Step 13 扶手墊色「${v.armpadFinish}」不適用 ${v.size} size 亞洲線`);
+    } else errors.push(`Step 13 扶手墊色「${v.armpadFinish}」不適用 ${v.size} size 亞洲線（A 尺寸僅 BK）`);
   }
 
   // Step 14 Pellicle
-  const pelInc = AERON_ASIA_PELLICLE[v.pellicle];
+  const pellicleTable = v.size === 'A' ? AERON_ASIA_PELLICLE_A : AERON_ASIA_PELLICLE_BC;
+  const pelInc = pellicleTable[v.pellicle];
   if (pelInc !== undefined) {
     const usOpt = AERON_STEPS[11].options[v.pellicle];
     rows.push({step:'Step 14', code:v.pellicle, desc:usOpt?usOpt.desc:v.pellicle, sub:'8Z Pellicle 網布', price:pelInc});
-  }
+  } else errors.push(`Step 14 網布「${v.pellicle}」不適用 ${v.size} size 亞洲線（A 尺寸僅 23103/23105/23120/23121）`);
 
   // Step 15 Leather (Band 9, +90)
   if (v.armpad === 'F' && v.leatherColor !== 'N/A') {
-    const lInc = AERON_ASIA_LEATHER[v.leatherColor];
+    const leatherTable = v.size === 'A' ? AERON_ASIA_LEATHER_A : AERON_ASIA_LEATHER_BC;
+    const lInc = leatherTable[v.leatherColor];
     if (lInc !== undefined) {
       total += lInc;
       const hint = AERON_ASIA_COLOR_HINT[v.leatherColor] ? ` · ${AERON_ASIA_COLOR_HINT[v.leatherColor]}` : '';
@@ -2012,14 +2144,43 @@ function aeronBuildManualUI() {
     const opts = Object.entries(step.options).map(([code, data]) =>
       `<option value="${code}">${code} — ${data.desc}${data.price > 0 ? ' (+$' + data.price + ')' : ''}</option>`
     ).join('');
+    // 框架為群組入口：onchange 先反推群組重建相依下拉，再更新價格
+    const onchange = step.key === 'frame'
+      ? `aeronApplyGroupLock();aeronUpdateSelPrice('${step.key}',${si})`
+      : `aeronUpdateSelPrice('${step.key}',${si})`;
     return `<div class="config-item">
       <div class="config-item-label">${step.label}<span class="config-item-step">${step.step}</span></div>
-      <select class="config-select" id="aeronSel_${step.key}" onchange="aeronUpdateSelPrice('${step.key}',${si})">${opts}</select>
+      <select class="config-select" id="aeronSel_${step.key}" onchange="${onchange}">${opts}</select>
       <div class="config-price-display" id="aeronSelPrice_${step.key}"></div>
     </div>`;
   }).join('');
   const defs = { size:'B',height:'2',tilt:'3',arms:'D',armpad:'W',back:'ALP',frame:'G1',chassis:'G1',base:'G1',caster:'BB',armpadFinish:'BK',pellicle:'23103',leatherColor:'N/A' };
+  // 框架下拉重建為「全群組框架色聯集」，依群組順序排列，
+  // 讓 DN2/DJ2/BLX 等不在美國線 frame 表的色也能當入口被選到。
+  _aeronRebuildFrameDropdown();
   for (const [k, v] of Object.entries(defs)) { const el = document.getElementById('aeronSel_' + k); if (el) el.value = v; }
+  // 依預設框架(G1 Graphite)套一次群組鎖，讓初始相依下拉就定位
+  aeronApplyGroupLock();
+}
+
+// 框架下拉 = 六群組框架色聯集（保群組順序、去重）
+function _aeronRebuildFrameDropdown() {
+  const sel = document.getElementById('aeronSel_frame');
+  if (!sel) return;
+  const seen = new Set();
+  const codes = [];
+  for (const g of Object.values(AERON_MATERIAL_GROUPS)) {
+    for (const f of g.frames) { if (!seen.has(f)) { seen.add(f); codes.push(f); } }
+  }
+  const stepOpts = AERON_STEPS[6].options;  // 美國線 frame 表（取 desc / price）
+  // DN2/DJ2 等不在美國線 frame 表者，desc 由群組名補、加價標待確認
+  const colorNote = { 'DN2':'Nightfall 暮藍（加價待 PB_AEN）', 'DJ2':'Jasper 碧玉綠（加價待 PB_AEN）',
+                      'BLX':'Onyx Ultra Matte 極黑啞光' };
+  sel.innerHTML = codes.map(code => {
+    const d = stepOpts[code];
+    if (d) { const p = d.price > 0 ? ' (+$' + d.price + ')' : ''; return `<option value="${code}">${code} — ${d.desc}${p}</option>`; }
+    return `<option value="${code}">${code} — ${colorNote[code] || code}</option>`;
+  }).join('');
 }
 
 function aeronUpdateSelPrice(key, si) {
@@ -2030,6 +2191,74 @@ function aeronUpdateSelPrice(key, si) {
   if (!opt) { disp.textContent = ''; disp.classList.remove('has-price'); return; }
   if (opt.price > 0) { disp.textContent = '+$' + opt.price.toLocaleString(); disp.classList.add('has-price'); }
   else { disp.textContent = '+$0'; disp.classList.remove('has-price'); }
+}
+
+// =========================================================
+// 手動分頁 — 材質群組連動（v6.3，框架主控）
+// 業務先選框架顏色（看得到的顏色），系統反推材質群組，
+// 自動帶出：網布（一對一，鎖死只顯示）、扶手墊（群組唯一，鎖死）、
+// 底座（群組色 + 通用 CD/G1，可選，預設 G1）。
+// 規則來源同 _aeronCheckMaterialGroup（型錄第 10 頁 + 原廠配置器實證）。
+// 座盤不連動（型錄未將座盤綁群組）。
+// =========================================================
+
+// 框架色 → 所屬群組網布料號（反查表，由 AERON_MATERIAL_GROUPS 推導）
+function _aeronFrameToPellicle(frameCode) {
+  for (const [pel, g] of Object.entries(AERON_MATERIAL_GROUPS)) {
+    if (g.frames.includes(frameCode)) return pel;
+  }
+  return null;
+}
+
+function _aeronRebuildOption(selId, codes, stepIdx, keepVal) {
+  const sel = document.getElementById(selId);
+  if (!sel) return;
+  const stepOpts = AERON_STEPS[stepIdx].options;
+  sel.innerHTML = codes.map(code => {
+    const d = stepOpts[code];
+    const desc = d ? d.desc : code;
+    const price = d && d.price > 0 ? ' (+$' + d.price + ')' : '';
+    return `<option value="${code}">${code} — ${desc}${price}</option>`;
+  }).join('');
+  sel.value = codes.includes(keepVal) ? keepVal : codes[0];
+}
+
+function aeronApplyGroupLock() {
+  const frameSel = document.getElementById('aeronSel_frame');
+  if (!frameSel) return;
+  const pel = _aeronFrameToPellicle(frameSel.value);
+  if (!pel) return;
+  const g = AERON_MATERIAL_GROUPS[pel];
+
+  // 網布：框架一對一決定，鎖死（只顯示，不可改）
+  const pelSel = document.getElementById('aeronSel_pellicle');
+  if (pelSel) {
+    _aeronRebuildOption('aeronSel_pellicle', [pel], 11, pel);
+    pelSel.value = pel;
+    pelSel.disabled = true;
+    pelSel.title = '網布由框架顏色自動決定，不可單獨更改';
+  }
+
+  // 扶手墊：群組唯一色，鎖死
+  const apSel = document.getElementById('aeronSel_armpadFinish');
+  if (apSel) {
+    _aeronRebuildOption('aeronSel_armpadFinish', [g.armpad], 10, g.armpad);
+    apSel.value = g.armpad;
+    apSel.disabled = true;
+    apSel.title = '扶手墊顏色由框架顏色自動決定，不可單獨更改';
+  }
+
+  // 底座：群組合法底座（同色 + 群組專屬 + 通用 CD/G1），可選，預設 G1
+  const baseSel = document.getElementById('aeronSel_base');
+  const baseCodes = _aeronGroupBases(g);
+  const keep = baseSel && baseCodes.includes(baseSel.value) ? baseSel.value : 'G1';
+  _aeronRebuildOption('aeronSel_base', baseCodes, 8, keep);
+
+  // 重算各相依欄加價顯示
+  ['pellicle','armpadFinish','base'].forEach(k => {
+    const idx = AERON_STEPS.findIndex(s => s.key === k);
+    aeronUpdateSelPrice(k, idx);
+  });
 }
 
 function aeronBuildFromSelects() {
