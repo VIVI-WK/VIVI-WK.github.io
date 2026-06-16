@@ -751,9 +751,10 @@
     <button class="product-tab-btn" onclick="switchProduct('cosm')">Cosm</button>
     <button class="product-tab-btn" onclick="switchProduct('sayl')">Sayl</button>
     <button class="product-tab-btn" onclick="switchProduct('mirra')">Mirra 2</button>
-    <button class="product-tab-btn" onclick="switchProduct('eames')">Eames</button>
-    <button class="product-tab-btn" onclick="switchProduct('eamesstool')">Eames Stool</button>
-    <button class="product-tab-btn" onclick="switchProduct('eamesChairs')">Eames 座椅</button>
+    <button class="product-tab-btn" onclick="switchProduct('embody')">Embody</button>
+    <button class="product-tab-btn" onclick="switchProduct('eames')">Lounge</button>
+    <button class="product-tab-btn" onclick="switchProduct('eamesstool')">Turned Stool</button>
+    <button class="product-tab-btn" onclick="switchProduct('eamesChairs')">Eames Aluminum</button>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -797,13 +798,13 @@
             <span class="badge-tag" id="aeronUsTag">美國線適用</span>
             <div class="line-name">美國線 / PB_AEN</div>
             <div class="line-price" id="aeronUsPrice">—</div>
-            <div class="line-method">累加法（base + Step 加價）</div>
+            
           </div>
           <div class="line-badge asia" id="aeronAsiaBadgeBox">
             <span class="badge-tag" id="aeronAsiaTag">亞洲線適用</span>
             <div class="line-name">亞洲線 / 80-day Asia</div>
             <div class="line-price" id="aeronAsiaPrice">—</div>
-            <div class="line-method">查表法（5 碼 base + arm 組合）</div>
+            
           </div>
         </div>
 
@@ -1150,12 +1151,6 @@
         <b>主碼欄位</b>：[Tilt 1-3][Arms N/P/A][Armpad N/W][AF/AP/FF/FP] +（背框/椅架/扶手墊/底盤/腰靠/腰帶/蝴蝶/座墊/輪子）。<br>
         <b>尾段</b>：AF=可調座深+蝴蝶背、AP=可調座深+TriFlex、FF=固定座深+蝴蝶背、FP=固定座深+TriFlex。可省略後段，自動補預設。
       </div>
-      <div class="examples">
-        <span class="examples-label">快速範例：</span>
-        <button class="example-btn" onclick="mirraSetExample('MRFN1NNFP G1 G1 BK G1 SZS NA NA 1A703 BB')">最低配（G1·無扶手·TriFlex）</button>
-        <button class="example-btn" onclick="mirraSetExample('MRFN2AWAF G1 G1 BK G1 AJ G1 8M17 1A703 BB')">門市常用（G1 全套·蝴蝶背·AJ 腰靠）</button>
-        <button class="example-btn" onclick="mirraSetExample('MRFN3AWFF CRE ZM ZM ZM AJ CRE 8M28 1A710 BB')">專案款（CRE 赭黃背 + ZM 白椅架）</button>
-      </div>
     </div>
 
     <div class="alert alert-error" id="mirraAlertError">
@@ -1416,6 +1411,178 @@
       </div><!-- /eames-config-grid -->
 
       <!-- 數量 -->
+      <div class="qty-row">
+        <span class="qty-label">訂購數量（套組）</span>
+        <input type="number" class="qty-input" id="eames_qty" value="1" min="1" max="999" onchange="eamesRecalc()">
+        <span class="qty-total" id="eamesQtyTotal"></span>
+      </div>
+
+      <button class="btn-calc" onclick="eamesCalcAll()">計算總價</button>
+    </div><!-- /config-wrapper -->
+
+    <div class="alert alert-warn" id="eamesAlertWarn">
+      <div id="eamesAlertWarnMsg"></div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-block" id="eamesResultBlock">
+      <!-- Dual line badges -->
+      <div class="line-badges">
+        <div class="line-badge us active">
+          <div class="line-name">美國線</div>
+          <div class="line-price" id="eamesUsBadgePrice">—</div>
+          <div class="line-method">累加法（套組 = 椅 + 腳凳）</div>
+        </div>
+      </div>
+
+      <div class="model-badge">
+        <span class="model-badge-label">型號</span>
+        <span id="eamesBadgeModel">—</span>
+      </div>
+
+      <!-- 美國線解析 -->
+      <div class="parse-card">
+        <div class="parse-header us-h"><span>美國線解析</span></div>
+        <table class="steps-table">
+          <thead><tr>
+            <th style="width:72px">Step</th>
+            <th style="width:100px">代碼</th>
+            <th>說明</th>
+            <th style="width:130px">加價 (USD)</th>
+          </tr></thead>
+          <tbody id="eamesStepsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="total-bar">
+        <div>
+          <div class="total-label">美國線單套定價（USD）</div>
+          <div class="total-sub">套組 = 椅 + 腳凳</div>
+        </div>
+        <div class="total-price">
+          <span class="total-currency">USD</span>
+          <span id="eamesTotalPrice">—</span>
+        </div>
+      </div>
+
+      <!-- Full model string -->
+      <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:12px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);font-weight:600;white-space:nowrap;">完整型號</span>
+        <span id="eamesFullModel" style="font-family:'Consolas',monospace;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:0.05em;word-break:break-all;text-align:right;">—</span>
+      </div>
+      <div class="twd-bar">
+        <div>
+          <div class="twd-label">台幣換算（含 <span id="eamesQtyLabel">1</span> 套）</div>
+          <div class="twd-rate">匯率：1 USD ＝ <span id="eamesRateDisplay">40</span> TWD（500 進位）</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="twd-price">NT$ <span id="eamesTwdPrice">—</span></div>
+          <div class="twd-input-row" style="justify-content:flex-end; margin-top:6px;">
+            <span style="font-size:11px; color:var(--text-muted);">匯率</span>
+            <input type="number" class="twd-input" id="eamesTwdRate" value="40" step="0.5" min="1" onchange="eamesRecalcTWD()">
+            <span style="font-size:11px; color:var(--text-muted);">TWD</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multi total -->
+      <div id="eamesMultiBar" style="display:none;" class="total-bar">
+        <div><div class="total-label">合計（<span id="eamesMultiQtyLabel">1</span> 套）</div></div>
+        <div class="total-price">
+          <span class="total-currency">USD</span>
+          <span id="eamesMultiPrice">—</span>
+        </div>
+      </div>
+    </div><!-- /eamesResultBlock -->
+
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
+      ※ 本計算器依據 Herman Miller Ancillary Price Book (4/26) · Eames® Lounge Chair + Ottoman 套組美國線定價。<br>
+      ※ 套組基本售價已包含椅 + 腳凳。殼面加價為 Step 3 Shell Finish 加價；梣木系列殼面已內含於固定型號中。<br>
+      ※ Tall 尺寸：胡桃木 / 白橡木 / 油胡桃 / 桑托斯 / 油桑托斯各加 +$366；黑梣木 / 白梣木 Tall 基本售價 $9,602（已含加價）。<br>
+      ※ Category 9 皮革加價 +$734 / Category 11 Prone 皮革加價 +$1,072（套組含椅＋腳凳）。<br>
+      ※ 所有定價為美金 USD，不含稅、運費及其他費用。台幣換算僅供參考。
+    </div></details>
+
+  </div><!-- /product-eames -->
+
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL: EAMES TURNED STOOL
+  ══════════════════════════════════════════ -->
+  <style>
+  #product-eamesstool .shape-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:6px; }
+  @media (max-width:600px){ #product-eamesstool .shape-grid { grid-template-columns:1fr 1fr; } }
+  #product-eamesstool .shape-card {
+    border:1.5px solid var(--border); border-radius:8px; background:var(--surface);
+    padding:8px; cursor:pointer; text-align:center; transition:border-color .15s, box-shadow .15s;
+  }
+  #product-eamesstool .shape-card:hover { border-color:var(--border-strong); }
+  #product-eamesstool .shape-card.active { border-color:var(--accent); box-shadow:0 0 0 2px rgba(26,25,23,0.16); }
+  #product-eamesstool .shape-card img { width:100%; height:108px; object-fit:contain; background:var(--step-bg); border-radius:6px; }
+  #product-eamesstool .shape-card .sc-fallback {
+    display:none; height:108px; align-items:center; justify-content:center; text-align:center;
+    background:var(--step-bg); border-radius:6px; color:var(--text-muted); font-size:11px; line-height:1.4; padding:4px;
+  }
+  #product-eamesstool .shape-card .sc-name { font-size:13px; font-weight:700; margin-top:6px; color:var(--accent); font-family:'Consolas',monospace; }
+  #product-eamesstool .shape-card .sc-sub { font-size:10px; color:var(--text-muted); margin-top:1px; }
+  #product-eamesstool .shape-card .sc-tag { font-size:9px; color:var(--green); font-weight:700; margin-top:3px; letter-spacing:.05em; }
+  #product-eamesstool .img-credit { font-size:10px; color:var(--text-muted); margin:2px 0 0; }
+  #product-eamesstool .img-credit a { color:var(--us-line); }
+  </style>
+
+  <div id="product-eamesstool" class="product-panel">
+
+    <div class="config-wrapper">
+      <div class="section-title">Step 2 — 選擇造型 Shape（41 固定；四款同價，外型與重量不同）</div>
+      <div class="shape-grid">
+        <div class="shape-card" data-shape="A" onclick="selectStoolShape('A')">
+          <img src="https://images.hermanmiller.group/m/ea2e1db53cc94dea/W-HM_237_103701_walnut_f.png?w=420&auto=format" alt="Shape A" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape A</div>
+          <div class="sc-sub">411 · 15.5 lbs / 7.0 kg</div>
+          <div class="sc-tag">暢銷</div>
+        </div>
+        <div class="shape-card" data-shape="B" onclick="selectStoolShape('B')">
+          <img src="https://images.hermanmiller.group/m/6ff776eba44645ab/W-HM_OCC_41760.png?w=420&auto=format" alt="Shape B" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape B</div>
+          <div class="sc-sub">412 · 15.5 lbs / 7.0 kg</div>
+          <div class="sc-tag">暢銷</div>
+        </div>
+        <div class="shape-card" data-shape="C" onclick="selectStoolShape('C')">
+          <img src="https://images.hermanmiller.group/m/4018189dd45b5105/W-HM_OCC_41769.png?w=420&auto=format" alt="Shape C" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape C</div>
+          <div class="sc-sub">413 · 17.75 lbs / 8.1 kg</div>
+          <div class="sc-tag">暢銷</div>
+        </div>
+        <div class="shape-card" data-shape="D" onclick="selectStoolShape('D')">
+          <img src="https://images.hermanmiller.group/m/3725cc71fc832a4f/W-HM_OCC_41758.png?w=420&auto=format" alt="Shape D" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
+          <div class="sc-name">Shape D</div>
+          <div class="sc-sub">414 · 17.75 lbs / 8.1 kg</div>
+          <div class="sc-tag">新增造型</div>
+        </div>
+      </div>
+      <p class="img-credit">圖片來源：Herman Miller 官方圖庫（需連網載入）。完整外觀／實境圖／線圖見
+        <a href="https://store.hermanmiller.com/collection-eames-turned-stool?lang=en_US" target="_blank">官網產品頁</a>。</p>
+
+      <div class="section-title" style="margin-top:14px;">Step 3 — 木材飾面 Finish（EN／OU／WHN，決定價格）</div>
+      <div class="eames-config-item">
+        <div class="config-item-label">木材飾面 Finish <span class="config-item-step">Step 3</span></div>
+        <select class="eames-select" id="stool_finish" onchange="stoolOnChange()">
+          <option value="Walnut">胡桃木（OU / Walnut）— $2,010</option>
+          <option value="White Oak">白橡木（WHN / White Oak）— $1,932</option>
+          <option value="Ebony">黑檀（EN / Ebony）— $1,558</option>
+        </select>
+        <div class="config-price-display has-price" id="stoolFinishPrice">列價 $2,010</div>
+      </div>
+
+      
 
       <button class="btn-calc" onclick="stoolCalc()">計算總價</button>
     </div><!-- /config-wrapper -->
@@ -1428,11 +1595,6 @@
           <div class="line-name">美國線</div>
           <div class="line-price" id="stoolUsBadgePrice">—</div>
           <div class="line-method">單張 = 飾面列價（造型同價）</div>
-        </div>
-        <div class="line-badge asia pending">
-          <div class="line-name">亞洲線</div>
-          <div class="line-price na">需確認 / 走美國線進口</div>
-          <div class="line-method">Ancillary 不在 80-day Asia 手冊</div>
         </div>
       </div>
 
@@ -1540,17 +1702,78 @@
         <button class="btn-primary" onclick="chairParse()">計算價格</button>
         <button class="btn-clear" onclick="document.getElementById('chPasteInput').value=''">清除</button>
       </div>
-      <div class="input-hint">辨識變體碼（<code>EA337P</code>、<code>EA435N</code>、<code>EA437E2</code>、<code>ES204</code>…）。可加飾面 <code>G1/L/BK/91</code> 與布階 <code>CAT9</code>、<code>CAT10M</code>、<code>CATR</code>。</div>
-      <div class="examples">
-        <span class="examples-label">範例：</span>
-        <button class="example-btn" onclick="chairPasteEx('EA337P BK CAT9')">鋁製主管</button>
-        <button class="example-btn" onclick="chairPasteEx('EA437E2 G1 CAT11')">軟墊主管含墊</button>
-        <button class="example-btn" onclick="chairPasteEx('EA435N L CAT1')">軟墊中階無扶手</button>
-        <button class="example-btn" onclick="chairPasteEx('ES204 91 CATR')">Executive</button>
-      </div>
+      <div class="input-hint">辨識變體碼（<code>EA337P</code>、<code>EA435N</code>、<code>EA437E2</code>、<code>ES204</code>…）。可加飾面 <code>G1/L/BK/91</code> 與布階 <code>CAT9</code>、<code>CAT10M</code>、<code>CATR</code>。 <a href="https://www.hermanmiller.com/resources/materials/search/?p=eames-aluminum-group-chairs" target="_blank" style="color:var(--us-line);font-weight:600;">查布號對應級距 ↗</a></div>
     </div>
     <div class="alert alert-error" id="chPasteErr"><div id="chPasteErrMsg"></div></div>
+    <div class="alert alert-info" id="chPasteInfo"><div id="chPasteInfoMsg"></div></div>
     <div id="chairBody"></div>
+  </div>
+
+
+  <!-- ══════════ PRODUCT PANEL: EMBODY (US line only) ══════════ -->
+  <style>
+  #product-embody .emb-head{ display:flex; gap:14px; margin-bottom:14px; flex-wrap:wrap; }
+  #product-embody .emb-photo{ width:150px; height:150px; object-fit:contain; background:var(--step-bg); border:1px solid var(--border); border-radius:8px; flex-shrink:0; }
+  #product-embody .emb-photo-fb{ width:150px;height:150px;display:none;align-items:center;justify-content:center;text-align:center;background:var(--step-bg);border:1px solid var(--border);border-radius:8px;color:var(--text-muted);font-size:11px;padding:6px;flex-shrink:0; }
+  #product-embody .emb-meta{ flex:1; min-width:240px; }
+  #product-embody .emb-meta h2{ font-size:17px; font-weight:700; }
+  #product-embody .emb-meta .e-en{ font-size:12px; color:var(--text-muted); margin-top:2px; }
+  #product-embody .emb-meta .e-fam{ display:inline-block; font-family:'Consolas',monospace; font-size:11px; font-weight:700; background:var(--accent-light); border:1px solid var(--border); border-radius:4px; padding:2px 8px; margin-top:6px; color:var(--accent); }
+  #product-embody .emb-meta .e-desc{ font-size:12px; margin-top:8px; line-height:1.6; }
+  @media (max-width:640px){ #product-embody .emb-head{ flex-direction:column; } #product-embody .emb-photo,#product-embody .emb-photo-fb{ width:100%; height:200px; } }
+  </style>
+  <div id="product-embody" class="product-panel">
+    <div class="emb-head">
+      <img class="emb-photo" src="https://images.hermanmiller.group/m/08212e0294154b96/W-HM_4737_100147356_graphite_graphite_black_p.png?w=420&auto=format" alt="Embody" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="emb-photo-fb">圖片需連網載入<br>官網 Embody 產品頁</div>
+      <div class="emb-meta">
+        <h2>Embody Chair</h2><div class="e-en">Embody® Work Chair</div>
+        <span class="e-fam">CN122AWAA</span>
+        <div class="e-desc">人體工學工作椅,Bill Stumpf 與 Jeff Weber 設計。像素化座背隨體型與姿勢自動服貼、分散壓力並導熱;Instinctive Back 仿脊椎被動支撐;座深 15-18 吋 6 段、5 星腳、全功能扶手(上下/前後各 6 吋)。固定型號 CN122AWAA(標準高度+全功能扶手),底座/骨架飾面、滑輪、椅面布料可選。</div>
+        <div style="margin-top:6px;"><a class="e-en" style="color:var(--us-line);" href="https://store.hermanmiller.com/office-chairs-ergonomic-chairs/embody-chair/4737.html?lang=en_US" target="_blank">官網產品頁</a></div>
+      </div>
+    </div>
+
+    <div class="input-section" style="margin-bottom:14px;">
+      <label class="input-label">貼上型號直接算價(也可用下方下拉)</label>
+      <div class="input-row">
+        <input type="text" class="model-input" id="embPaste" placeholder="例：CN122AWAA XT 91 C7　或　CN122AWAA G1 G1 BB CAT2" onkeydown="if(event.key==='Enter') embPaste()">
+        <button class="btn-primary" onclick="embPaste()">計算價格</button>
+        <button class="btn-clear" onclick="document.getElementById('embPaste').value=''">清除</button>
+      </div>
+      <div class="input-hint">固定主碼 <code>CN122AWAA</code>。可加底座 <code>G1/XT/CD</code>、骨架 <code>G1/91/MG1/M91</code>、滑輪 <code>BB/C7/C9/H9</code>、布階 <code>CAT1/CAT2/CAT4</code>。</div>
+    </div>
+    <div class="alert alert-error" id="embErr"><div id="embErrMsg"></div></div>
+    <div class="alert alert-info" id="embInfo"><div id="embInfoMsg"></div></div>
+
+    <div class="config-wrapper">
+      <div class="section-title">選擇配置 Configuration（主碼 CN122AWAA 固定）</div>
+      <div class="eames-config-grid">
+        <div class="eames-config-item"><div class="config-item-label">底座飾面 Base Finish <span class="config-item-step">Step 4</span></div><select class="eames-select" id="embBF" onchange="embCalc()"></select></div>
+        <div class="eames-config-item"><div class="config-item-label">骨架飾面 Frame Finish <span class="config-item-step">Step 5</span></div><select class="eames-select" id="embFF" onchange="embCalc()"></select></div>
+        <div class="eames-config-item"><div class="config-item-label">滑輪 Casters <span class="config-item-step">Step 6</span></div><select class="eames-select" id="embCA" onchange="embCalc()"></select></div>
+        <div class="eames-config-item" style="grid-column:1 / -1;"><div class="config-item-label">椅面布料 Sync（Cat 4・+$147,點色卡選色） <span class="config-item-step">Step 7</span></div><div class="sw-wrap" id="embSync"></div></div>
+      </div>
+      <button class="btn-calc" onclick="embCalc()">計算總價</button>
+    </div>
+
+    <div class="result-block show" id="embResult">
+      <div class="line-badges"><div class="line-badge us active"><div class="line-name">美國線</div><div class="line-price" id="embUs">—</div></div></div>
+      <div class="model-badge"><span class="model-badge-label">配置碼</span><span id="embModel">—</span></div>
+      <div class="parse-card"><div class="parse-header us-h"><span>美國線解析</span></div>
+        <table class="steps-table"><thead><tr><th style="width:80px">Step</th><th style="width:90px">代碼</th><th>說明</th><th style="width:120px">金額 (USD)</th></tr></thead><tbody id="embSteps"></tbody></table></div>
+      <div class="total-bar"><div><div class="total-label">美國線單張定價(USD)</div><div class="total-sub">CN122AWAA 標準高度＋全功能扶手</div></div><div class="total-price"><span class="total-currency">USD</span><span id="embTotal">—</span></div></div>
+      <div class="twd-bar"><div><div class="twd-label">台幣換算</div><div class="twd-rate">匯率:1 USD ＝ <span id="embRateDisp">40</span> TWD(500 進位)</div></div>
+        <div style="text-align:right;"><div class="twd-price">NT$ <span id="embTwd">—</span></div><div class="twd-input-row" style="justify-content:flex-end;margin-top:6px;"><span style="font-size:11px;color:var(--text-muted);">匯率</span><input type="number" class="twd-input" id="embRate" value="40" step="0.5" min="1" onchange="embRecalcTWD()"><span style="font-size:11px;color:var(--text-muted);">TWD</span></div></div></div>
+    </div>
+
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
+      ※ 來源:Herman Miller Embody® Chairs Price Book(4/26,美國線列價 USD)。本款僅美國線。<br>
+      ※ 固定主碼 CN122AWAA＝CN1＋標準高度(22)＋全功能扶手(AWAA),基價 $2,361(高度 $2,121＋扶手 $240)。低/高高度與 Gaming、Ready-to-Assemble 款未納入。<br>
+      ※ 底座飾面 G1 $0／鈦金 +$40／拋光鋁 +$300;骨架飾面 G1 $0／白 +$45／MicrobeCare 抗菌 +$70~115;滑輪 BB $0／C7・C9 +$50／H9 +$70。<br>
+      ※ 椅面布料依 Price Category 加價(Cat1 含 8Z Pellicle 懸吊網 $0、Cat2 +$72、Cat4 +$147),實際布號請查 textiles 清單對應級距。<br>
+      ※ 定價為美金 USD,不含稅、運費;台幣換算僅供參考(500 進位)。
+    </div></details>
   </div>
 
 </div><!-- /container -->
@@ -1577,14 +1800,14 @@ const AERON_STEPS = [
   { key:'height', step:'Step 4',  label:'高度調整 Height Adjustment',
     options:{ '1':{desc:'Low-height range 低高度',price:0},'2':{desc:'Standard-height range 標準高度',price:0},'3':{desc:'High-height range 高高度',price:0} },
     note:'A size 只能選 1；C size 只能選 2 或 3' },
-  { key:'tilt',   step:'Step 5',  label:'傾仰機構 Tilt',
+  { key:'tilt',   step:'Step 5',  label:'椅背可後仰/前傾 Tilt 調整',
     options:{ '1':{desc:'Standard tilt 標準傾仰',price:0},'2':{desc:'Tilt limiter 傾仰限制',price:100},'3':{desc:'Tilt limiter + seat angle 傾仰限制＋座角調整',price:207} } },
   { key:'arms',   step:'Step 6',  label:'手臂 Arms',
-    options:{ 'N':{desc:'No arms 無手臂',price:0},'P':{desc:'Fixed arms 固定手臂',price:223},'H':{desc:'Height-adjustable arms 高度可調手臂',price:321},'A':{desc:'Height-adj. + pivot arms 高度可調＋旋轉手臂',price:473},'D':{desc:'Fully adjustable arms 全功能可調手臂',price:473} } },
+    options:{ 'N':{desc:'No arms 無手臂',price:0},'P':{desc:'Fixed arms 固定手臂',price:223},'H':{desc:'Height-adjustable arms 高度可調手臂',price:321},'A':{desc:'Height-adj. + pivot arms 高度可調＋旋轉手臂',price:473},'D':{desc:'Fully adjustable arms 把手可前後/左右/上下調整',price:473} } },
   { key:'armpad', step:'Step 7',  label:'扶手墊材質 Armpad Upholstery',
     options:{ 'N':{desc:'No arms — N/A',price:0},'W':{desc:'Nonupholstered armpads 非皮革扶手墊',price:0},'F':{desc:'Leather armpads 皮革扶手墊',price:168} } },
   { key:'back',   step:'Step 8',  label:'背部支撐 Back Support',
-    options:{ 'SZS':{desc:'Basic back support 基本背部支撐',price:0},'ZSS':{desc:'PostureFit® 骨盆支撐',price:45},'AJ':{desc:'Adjustable lumbar support 可調腰椎支撐',price:65},'ALP':{desc:'Adjustable PostureFit SL® 可調骨盆＋腰椎支撐',price:95} } },
+    options:{ 'SZS':{desc:'Basic back support 基本背部支撐',price:0},'ZSS':{desc:'PostureFit® 骨盆支撐',price:45},'AJ':{desc:'Adjustable lumbar support 可調腰椎支撐',price:65},'ALP':{desc:'ALP可調腰墊',price:95} } },
   { key:'frame',  step:'Step 9',  label:'框架顏色 Frame Finish',
     options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CRB':{desc:'Carbon (CP) 碳黑',price:85},'VPR':{desc:'Mineral 礦石灰',price:175},'BK':{desc:'Black 黑色',price:175},'DN2':{desc:'Nightfall 暮藍',price:175},'DJ2':{desc:'Jasper 碧玉綠',price:175},'MG1':{desc:'Graphite + MicrobeCare™',price:70},'MCR':{desc:'Carbon + MicrobeCare™',price:155},'MVR':{desc:'Mineral + MicrobeCare™',price:245},'MBL':{desc:'Black + MicrobeCare™',price:200},'MN2':{desc:'Nightfall + MicrobeCare™',price:245},'MJ2':{desc:'Jasper + MicrobeCare™',price:245},'ZB':{desc:'Graphite + Graphite Appliqué',price:175} } },
   { key:'chassis',step:'Step 10', label:'座盤顏色 Chassis Finish',
@@ -2085,7 +2308,7 @@ function _aeronCalcAsia(parsed) {
 }
 
 function _aeronBackDesc(c) {
-  return ({'SZS':'Basic back support','ZSS':'Fixed PostureFit','AJ':'Adjustable lumbar','ALP':'Adjustable PostureFit SL'}[c]) || c;
+  return ({'SZS':'Basic back support','ZSS':'Fixed PostureFit','AJ':'Adjustable lumbar','ALP':'ALP可調腰墊'}[c]) || c;
 }
 
 // =========================================================
@@ -4244,11 +4467,44 @@ stoolOnChange();
 // =========================================================
 // EAMES WORK CHAIRS ENGINE (5 models)
 // =========================================================
-const CHAIRS = {"AGE": {"name_en": "Eames Aluminum Group Executive Chair", "name_zh": "鋁製群組 主管椅(高背)", "family": "EA33", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_aluminum_group_chairs/ig_prd_ovw_eames_aluminum_group_chairs_07.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-aluminum-group-chairs/", "desc_zh": "高背、輕量鋁框＋懸吊式網布椅面;五星腳附滑輪、傾仰旋轉機構、手動或氣壓升降。", "variants": [["7", "EA337", 2954, "手動升降・扶手", 1, 0, 0], ["7P", "EA337P", 3218, "氣壓升降(標準行程)+傾仰鎖定・扶手", 1, 0, 0], ["7E", "EA337E", 3328, "氣壓升降(加長行程)+傾仰鎖定・扶手", 1, 0, 0], ["72", "EA3372", 3069, "手動升降・扶手含扶手墊", 1, 1, 0], ["7P2", "EA337P2", 3333, "氣壓升降(標準)+傾仰鎖定・扶手含墊", 1, 1, 0], ["7E2", "EA337E2", 3443, "氣壓升降(加長)+傾仰鎖定・扶手含墊", 1, 1, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 68], ["3", "Cat 3", 155], ["4", "Cat 4", 222], ["5", "Cat 5", 280], ["G5", "Cat 5 (Geiger)", 280], ["7", "Cat 7", 298], ["G7", "Cat 7 (Geiger)", 223], ["8", "Cat 8", 437], ["9", "Cat 9", 768], ["G10", "Cat 10 (Geiger)", 869], ["10M", "Cat 10M", 1040], ["11", "Cat 11", 950], ["B", "Cat B", 61], ["C", "Cat C", 84], ["D", "Cat D", 106], ["DWR4", "Cat 4 (DWR)", 185], ["E", "Cat E", 128], ["F", "Cat F", 166], ["G", "Cat G", 215], ["H", "Cat H", 262], ["J", "Cat J", 353], ["R", "Cat R", 1591]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": false, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "AGM": {"name_en": "Eames Aluminum Group Management Chair", "name_zh": "鋁製群組 中階椅(低背)", "family": "EA33", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_aluminum_group_chairs/ig_prd_ovw_eames_aluminum_group_chairs_06.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-aluminum-group-chairs/", "desc_zh": "低背、輕量鋁框＋懸吊式網布;可選滑輪或腳墊,有/無扶手或扶手含墊;五星腳、傾仰旋轉、手動或氣壓升降。", "variants": [["5", "EA335", 2705, "滑輪・手動升降・扶手", 1, 0, 0], ["4", "EA334", 2705, "腳墊・手動升降・扶手", 1, 0, 1], ["5P", "EA335P", 2972, "滑輪・氣壓(標準)+傾仰鎖定・扶手", 1, 0, 0], ["5E", "EA335E", 3080, "滑輪・氣壓(加長)+傾仰鎖定・扶手", 1, 0, 0], ["52", "EA3352", 2821, "滑輪・手動・扶手含墊", 1, 1, 0], ["42", "EA3342", 2821, "腳墊・手動・扶手含墊", 1, 1, 1], ["5P2", "EA335P2", 3086, "滑輪・氣壓(標準)+鎖定・扶手含墊", 1, 1, 0], ["5E2", "EA335E2", 3195, "滑輪・氣壓(加長)+鎖定・扶手含墊", 1, 1, 0], ["5N", "EA335N", 2022, "滑輪・手動・無扶手", 0, 0, 0], ["5PN", "EA335PN", 2285, "滑輪・氣壓(標準)・無扶手", 0, 0, 0], ["5EN", "EA335EN", 2394, "滑輪・氣壓(加長)・無扶手", 0, 0, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 60], ["3", "Cat 3", 112], ["4", "Cat 4", 172], ["5", "Cat 5", 211], ["G5", "Cat 5 (Geiger)", 211], ["7", "Cat 7", 223], ["G7", "Cat 7 (Geiger)", 223], ["8", "Cat 8", 437], ["9", "Cat 9", 731], ["G10", "Cat 10 (Geiger)", 827], ["10M", "Cat 10M", 1040], ["11", "Cat 11", 950], ["B", "Cat B", 47], ["C", "Cat C", 68], ["D", "Cat D", 94], ["DWR4", "Cat 4 (DWR)", 143], ["E", "Cat E", 113], ["F", "Cat F", 146], ["G", "Cat G", 191], ["H", "Cat H", 232], ["J", "Cat J", 313], ["R", "Cat R", 1544]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": true, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "SPE": {"name_en": "Eames Soft Pad Group Executive Chair", "name_zh": "軟墊群組 主管椅(高背)", "family": "EA43", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_soft_pad_chairs/ig_prd_ovw_eames_soft_pad_chairs_07.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-soft-pad-chairs/", "desc_zh": "高背、鋁框＋2吋厚泡棉軟墊;五星腳附滑輪、傾仰旋轉、手動或氣壓升降。", "variants": [["7", "EA437", 5099, "手動升降・扶手", 1, 0, 0], ["7P", "EA437P", 5359, "氣壓升降(標準行程)+傾仰鎖定・扶手", 1, 0, 0], ["7E", "EA437E", 5469, "氣壓升降(加長行程)+傾仰鎖定・扶手", 1, 0, 0], ["72", "EA4372", 5214, "手動升降・扶手含扶手墊", 1, 1, 0], ["7P2", "EA437P2", 5474, "氣壓升降(標準)+傾仰鎖定・扶手含墊", 1, 1, 0], ["7E2", "EA437E2", 5583, "氣壓升降(加長)+傾仰鎖定・扶手含墊", 1, 1, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 88], ["3", "Cat 3", 203], ["4", "Cat 4", 324], ["5", "Cat 5", 407], ["G5", "Cat 5 (Geiger)", 407], ["7", "Cat 7", 432], ["G7", "Cat 7 (Geiger)", 432], ["8", "Cat 8", 546], ["9", "Cat 9", 752], ["10", "Cat 10", 841], ["G10", "Cat 10 (Geiger)", 841], ["10M", "Cat 10M", 1352], ["11", "Cat 11", 1158], ["B", "Cat B", 119], ["D", "Cat D", 211], ["DWR4", "Cat 4 (DWR)", 270], ["E", "Cat E", 256], ["F", "Cat F", 330], ["G", "Cat G", 430], ["H", "Cat H", 522], ["I", "Cat I", 613], ["J", "Cat J", 706], ["L", "Cat L", 888], ["P", "Cat P", 1255], ["R", "Cat R", 2518]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": false, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "SPM": {"name_en": "Eames Soft Pad Group Management Chair", "name_zh": "軟墊群組 中階椅(低背)", "family": "EA43", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_soft_pad_chairs/ig_prd_ovw_eames_soft_pad_chairs_06.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-soft-pad-chairs/", "desc_zh": "低背、鋁框＋2吋厚泡棉軟墊;可選滑輪或腳墊,有/無扶手或扶手含墊;五星腳、傾仰旋轉、手動或氣壓升降。", "variants": [["5", "EA435", 4259, "滑輪・手動升降・扶手", 1, 0, 0], ["4", "EA434", 4259, "腳墊・手動升降・扶手", 1, 0, 1], ["5P", "EA435P", 4536, "滑輪・氣壓(標準)+傾仰鎖定・扶手", 1, 0, 0], ["5E", "EA435E", 4648, "滑輪・氣壓(加長)+傾仰鎖定・扶手", 1, 0, 0], ["52", "EA4352", 4373, "滑輪・手動・扶手含墊", 1, 1, 0], ["42", "EA4342", 4373, "腳墊・手動・扶手含墊", 1, 1, 1], ["5P2", "EA435P2", 4652, "滑輪・氣壓(標準)+鎖定・扶手含墊", 1, 1, 0], ["5E2", "EA435E2", 4763, "滑輪・氣壓(加長)+鎖定・扶手含墊", 1, 1, 0], ["5N", "EA435N", 3575, "滑輪・手動・無扶手", 0, 0, 0], ["5PN", "EA435PN", 3857, "滑輪・氣壓(標準)・無扶手", 0, 0, 0], ["5EN", "EA435EN", 3965, "滑輪・氣壓(加長)・無扶手", 0, 0, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 88], ["3", "Cat 3", 188], ["4", "Cat 4", 290], ["5", "Cat 5", 349], ["G5", "Cat 5 (Geiger)", 349], ["7", "Cat 7", 356], ["G7", "Cat 7 (Geiger)", 356], ["8", "Cat 8", 437], ["9", "Cat 9", 710], ["10", "Cat 10", 706], ["G10", "Cat 10 (Geiger)", 803], ["10M", "Cat 10M", 1087], ["11", "Cat 11", 950], ["B", "Cat B", 77], ["C", "Cat C", 96], ["D", "Cat D", 180], ["DWR4", "Cat 4 (DWR)", 242], ["E", "Cat E", 210], ["F", "Cat F", 294], ["G", "Cat G", 377], ["H", "Cat H", 502], ["I", "Cat I", 628], ["J", "Cat J", 745], ["L", "Cat L", 955], ["P", "Cat P", 1199], ["R", "Cat R", 1584]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": true, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "EXE": {"name_en": "Eames Executive Chair", "name_zh": "主管椅 (Time-Life)", "family": "ES204", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_executive_chairs/uw_prd_dtl_eames_executive_chairs_01.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-executive-chairs/", "desc_zh": "絨厚軟墊主管椅;座面4.5吋泡棉、椅背2片3吋泡棉、軟墊扶手;五星腳、傾仰旋轉、升降;可選滑輪或腳墊。", "variants": [["", "ES204", 6573, "標準・升降/傾仰/五星腳・含軟墊扶手", 1, 0, 0]], "finishes": [["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 83], ["91", "白 White (CP)", 104]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["GD", "1/2吋 腳墊 (GD)", 0], ["MD", "軟雙輪 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 90], ["3", "Cat 3", 203], ["4", "Cat 4", 324], ["5", "Cat 5", 407], ["G5", "Cat 5 (Geiger)", 407], ["7", "Cat 7", 432], ["G7", "Cat 7 (Geiger)", 432], ["G8", "Cat 8 (Geiger)", 622], ["9", "Cat 9", 779], ["10", "Cat 10", 847], ["G10", "Cat 10 (Geiger)", 847], ["10M", "Cat 10M", 1463], ["11", "Cat 11", 1052], ["G11", "Cat 11 (Geiger)", 1052], ["B", "Cat B", 119], ["C", "Cat C", 166], ["D", "Cat D", 211], ["E", "Cat E", 256], ["F", "Cat F", 330], ["G", "Cat G", 430], ["H", "Cat H", 522], ["I", "Cat I", 613], ["J", "Cat J", 706], ["L", "Cat L", 888], ["O", "Cat O", 1524], ["P", "Cat P", 1255], ["Q", "Cat Q", 1351], ["R", "Cat R", 2518], ["T", "Cat T", 2851], ["V", "Cat V", 2921]], "armpad": [], "hasGlide": true, "finishNote": "底座+骨架同色;黑 +$83、白 +$104(拋光鋁 $0)"}};
+const CHAIRS = {"AGE": {"name_en": "Eames Aluminum Group Executive Chair", "name_zh": "鋁製群組 主管椅(高背)", "family": "EA33", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_aluminum_group_chairs/ig_prd_ovw_eames_aluminum_group_chairs_07.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-aluminum-group-chairs/", "desc_zh": "高背款。鋁質側框中間繃一片透氣網布,坐起來服貼又通風;椅高可手動或氣壓調整,椅背可後仰、椅身可旋轉,搭五爪椅腳附滾輪。適合主管桌或會議桌主位。", "variants": [["7", "EA337", 2954, "手動旋轉椅高調整,含扶手", 1, 0, 0], ["7P", "EA337P", 3218, "氣壓式椅高調整(標準高度範圍),具後仰鎖定、含扶手", 1, 0, 0], ["7E", "EA337E", 3328, "氣壓式椅高調整(加高高度範圍),具後仰鎖定、含扶手", 1, 0, 0], ["72", "EA3372", 3069, "手動旋轉椅高調整,含扶手(含扶手軟墊)", 1, 1, 0], ["7P2", "EA337P2", 3333, "氣壓式椅高調整(標準高度範圍),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0], ["7E2", "EA337E2", 3443, "氣壓式椅高調整(加高高度範圍),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 68], ["3", "Cat 3", 155], ["4", "Cat 4", 222], ["5", "Cat 5", 280], ["G5", "Cat 5 (Geiger)", 280], ["7", "Cat 7", 298], ["G7", "Cat 7 (Geiger)", 223], ["8", "Cat 8", 437], ["9", "Cat 9", 768], ["G10", "Cat 10 (Geiger)", 869], ["10M", "Cat 10M", 1040], ["11", "Cat 11", 950], ["B", "Cat B", 61], ["C", "Cat C", 84], ["D", "Cat D", 106], ["DWR4", "Cat 4 (DWR)", 185], ["E", "Cat E", 128], ["F", "Cat F", 166], ["G", "Cat G", 215], ["H", "Cat H", 262], ["J", "Cat J", 353], ["R", "Cat R", 1591]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": false, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "AGM": {"name_en": "Eames Aluminum Group Management Chair", "name_zh": "鋁製群組 中階椅(低背)", "family": "EA33", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_aluminum_group_chairs/ig_prd_ovw_eames_aluminum_group_chairs_06.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-aluminum-group-chairs/", "desc_zh": "低背款。同樣是鋁框繃覆透氣網布;椅腳可選滾輪或固定腳墊,扶手可選無扶手、一般扶手或加扶手墊;椅高手動或氣壓調整,可後仰、可旋轉。一般辦公與會議桌通用。", "variants": [["5", "EA335", 2705, "有輪、手動旋轉椅高調整,含扶手", 1, 0, 0], ["4", "EA334", 2705, "固定腳、手動旋轉椅高調整,含扶手", 1, 0, 1], ["5P", "EA335P", 2972, "有輪、氣壓式椅高調整(標準高度),具後仰鎖定、含扶手", 1, 0, 0], ["5E", "EA335E", 3080, "有輪、氣壓式椅高調整(加高高度),具後仰鎖定、含扶手", 1, 0, 0], ["52", "EA3352", 2821, "有輪、手動旋轉椅高調整,含扶手(含扶手軟墊)", 1, 1, 0], ["42", "EA3342", 2821, "固定腳、手動旋轉椅高調整,含扶手(含扶手軟墊)", 1, 1, 1], ["5P2", "EA335P2", 3086, "有輪、氣壓式椅高調整(標準高度),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0], ["5E2", "EA335E2", 3195, "有輪、氣壓式椅高調整(加高高度),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0], ["5N", "EA335N", 2022, "有輪、手動旋轉椅高調整,無扶手", 0, 0, 0], ["5PN", "EA335PN", 2285, "有輪、氣壓式椅高調整(標準高度),無扶手", 0, 0, 0], ["5EN", "EA335EN", 2394, "有輪、氣壓式椅高調整(加高高度),無扶手", 0, 0, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 60], ["3", "Cat 3", 112], ["4", "Cat 4", 172], ["5", "Cat 5", 211], ["G5", "Cat 5 (Geiger)", 211], ["7", "Cat 7", 223], ["G7", "Cat 7 (Geiger)", 223], ["8", "Cat 8", 437], ["9", "Cat 9", 731], ["G10", "Cat 10 (Geiger)", 827], ["10M", "Cat 10M", 1040], ["11", "Cat 11", 950], ["B", "Cat B", 47], ["C", "Cat C", 68], ["D", "Cat D", 94], ["DWR4", "Cat 4 (DWR)", 143], ["E", "Cat E", 113], ["F", "Cat F", 146], ["G", "Cat G", 191], ["H", "Cat H", 232], ["J", "Cat J", 313], ["R", "Cat R", 1544]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": true, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "SPE": {"name_en": "Eames Soft Pad Group Executive Chair", "name_zh": "軟墊群組 主管椅(高背)", "family": "EA43", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_soft_pad_chairs/ig_prd_ovw_eames_soft_pad_chairs_07.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-soft-pad-chairs/", "desc_zh": "高背款。鋁框搭 2 吋厚泡棉軟墊,比網布款更厚實好坐;椅高可手動或氣壓調整,可後仰、可旋轉,搭五爪椅腳附滾輪。", "variants": [["7", "EA437", 5099, "手動旋轉椅高調整,含扶手", 1, 0, 0], ["7P", "EA437P", 5359, "氣壓式椅高調整(標準高度範圍),具後仰鎖定、含扶手", 1, 0, 0], ["7E", "EA437E", 5469, "氣壓式椅高調整(加高高度範圍),具後仰鎖定、含扶手", 1, 0, 0], ["72", "EA4372", 5214, "手動旋轉椅高調整,含扶手(含扶手軟墊)", 1, 1, 0], ["7P2", "EA437P2", 5474, "氣壓式椅高調整(標準高度範圍),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0], ["7E2", "EA437E2", 5583, "氣壓式椅高調整(加高高度範圍),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 88], ["3", "Cat 3", 203], ["4", "Cat 4", 324], ["5", "Cat 5", 407], ["G5", "Cat 5 (Geiger)", 407], ["7", "Cat 7", 432], ["G7", "Cat 7 (Geiger)", 432], ["8", "Cat 8", 546], ["9", "Cat 9", 752], ["10", "Cat 10", 841], ["G10", "Cat 10 (Geiger)", 841], ["10M", "Cat 10M", 1352], ["11", "Cat 11", 1158], ["B", "Cat B", 119], ["D", "Cat D", 211], ["DWR4", "Cat 4 (DWR)", 270], ["E", "Cat E", 256], ["F", "Cat F", 330], ["G", "Cat G", 430], ["H", "Cat H", 522], ["I", "Cat I", 613], ["J", "Cat J", 706], ["L", "Cat L", 888], ["P", "Cat P", 1255], ["R", "Cat R", 2518]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": false, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "SPM": {"name_en": "Eames Soft Pad Group Management Chair", "name_zh": "軟墊群組 中階椅(低背)", "family": "EA43", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_soft_pad_chairs/ig_prd_ovw_eames_soft_pad_chairs_06.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-soft-pad-chairs/", "desc_zh": "低背款。鋁框搭 2 吋厚泡棉軟墊;椅腳可選滾輪或固定腳墊,扶手可選無扶手、一般扶手或加扶手墊;椅高手動或氣壓調整,可後仰、可旋轉。", "variants": [["5", "EA435", 4259, "有輪、手動旋轉椅高調整,含扶手", 1, 0, 0], ["4", "EA434", 4259, "固定腳、手動旋轉椅高調整,含扶手", 1, 0, 1], ["5P", "EA435P", 4536, "有輪、氣壓式椅高調整(標準高度),具後仰鎖定、含扶手", 1, 0, 0], ["5E", "EA435E", 4648, "有輪、氣壓式椅高調整(加高高度),具後仰鎖定、含扶手", 1, 0, 0], ["52", "EA4352", 4373, "有輪、手動旋轉椅高調整,含扶手(含扶手軟墊)", 1, 1, 0], ["42", "EA4342", 4373, "固定腳、手動旋轉椅高調整,含扶手(含扶手軟墊)", 1, 1, 1], ["5P2", "EA435P2", 4652, "有輪、氣壓式椅高調整(標準高度),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0], ["5E2", "EA435E2", 4763, "有輪、氣壓式椅高調整(加高高度),具後仰鎖定、含扶手(含扶手軟墊)", 1, 1, 0], ["5N", "EA435N", 3575, "有輪、手動旋轉椅高調整,無扶手", 0, 0, 0], ["5PN", "EA435PN", 3857, "有輪、氣壓式椅高調整(標準高度),無扶手", 0, 0, 0], ["5EN", "EA435EN", 3965, "有輪、氣壓式椅高調整(加高高度),無扶手", 0, 0, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 88], ["3", "Cat 3", 188], ["4", "Cat 4", 290], ["5", "Cat 5", 349], ["G5", "Cat 5 (Geiger)", 349], ["7", "Cat 7", 356], ["G7", "Cat 7 (Geiger)", 356], ["8", "Cat 8", 437], ["9", "Cat 9", 710], ["10", "Cat 10", 706], ["G10", "Cat 10 (Geiger)", 803], ["10M", "Cat 10M", 1087], ["11", "Cat 11", 950], ["B", "Cat B", 77], ["C", "Cat C", 96], ["D", "Cat D", 180], ["DWR4", "Cat 4 (DWR)", 242], ["E", "Cat E", 210], ["F", "Cat F", 294], ["G", "Cat G", 377], ["H", "Cat H", 502], ["I", "Cat I", 628], ["J", "Cat J", 745], ["L", "Cat L", 955], ["P", "Cat P", 1199], ["R", "Cat R", 1584]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": true, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "EXE": {"name_en": "Eames Executive Chair", "name_zh": "主管椅 (Time-Life)", "family": "ES204", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_executive_chairs/uw_prd_dtl_eames_executive_chairs_01.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-executive-chairs/", "desc_zh": "厚軟墊主管椅,源自紐約 Time-Life 大廳。座墊 4.5 吋、椅背兩片各 3 吋厚泡棉,連扶手都包覆軟墊,坐感紮實沉穩;椅高可調、可後仰、可旋轉,五爪椅腳,椅腳可選滾輪或固定腳墊。", "variants": [["", "ES204", 6573, "標準・升降/傾仰/五星腳・含軟墊扶手", 1, 0, 0]], "finishes": [["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 83], ["91", "白 White (CP)", 104]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["GD", "1/2吋 腳墊 (GD)", 0], ["MD", "軟雙輪 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 90], ["3", "Cat 3", 203], ["4", "Cat 4", 324], ["5", "Cat 5", 407], ["G5", "Cat 5 (Geiger)", 407], ["7", "Cat 7", 432], ["G7", "Cat 7 (Geiger)", 432], ["G8", "Cat 8 (Geiger)", 622], ["9", "Cat 9", 779], ["10", "Cat 10", 847], ["G10", "Cat 10 (Geiger)", 847], ["10M", "Cat 10M", 1463], ["11", "Cat 11", 1052], ["G11", "Cat 11 (Geiger)", 1052], ["B", "Cat B", 119], ["C", "Cat C", 166], ["D", "Cat D", 211], ["E", "Cat E", 256], ["F", "Cat F", 330], ["G", "Cat G", 430], ["H", "Cat H", 522], ["I", "Cat I", 613], ["J", "Cat J", 706], ["L", "Cat L", 888], ["O", "Cat O", 1524], ["P", "Cat P", 1255], ["Q", "Cat Q", 1351], ["R", "Cat R", 2518], ["T", "Cat T", 2851], ["V", "Cat V", 2921]], "armpad": [], "hasGlide": true, "finishNote": "底座+骨架同色;黑 +$83、白 +$104(拋光鋁 $0)"}};
 const CHAIR_ORDER = ["AGE", "AGM", "SPE", "SPM", "EXE"];
-const CHAIR_SHORT = {"AGE": "鋁製主管", "AGM": "鋁製中階", "SPE": "軟墊主管", "SPM": "軟墊中階", "EXE": "Executive"};
+const CHAIR_SHORT = {"AGE": "Aluminum Group Executive", "AGM": "Aluminum Group Management", "SPE": "Soft Pad Executive", "SPM": "Soft Pad Management", "EXE": "Eames Executive"};
 
+
+const CHAIR_SPECS = {
+ "AGE":[["設計","Charles & Ray Eames・1958"],["保固","12 年"],["最大承重","300 lbs(約 136 kg)"],["椅背","高背"],["座面高度","43–50 cm(17–19.75 吋;加高款更高)"],["座深","46 cm(18 吋)"],["椅面","鋁框繃覆透氣網布"],["環保","可回收率最高 95%・GREENGUARD Gold 低逸散認證・Global GreenTag Level A"]],
+ "AGM":[["設計","Charles & Ray Eames・1958"],["保固","12 年"],["最大承重","300 lbs(約 136 kg)"],["椅背","低背"],["座面高度","43–50 cm(17–19.75 吋;加高款更高)"],["座深","46 cm(18 吋)"],["椅面","鋁框繃覆透氣網布"],["環保","可回收率最高 95%・GREENGUARD Gold 低逸散認證・Global GreenTag Level A"]],
+ "SPE":[["設計","Charles & Ray Eames・1958"],["保固","12 年"],["最大承重","300 lbs(約 136 kg)"],["椅背","高背"],["座面高度","48–57 cm(19–22.5 吋)"],["座深","46 cm(18 吋)"],["椅面","2 吋厚泡棉軟墊"],["環保","可回收率最高 83%・GREENGUARD Gold 低逸散認證"]],
+ "SPM":[["設計","Charles & Ray Eames・1958"],["保固","12 年"],["最大承重","300 lbs(約 136 kg)"],["椅背","低背"],["座面高度","48–57 cm(19–22.5 吋)"],["座深","46 cm(18 吋)"],["椅面","2 吋厚泡棉軟墊"],["環保","可回收率最高 83%・GREENGUARD Gold 低逸散認證"]],
+ "EXE":[["設計","Charles & Ray Eames・1960(Time-Life)"],["椅墊","座墊 4.5 吋泡棉;椅背兩片各 3 吋泡棉;軟墊扶手"],["功能","椅高可調、可後仰、可旋轉、五爪椅腳"],["椅腳","可選滾輪或固定腳墊"]]
+};
+CHAIRS.SDC = {
+ "name_en":"Eames Aluminum Group Side Chair","name_zh":"鋁製群組 單椅","family":"EA30",
+ "img":"https://images.hermanmiller.group/m/2470a81ebe259126/W-LI_EAG_P_20120915_134.png?w=520&auto=format",
+ "store":"https://store.hermanmiller.com/search?q=Eames+Aluminum+Group+Side+Chair&lang=en_US",
+ "desc_zh":"低背單椅。鋁框繃覆透氣網布;4 星腳附固定腳墊、固定椅高;底座可選旋轉或固定,扶手可選無扶手、一般扶手或加扶手墊。會議、洽談、餐桌通用。",
+ "variants":[["6S","EA306S",2051,"無扶手・旋轉底座",0,0,0],["6F","EA306F",2178,"無扶手・固定底座(不旋轉)",0,0,0],["8S","EA308S",2676,"含扶手・旋轉底座",1,0,0],["8F","EA308F",2800,"含扶手・固定底座(不旋轉)",1,0,0],["2S","EA302S",2790,"含扶手(含扶手軟墊)・旋轉底座",1,1,0],["2F","EA302F",2914,"含扶手(含扶手軟墊)・固定底座(不旋轉)",1,1,0]],
+ "finishes":[["G1","石墨灰 Graphite (CP)",0],["L","拋光鋁 Polished Aluminum",0],["BK","黑 Black",87],["91","白 White (CP)",87]],
+ "casters":[["GD","1/2吋 腳墊 GD(4 星腳標配)",0]],"glide":[],
+ "fabric":[["1","Cat 1",0],["2","Cat 2",60],["3","Cat 3",112],["4","Cat 4",172],["DWR4","Cat 4 (DWR)",143],["5","Cat 5",188],["G5","Cat 5 (Geiger)",188],["7","Cat 7",223],["G7","Cat 7 (Geiger)",223],["8","Cat 8",437],["9","Cat 9",731],["G10","Cat 10 (Geiger)",827],["10M","Cat 10M",1040],["11","Cat 11",950],["B","Cat B",47],["C","Cat C",68],["D","Cat D",90],["F","Cat F",146],["G","Cat G",191],["H","Cat H",232],["J","Cat J",313],["R","Cat R",1544]],
+ "armpad":[["11","Cat 11 皮革",0],["R","Cat R 皮革",10]],
+ "hasGlide":false,"singleFin":true,"finishNote":"底座與骨架為單一飾面(同色);黑／白 +$87(石墨灰／拋光鋁 +$0)"
+};
+CHAIR_SHORT.SDC = "Aluminum Group Side Chair";
+CHAIR_SPECS.SDC = [["設計","Charles & Ray Eames・1958"],["保固","12 年"],["最大承重","300 lbs(約 136 kg)"],["椅背","低背單椅"],["底座","4 星腳・固定腳墊・固定椅高;可選旋轉/固定"],["座深","約 46 cm"],["椅面","鋁框繃覆透氣網布"],["環保","可回收率最高 95%・GREENGUARD Gold・Global GreenTag Level A"]];
+if(CHAIR_ORDER.indexOf("SDC")<0) CHAIR_ORDER.splice(2,0,"SDC");
+function specHtml(k){
+  var sp=CHAIR_SPECS[k]; if(!sp) return "";
+  var rows=sp.map(function(r){ return '<div class="cs-row"><span class="cs-k">'+r[0]+'</span><span class="cs-v">'+r[1]+'</span></div>'; }).join("");
+  return '<details class="ch-specs"><summary>規格與環保 Specs</summary><div class="cs-body">'+rows+'</div></details>';
+}
 let curChair = "AGE";
+var chFabNum = "";
+const FABRIC_CAT = {"1MN":"1","4SC":"1","92":"2","1HA":"2","ZMA":"2","8I1":"2","3SL":"2","8R":"2","3AC":"3","43Z":"3","4GE":"3","540":"4","1AL":"4","1GH":"5","3SU":"5","26Y":"7","172":"7","8PV":"7","21":"9","5-":"10","1NX":"11","TI":"B","Z27":"C","8I8":"D","ZAT":"E","82T":"F","74M":"F","V9G":"F","V9B":"F","Z33":"F","8AR":"G","ZSV":"R","ZPA":"10M","ZLM":"15M"};
+const FABRIC_PREFIXES = Object.keys(FABRIC_CAT).sort(function(a,b){return b.length-a.length;});
+const SWATCH = {"1":[["1MN02","4d8f45c2-2da0-4f48-afda-8d44028a88e1"],["1MN12","7334e8e3-481c-4083-bbb1-9ab0e9ed3ea0"],["1MN13","25be253d-723f-4325-9136-a53b2b9a2e21"],["1MN14","9aff1fa9-8a17-4cf7-aebd-f3c435256726"],["1MN04","037a0f32-4781-4a3a-8dd9-2ff20763e1bd"],["1MN01","9abd7e2c-bc46-424f-bfdf-2d6823542535"],["1MN11","3403b7c7-019c-4e6b-b024-042391a8e074"],["1MN09","30f27cd9-44d1-44e6-8a15-2c18c8ce9241"],["1MN07","13417259-795c-4fe7-beba-f177aae408d9"],["1MN05","8b009330-76aa-4c36-b5e5-a28ae289a0bd"],["1MN06","76237245-4265-4da4-892e-7b3f6fe53b1b"],["4SC01","ae691f04-5175-480c-bf24-4347f5c1f7cc"],["4SC12","978a1100-ff93-48f6-8ed0-8fef63012a86"],["4SC09","16094ad9-af6b-456f-b084-aefa1834fe3b"],["4SC02","2b5d43fe-77d0-414c-8756-fb77558fb21d"],["4SC08","e4ef716d-7893-4784-a59c-0a8bfd9d130d"],["4SC10","e1a8b768-6efc-42a7-9168-686616da397c"],["4SC07","8dc6398e-20f4-486d-b472-3870c708587a"],["4SC04","24d9da60-e526-4ab3-866d-f68dc381b93d"],["4SC03","a7c1ba97-05c9-4f24-b40d-70740c402e8b"],["4SC11","905473e9-f7af-49fe-bfc1-a7a183b54abe"]],"2":[["9241","f5a28783-8a58-41ce-a35e-42c2cec27a07"],["9223","06509f26-57d9-48ca-b40e-62cb72b072b0"],["9269","8e7ddbd0-6dcc-47cd-97a8-1add2f800c59"],["9207","c8c72532-935a-477a-8e50-5b12f3fe8001"],["9251","b227bcc9-5bc6-4d77-b10a-c228b2483ba5"],["9268","d3fc4f7a-a301-4951-9442-3df64bba42f8"],["9262","88c6912d-d27a-4c0c-9c21-7cf0138d0d68"],["9267","0bf35bad-edd4-4787-9028-aea3a3ebfd95"],["9201","6a13cb02-1cf5-4350-b087-818daa190441"],["9265","1d9b4ce0-fbb8-4874-b223-92f1121d650b"],["9270","218c729c-e53a-477e-a270-50415fe997b7"],["9266","eefd4302-4692-4510-bdc8-4d55a98a97f4"],["9261","0686cd27-9597-4523-9afe-74a76c5e445b"],["9252","aefd8bc7-7e93-4aef-acb3-69e889afaf47"],["9203","8bba4f72-a4cd-4a8d-8fd9-73e1a08f2c45"],["9249","799b6600-3cc9-4089-8011-7c00cc979f27"],["1HA13","02b6cd4b-d61d-4c6e-b440-d6e440ae223f"],["1HA15","fd0fc706-2a22-4d78-a6e6-6322dfd96028"],["1HA14","4d89c8c4-4b6d-4184-b205-d6a1a06cda90"],["1HA03","7bb55261-219b-40b0-92cd-37a90c1fc871"],["1HA07","d8a6a552-6eff-441a-bae0-2d9cecffc36f"],["1HA04","33a79008-6c1e-4f70-b527-5261e8e3d230"],["1HA09","c2a410f5-7722-4da6-b17d-3b4a63d71c98"],["1HA22","ad0d233a-eb77-4814-b287-aa7adb5d639a"],["1HA11","b5dde979-1bff-4b5b-bb3d-5c5a5f8242c9"],["1HA23","e4a7fb98-d129-483b-84fd-f15879aa4672"],["1HA01","8d6830c6-239e-4508-8e4e-6d09125a0514"],["1HA02","c8553ae2-5a54-465d-a177-1d3b041cabc4"],["ZMA16","775b7acf-33a9-4351-b23d-9490f8db7f2c"],["ZMA17","aebfff2f-68f6-461d-92fd-dc4c2f76349c"],["ZMA29","5931e180-c501-4fc6-9b34-27db8559df9c"],["ZMA27","90f5bb16-1b94-478e-b2ff-06c5829f0d01"],["ZMA13","4e6c6d55-4a10-46a2-90f9-0e4cdfa3005a"],["ZMA42","ab4d18ec-06e6-47b9-8cb6-af93cf1277a2"],["ZMA11","010100aa-e1f5-4e1b-8869-7216385ea24f"],["ZMA30","9ae3e78b-4956-47e5-87de-b593558c31c7"],["ZMA33","10857a5c-ddd0-492a-a320-3de2436a5dc2"],["ZMA31","0c2c95fc-9a79-483b-b244-312631c33e3a"],["ZMA05","09bc210a-ece4-432d-8d83-252878207074"],["ZMA28","35dc476c-f72e-417c-8a8a-6f387a922656"],["ZMA04","5dbc25cc-fff6-4a71-bee7-c0dcbc2033cf"],["ZMA06","348c0237-f497-4176-8d8c-6b15d56e0203"],["ZMA12","a9fe3298-4ebd-4330-bcca-e392ffffa533"],["ZMA08","447bc78f-16bf-4bfc-9aca-f0ae210095a2"],["ZMA41","7997f161-29c7-4950-ac63-01d6da2d4468"],["ZMA32","e12285de-6987-4b80-9be4-bd2e6c347187"],["ZMA43","b5f1009a-6e7c-4f50-a776-c4c5a909c4f8"],["ZMA36","83877a1b-8b29-4144-8f80-aed562e618b9"],["ZMA21","95c4b2f8-e0a3-493a-bcfa-cc36f74f90a0"],["ZMA03","35c019db-3863-41bd-931b-99f78df7411d"],["ZMA38","0d19914d-06d8-4e1f-9777-7e4fcd475882"],["ZMA18","65271caf-e6be-4ae6-8df4-ed071d6cb212"],["ZMA14","cb39127c-98fe-471d-ba63-8e09a7a52039"],["ZMA34","59c0f24c-f6e5-4adc-805f-22d32ed7a084"],["ZMA02","8bd0eb3c-1501-4313-985b-b2e8af8a8625"],["ZMA24","6ad34940-ab97-4dda-bb1e-d1f968821d7e"],["ZMA10","0e7717a0-ecbf-4c46-9e09-234eda9f4891"],["ZMA22","da349817-359c-477c-bdf8-996d4c9e4c9c"],["ZMA37","44629c29-7662-431c-afa1-e3543a129418"],["ZMA19","b93b44fc-1b1a-42dd-a18b-c1995276d91a"],["ZMA26","c312ea02-6aee-4abc-b39f-8c7ed0ab2b87"],["ZMA35","4998cce8-8f7f-4862-a9cf-29eab21f9465"],["ZMA39","617d2890-c0c1-44f1-a2a1-bd74180ee67c"],["ZMA07","4d15abac-75a9-4ec1-bfc1-0086dfdf1d5d"],["ZMA40","7a0bf3e3-a99c-4496-bb88-70ad6dd8e3d5"],["ZMA23","3ac6effe-82c9-416f-a7b7-ebee15960b47"],["ZMA09","0cd2c420-08b6-4dba-a75a-9c0f4315515f"],["ZMA15","9281b2ad-09cc-4b7e-bfd8-fd8e1285ee69"],["ZMA20","94b607dd-6a9b-46e6-b296-90db8bdd9bab"],["ZMA45","30e0aadf-f1d1-43cb-95fe-3f298b343d8e"],["ZMA25","eec6b77e-b345-4c38-9d0a-9abeced47c62"],["ZMA44","8dedc8d3-7894-4835-8cda-05477afd11dd"],["8I104","db35a0be-47b5-4847-8ce1-bc804d958bbf"],["8I111","0c8d0a6d-e617-4bba-8751-44ce6d0eb62f"],["8I130","ee725db8-aea3-48a0-913a-ea07f7e6521c"],["8I107","83cdffdd-287c-4335-b2a2-715a8923695f"],["8I110","ee0c4c29-d32f-4c09-b441-64cf79bd117d"],["8I101","273ce4bd-eee6-4d55-8ef9-cf69a888e00e"],["8I108","ef76bbaf-3ad5-4a63-9e10-0b925283a527"],["8I116","86f4eaab-29ab-4ac2-827f-0dd02277cbea"],["8I113","c8c41a7a-b82b-45a6-84a0-0439dc08240f"],["8I112","894fe408-8cc8-4c65-9f55-47e15675cbf1"],["8I124","86cca0b3-d61c-4838-b10e-1ad8792d3701"],["8I125","67dd55d1-2cd5-428b-bfeb-a83dcba285f2"],["8I109","bf7942c0-5687-459a-a99f-d8b92ed7da5c"],["8I114","e356cda2-111f-475a-90bb-055e6959a7ba"],["8I126","617b51b2-c8fe-4c3d-afcc-430a85769aab"],["8I118","2aac4b6f-b0cc-4473-92e9-5f47a08dfb9d"],["8I129","46be3702-c5bd-4af7-9c2e-9bb43cb9d641"],["8I119","468757ef-14ec-47e1-b641-fd3839a568f6"],["8I106","497b7c12-dbd4-464b-9ccf-04f5c393d00e"],["8I102","20f7b41c-8d02-49cb-8f1b-7450e2761bf7"],["8I117","c57db2be-a64a-4cdc-9eb3-a0f2040c0e29"],["8I103","6af0a799-0840-4dc4-a60a-fb8d8aeff37e"],["8I115","cb12f7af-bc15-4f53-b74b-4bdbbfd44472"],["8I122","dc85b159-b20f-498d-8fc2-c64c9e65c92e"],["8I128","a2fce089-11dd-4f37-91f4-3dec13d55240"],["8I123","3b299f5c-e464-458c-862e-f99f6b9202ff"],["8I105","b914ef24-c8aa-4157-9cd8-2866405dc022"],["8I120","f628ba1f-ec6c-4ab7-bd15-475ad54c959d"],["3SL10","76809722-adb1-4b35-96f4-4b3eceb84578"],["3SL15","d58ae769-f4b5-453d-aec2-983b9e0bebe5"],["3SL14","d897508b-f80b-4dd4-b390-45d519232840"],["3SL11","a435da6c-e29e-4b97-a96b-3745d443d1f0"],["3SL03","cec7c535-9a3b-4f0a-93c5-a467195b4e77"],["3SL28","bb8350a2-7525-4566-8a3a-e007776ee773"],["3SL02","be503b01-a8f6-406c-b45a-16168c71aa57"],["3SL06","11d6cf8c-353a-4d24-bc04-42726a0feb9f"],["3SL09","740223a5-ca2c-4ea6-acd4-916ab5450e4d"],["3SL12","8c7a988d-0e9b-4c8c-ad46-629d6b7b5ea7"],["3SL13","a5017159-78a8-462b-86ad-44623915c252"],["3SL04","a2719b4d-7024-47f8-ad7e-9e939f5243cf"],["3SL01","25b13e95-1fcc-4e04-86d1-fe8e6d969cee"],["8R17","e2aaeaf6-2839-4600-8ffc-85151dc365a7"],["8R22","83714b5e-2322-499c-afbf-bbe9f772800f"],["8R37","4927a100-b78c-40f8-8b41-d79043dead07"],["8R27","d6216c27-7a81-4d9c-806d-ad3891f337e3"],["8R33","ce923eef-7043-46dd-818d-bdd31f8b6819"],["8R16","358ebcc7-0acb-4a1e-b550-6c1a5248d70a"],["8R23","6884270a-a059-4ff8-b1b5-496f4cd3ebb7"],["8R26","6e0207b2-6658-4eae-82b7-df1c584919d0"],["8R36","11ef99e7-fd11-4e24-a616-3897be2ea2d5"],["8R29","d79a3620-2e7e-4bc2-b689-0a529361437a"],["8R10","7d83209d-e7f6-4641-b999-fd1a222d1a2f"],["8R18","aeae6178-130e-4e0b-bb0c-42bdbbc44044"],["8R15","7f57275f-2ff8-43a2-97a2-e97656dcc4ab"],["8R14","0a24f3f8-b695-4fb9-a797-8d8b79abfec3"],["8R35","4e3f9f3f-054b-495e-aa82-8278e7721afe"],["8R05","82a4f31d-80d0-473c-8ba8-d1d7aca4ed37"]],"3":[["3AC14","7fe115b6-72be-4201-a1f0-64c57f7514bc"],["3AC12","0354639a-66c6-4f21-903e-ffae6e7b6d2f"],["3AC22","80d0c772-a8d6-4a13-ae69-584206984573"],["3AC16","ca9cae97-26aa-43b6-b31f-039be3cab2ca"],["3AC08","c99856a5-39a3-440a-8e52-dc0c19faa019"],["3AC06","af24dfea-dff1-42e2-b914-9c0935453ee2"],["3AC09","45b8a5ce-14c2-4074-8c9f-bf6abddedd02"],["3AC05","da4f027c-e00c-4314-b317-c44b12eb3452"],["3AC15","0f283dfb-501d-4b35-8448-4d36bec60912"],["3AC20","69ca6314-eeac-4b6b-adc0-1046aa212318"],["3AC21","43ba1b1e-a487-47cb-bbb5-98ea5e6ba444"],["3AC04","2d262421-591d-416b-b39c-9d767c4c4ad0"],["3AC18","6e4b4eb7-642b-49f1-9a2b-673d5a488f7a"],["3AC17","701a9746-fbda-4ba1-8655-62e55a3ee779"],["3AC03","3bc1f81e-3bdf-494b-bc1c-e6c0d6e8a15b"],["3AC13","c76429d3-6219-4b23-acb3-b8cc92777e7c"],["3AC01","041f08b9-cc3d-4a59-9eb2-bcc26d7371e1"],["3AC02","a0806fa3-a890-4539-aea2-11c0d51cd74d"],["43Z04","74ebca07-c5e9-4d05-b938-4cc0e9dd16b4"],["43Z02","8da03260-0f47-467e-b750-139b8d1dea7e"],["43Z01","b6c4c812-2b6a-4558-ba88-5a62d2a50a59"],["43Z03","7f8d60d7-734a-4acb-a653-e373dfb79efb"],["4GE03","17810078-8f86-4a91-8785-879a63d998de"],["4GE02","4f1b87fd-5f7b-48e3-be8d-cfb7332c804e"],["4GE06","cd421145-46bc-4abb-aa0b-90c1d6a9ce36"],["4GE05","4b6e9c58-4172-4fd6-93e3-c140613205f1"],["4GE01","0283abdf-58a9-46c2-b24c-778555688ccd"],["4GE04","dd06ab74-8e24-4a06-bba6-ea583c1feb89"]],"4":[["5401","1673ee72-a85c-4d21-95d6-e7008623be35"],["5403","b781bed7-6a71-4c04-8623-10478cea1d65"],["5402","543bf116-61bb-4f47-af74-48021b3b30e2"],["1AL10","ab70dd90-fbb1-4c5e-864a-69c5501030c9"],["1AL01","c4a75247-39ce-4024-bfa6-6889fe342bc6"],["1AL08","fe19ebd6-481c-401b-a07b-390753c911f4"],["1AL02","4206de9d-af9b-467e-b1ba-1373b9e0da16"],["1AL12","e38707dc-39f4-4a54-a557-0527b78704a1"],["1AL04","4fa7f75b-c456-4ad6-972b-c0cd689a6bfe"],["1AL06","9aabc571-70b4-4bbb-a9cc-24c1be688012"],["1AL05","63baeb1b-c4d4-4005-ba04-50839fecc975"],["1AL07","44b42ac9-7cbd-477f-b98f-d12696bac6f8"],["1AL03","73802c2d-349a-48d5-91ac-76e0fe511a9f"]],"5":[["1GH08","b528df21-a6d1-43ea-b640-75f6a6b88dc0"],["1GH03","b7b72964-0c37-4e11-9a22-e517b1344b8e"],["1GH02","2c5a1ca9-e2c2-42e0-b100-4c2beeb97eb5"],["1GH01","b765c2e6-5eff-4767-b432-d35851277561"],["1GH04","e24dfffc-99a6-4dbe-9dd8-c0b3b7fc640b"],["1GH07","8c05fe70-4668-49d2-a66a-05d43cf9e616"],["1GH05","0c698c3d-fc4d-44e4-896b-7c821b987b7c"],["3SU09","86f139e8-812f-4370-8df8-54d236502288"],["3SU07","eac95246-ef39-44f1-aeec-3e981bb95e3c"],["3SU10","a4224c2f-3397-45ff-ac8b-1309e55b6213"],["3SU02","ee5efa0b-1588-4c6b-a0d5-e6b00dc076fa"],["3SU04","82505407-254b-4e3b-aab5-8a23e7ddfbc8"],["3SU03","80c3445f-90a7-4881-92e8-ce0f13828adc"]],"7":[["26Y05","9cee3128-f592-4277-ae35-24908e855163"],["26Y02","38be2d93-270c-47ab-ace6-76cd4b01a0e5"],["26Y06","993d1bd0-e437-49cf-82c0-ebd3f0d04584"],["26Y01","a94e6567-8f28-4519-8559-d26a8377f7c0"],["26Y09","1cbf5152-380f-47dc-a3fb-9be67b56cab4"],["26Y08","2444ff24-0813-403a-8fcc-3e53aca99544"],["26Y07","e5582a9f-2b88-4599-a5c8-bf4a861536c0"],["26Y03","05ab3471-af10-48ac-adcc-7c638033f498"],["26Y04","f6fe1d21-035f-412f-ba18-4e93c9a3ab48"],["26Y10","590a33f8-8e92-4dbc-8499-cbb182ab05b5"],["17205","57da9132-38bb-4fbc-9e9c-5c0ad31b05a0"],["17208","1e3e4d1d-98cd-41c5-8859-5365a47c95c6"],["17204","069c931b-475e-4476-bbc4-1d0f2b3eced2"],["17212","7bbf7133-f8a0-402c-b7a7-e08c9d90d12e"],["17206","27480678-eaa5-4502-9948-441bfbc2b290"],["17207","5f1ee87f-a587-469e-9c33-ae01735dcaed"],["17209","85181817-846d-4cf4-87ae-e81aed838dbd"],["17201","61b7edea-8722-498e-ab58-eedd2d899cf8"],["17210","7ccea2a0-5ed3-4a2f-b43f-c9c4f1820ec7"],["17202","43bdcf4a-f519-4896-a42d-86a17337d97b"],["17203","7dffe22d-7d79-4205-9f35-b7e614699788"],["8PV12","cee08671-f30f-4cc0-8b97-92d6c09cc3c6"],["8PV20","c470332d-8da7-4a1f-8ac7-91b1d942ab8b"],["8PV19","87af43e6-03d3-439b-a7b5-643da7354b11"],["8PV02","e8e16100-921a-4482-992c-1957e2a98577"],["8PV17","cbd722e4-0382-4561-8716-acad776eba45"],["8PV10","c7ebe526-26ea-49fd-a8a6-fe360322b4c6"],["8PV08","be45b6be-ca04-4fe7-a006-b93f65a2f706"],["8PV11","6a5f5c5b-d851-4bf8-8761-39c830911ead"],["8PV04","0d0cc7fe-c5d3-4a27-acf0-1ad2e4cbd86d"],["8PV05","441bcb4e-7967-477f-a8d9-6f0d3415a258"],["8PV21","042e9821-ba2f-4804-860f-1d8567204f64"],["8PV13","26a438a8-b57c-4dae-85a8-b7517d6b4e34"],["8PV24","4f18540f-e4b0-4b0d-b708-eaafcaa85d87"],["8PV18","5234a84a-a137-4e3c-8fb7-25035c274a1c"],["8PV01","338bf30f-e39c-463c-bf8f-4555d0597355"],["8PV03","556cf657-8567-4835-a5b0-9a6c4029e3b7"],["8PV06","8af7224d-925e-46c7-b0ff-7e3d89d51846"],["8PV07","d4d8ffb1-9d3d-4176-9de6-3377d430156b"],["8PV23","2c773ec1-0748-4b9d-81dd-f44559892b10"],["8PV14","d690b697-4f97-428c-a176-a6c4879c3f63"],["8PV22","d5f519eb-2565-4f4b-b735-14c4c650d2c1"],["8PV16","af224bd2-9daf-45c1-8cc1-387a9bb565cd"],["8PV15","f313e3a4-8f22-4246-92f0-3aaaf7b122a2"],["8PV09","b13f94e1-e14c-4180-b003-c845f95bcc8c"]],"9":[["2115","f08a2ec4-1134-4afc-9888-4b0a78701186"],["2109","4b577e57-9586-4021-97b8-f0a608f9a044"],["2120","b2851578-ae9c-4d1f-ab78-31cad2f44120"],["2119","9ee9f499-cd77-4029-8aab-e3d07b3a6312"],["2118","22c3c3c9-5e68-49e2-a89b-e3069f24fa77"],["2121","11fe6c84-c590-438a-945d-06cc998bf87e"],["2111","84da413b-e516-412c-bed8-45d12ea98dc3"],["2116","da5b1b58-b850-4685-bf4e-78cf0d34bb73"],["2101","38ffd692-ed93-4328-b5b8-51881a8b6d9e"],["2112","6c88d10f-3af1-4301-8a58-678570623262"],["2113","6ed0d822-a0d8-4976-b6ee-790b7cd6a549"],["2117","f2f6bf4c-0c1b-493c-b7fc-43ba6010fd38"],["2110","ab6642f1-c8ee-4c82-aaf2-d4cd53fc7b54"],["2114","685b4a5c-5eaf-44f9-a8f5-a11144630010"]],"10":[["5-559","9890f956-8eb9-4192-83f4-8b479bf6e2eb"],["5-583","f79d6d16-5382-450c-aa8e-39dd2b8108f6"],["5-507","84422cb1-14d6-47a6-af03-5c1b11017010"],["5-568","ac6ff6cf-6e34-4357-96d9-5c0863a18c66"],["5-592","4f27157b-8a34-4e6f-885a-f7323e1b28c9"],["5-563","4f7c92b1-c940-41ab-b0e6-18406af19c18"],["5-548","5ddaf154-c9ba-4ae8-882d-615332d53532"],["5-564","ab4864f0-24bd-4b2f-9868-a707c3d24286"],["5-549","ffd98d88-e18c-4eb1-b708-90e82e2a0bc1"],["5-565","09bfad77-f4fc-4477-be46-c9bfa9917037"],["5-567","a7f0d39d-9bb9-428b-b9fb-a0df72d8628c"],["5-566","aa602058-5fd1-4db7-9b5f-4fcdc54d0387"],["5-519","340c821a-7c00-42cc-ab32-c9b59b332775"],["5-522","7406e346-8ee5-47bc-a40a-6f8272b33799"],["5-546","b5d2aeba-aa16-4e29-b493-2c78b6480f22"],["5-511","8775bdcb-ecd2-47fe-b4ed-4aba0e26ae2a"],["5-606","c0f61015-6363-4b72-9c3f-5c37b04ca074"],["5-547","c333d185-4fa8-4fd2-9ca1-29a723213c92"],["5-594","cc3e814f-b31a-4b1d-8507-110cb3bb68bf"],["5-520","f3e3cd27-0f27-42c3-b60f-d21f080831c4"]],"11":[["1NX08","86aac94f-dc23-4793-84bd-b04a476290fb"],["1NX13","06fca1bf-9c59-42ce-9bcc-64d2d97e8186"],["1NX15","c366a177-0a45-49b9-ba3d-402f879576e3"],["1NX12","29109101-3ecf-4d66-812c-a2cd75776fdd"],["1NX03","58f4206d-09f5-4b64-82df-9d6bf11f8ca5"],["1NX05","6c05ac06-de39-4a8d-b5bc-687881f8231f"],["1NX20","c83f477d-ab02-4e32-9532-ff9d867fb392"],["1NX17","de98e78c-2c89-4dbe-b561-758e37487089"],["1NX01","1fdbe14f-0b04-421e-8205-3a93595c90a1"],["1NX21","be805ec8-f6a5-4bc0-b7e8-c1ff09b2d984"],["1NX19","144b042e-d8e7-4bf8-8510-daea0062281d"],["1NX16","b12f87cf-f085-40c3-ba10-0d15a0cbca25"],["1NX06","66132e37-3d8f-4593-92c5-ab754e08e47c"],["1NX07","44023f90-d9f6-419d-b1ed-f52426c8dae3"],["1NX04","00bacb5b-48ba-4608-b5aa-45b6d5fd00f2"],["1NX14","59640424-c8ab-4ae9-ae3a-5e5550fb9796"],["1NX18","28b29214-af85-44f4-b5e8-035d5f9a2f6d"],["1NX11","f2c45162-fac5-49bf-92ce-1b8f193aba98"],["1NX02","18b38a9a-225a-4f6f-b927-942186bc6338"],["1NX09","81819945-39a7-4f33-91a6-55c6bb0ddf37"],["1NX10","1a963734-bd6a-4fb1-8db8-0775b887d2cc"]],"B":[["TI67","08ceb28b-be30-45fb-ac44-2bca31846972"],["TI41","dc53a77b-3d27-4cb7-8363-f3eff12ad2fe"],["TI08","ebb85f5d-fa7f-4cd6-8187-eb20fb103a0b"],["TI89","cfb9e987-edac-4560-9d03-bc8484c2625e"],["TI45","82fbb248-7543-4abc-8869-6cd667fa8db4"],["TI61","2af2974f-6b7d-4e63-900f-c9251fe4edc6"],["TI66","1aa7ecbd-bb56-467f-9b74-13b9e143a5e8"],["TI98","025c9aa9-4ca9-4a00-89ee-41fd62d3ff54"],["TI69","66f661a2-d15a-478b-a996-024b08da0f56"],["TI31","2a560f16-d557-42c2-b7aa-e4c0601534df"],["TI38","2b339105-100c-492a-be39-cfc63efe15f2"],["TI92","cc1de985-009d-4ecb-add1-96309e3d4311"],["TI87","6a62a37a-f791-43a5-be7f-6e555cc49a5b"],["TI76","b94d2151-28a5-4ed7-b066-cabe7c17eef2"],["TI93","ba7733e0-8e5b-4189-8358-0ddcbb3b241a"],["TI94","0a5bb16b-b5b5-48a5-b142-1d42c581bc7f"],["TI81","4e04b5a3-03a8-49c5-b1f7-e8ce0f58b0c8"],["TI50","dbfa91c7-62ae-4573-9eb6-f2e65376dc83"],["TI46","de63b030-393f-4494-b849-36414d9b22c5"],["TI97","e11e3823-743a-4762-a831-a69ce7b9e1d0"],["TI51","42aeead5-1679-4bf2-b761-8a69ac9bffd4"],["TI90","90c63c6f-302d-4c56-8623-b22e14543c47"],["TI54","ceea4780-f0d2-4502-b9ff-5642df861312"],["TI72","d325dd51-a611-4589-9a04-0a60ed2cc546"],["TI25","b7c63df2-e21e-4133-a2c3-c7da34e9a163"],["TI48","7fb6d9e1-1434-444d-b491-c5c91fbe9a0d"],["TI40","fb37358e-1443-49c0-bbdf-6206fad81878"],["TI29","19c7e54b-78fb-400e-a352-e10802e9a7b3"],["TI79","db6990c5-1c36-4c16-835d-82ed33ead204"],["TI80","c29c79b5-7f54-4154-b614-ac1829ad5666"],["TI60","ebc47051-72d9-49e2-9643-f459aa2d85ba"],["TI24","d5b81158-3cd8-4f38-b1da-ea2de552d6ab"],["TI71","8689251f-5f17-42b2-bb72-a19726717afa"],["TI07","3b23f2f1-005d-4918-b5b2-c6305c5afc01"],["TI58","056939d0-13d0-4877-aa79-604a93d94b80"],["TI63","48af9d31-f983-47dd-9505-cc4dbbc15f6b"],["TI53","e47b88ad-911a-4106-9f3e-4df910fa00e0"],["TI78","49942e39-8554-4f35-ba92-51654db8f9b0"],["TI62","8a2e15fe-0b6a-46df-88bc-b174a237eb73"],["TI70","2f4d3e27-eef7-450f-8407-4c15b96a3005"],["TI86","135a2bde-c53d-46ae-9621-271603eecc1e"]],"C":[["Z2713","667a111b-911f-46c1-8c52-2e47d2a393c4"],["Z2722","68542e09-7268-4bc1-80db-738eb7791ab1"],["Z2736","f0cea62e-3f8b-4902-8314-57a77c36b8bb"],["Z2753","48154bbc-e7f7-47b0-803c-9751f51ce4f4"],["Z2726","adac8c6f-60d0-423d-a63b-006e85db7a26"],["Z2716","a8d5c7df-e6fb-4978-9f8e-6e9cb3de30bb"],["Z2702","52aa4607-331a-484c-91c1-7adbb88cca1b"],["Z2749","cd478bc4-71f1-4e54-a67b-4753e483c8e6"],["Z2745","68bcec7c-e74f-41b8-a163-b3e3ba1d9b07"],["Z2737","a42bebb8-9b62-45ca-b56d-ec1947a4b6bc"],["Z2742","a47c960d-6e32-4c53-a584-458838710789"],["Z2723","665b5e41-0748-48e8-a2f9-5ca32fca7518"],["Z2735","e4864360-6767-4ecb-89c1-7dd546e72e53"],["Z2724","1b316fb4-f4e6-4ca5-b2b0-21658cbd4a4c"],["Z2743","62e758fc-4ef1-4da4-9bc5-249411a829d0"],["Z2711","dbd3096b-0e1d-483d-acd5-e76f4a9e0564"],["Z2739","5e54100a-c456-427a-9a36-93714d6bc57b"],["Z2704","d459994b-3550-4de9-9a1f-b101810ade6c"],["Z2741","759171a6-784c-416f-abbb-26996c087945"],["Z2717","bd676efb-0be3-41fe-b3ec-d012f7ecdef5"],["Z2751","979cff1d-e35e-4907-9fc8-d17cd1b79d05"],["Z2730","26b7b26f-76b6-4838-9f62-79541782923d"],["Z2701","50b0edf5-c6d5-412d-b056-5bfc39ed82bf"],["Z2732","70775d8a-4f3e-4fbf-bb94-32145d1525ca"],["Z2706","b68f4569-0679-423b-8632-144a3da308d2"],["Z2740","1aeb8798-bedd-4a76-8ea2-6def5068f3cb"],["Z2720","0efb4082-e4cf-49d1-a163-733325e14db1"],["Z2746","0df80c61-4de2-401f-ba0f-59db30aeb9dc"],["Z2714","55854a75-4068-4d41-a9c1-3727b6634f1c"],["Z2744","37f526f3-e4bd-4a17-925e-edfdf63a714d"],["Z2703","fedda2af-9d32-486e-8ffd-21e08562c7ba"],["Z2734","80fb212e-2641-45de-8a7d-13296a1b4e56"],["Z2748","b0dd44b3-6bd7-4cd4-a46e-3e89f5118aec"],["Z2727","3f4867e8-be28-4219-9931-235e6de93f78"],["Z2750","64313bd8-4579-4d5d-bdd0-98352f3e440e"],["Z2729","22e614d7-453e-4e15-b975-80e898c1b266"],["Z2728","39abba1b-755f-4277-b445-b2bc8a0df334"],["Z2731","e036c22a-a23d-4c0c-a763-87a200299c85"],["Z2747","5dba9f68-53af-40e2-9db2-8c3156d87058"],["Z2738","3f8e6341-f28b-4430-a779-9874b7b0c596"],["Z2752","1d47be35-1f70-460d-939a-7ddca5a241b8"],["Z2725","9f818e51-38aa-4d20-8eaf-2427eb4aacfb"],["Z2712","0a0e0063-1f5d-44bd-ad22-4054ed528045"],["Z2733","3de683cf-a8cc-4f10-8206-45ab2a7e7b1b"]],"D":[["8I815","0f81c822-b648-421a-8a2c-f7dfea77e328"],["8I827","b7a7acff-60e7-4b23-a2af-fbf6f3534a2c"],["8I808","1fdd508e-2691-4633-ac42-bb4e259fc766"],["8I805","afe40948-6319-48f4-aeb2-39ad4009d194"],["8I826","e1b9521a-feb4-4646-b5c3-8f030866b6d3"],["8I818","51454565-f22e-4439-93b8-c644c8532137"],["8I823","cdacaa49-67ef-4f66-9ab5-c91ef4270f72"],["8I810","1c2bd9ac-ef73-4226-9c49-7c00c7baa06c"],["8I832","718c2301-b2a9-466c-9a0c-4b6efeaf793f"],["8I812","e277f302-0b03-48f0-9608-22a479b2dc8a"],["8I803","cfb60df9-7d7a-48cf-b1e4-834eddb805fb"],["8I816","0825334f-4179-46b2-a033-cf1a471f1422"],["8I831","fd317b67-da33-4030-bb79-3633b2e48a4a"],["8I817","ac688b57-3258-445c-aa4f-6bb84279ce90"],["8I821","5e5092b7-859d-42b8-8e14-707e88b9aaf4"],["8I822","d80f09b5-f5a6-48b8-83cf-9c857a0b0113"],["8I833","79ce90df-97d2-41dd-999a-f8006498b5d8"],["8I804","da05469d-85f5-4918-a5d6-d29f5399e3d7"],["8I824","8a155081-a12d-4050-a935-d64e97b7ea83"],["8I802","aefdd2f6-0969-48e5-b5be-28de25ed05c3"],["8I830","b5bbd1ef-8b98-4682-a178-d6a5fed3302f"],["8I801","e66d9a44-6ba0-45e7-b688-c573376e5078"],["8I809","fb35c8f4-8d37-4598-8d3a-52728b367cb2"],["8I828","398abb5a-4fd5-43f1-8224-133554250d32"],["8I820","29833eb7-ac18-4ca6-aa4a-ea1b79306e8b"],["8I829","3d10cb9c-1652-42db-a9dd-987b27251edd"],["8I814","f0032cf8-8d67-4c58-8367-bd2bd33abb5c"],["8I819","8eca10af-d37c-4999-a5cc-e13b1fc79dd3"],["8I806","a6254f65-4d22-403f-ba2f-8ec4ba15131f"],["8I813","6dc3647e-ef2a-4c9e-8e8d-fdb6d076a910"],["8I807","4e3c2f0b-3d04-48bf-8456-5fa34c5b3c13"],["8I825","c5610c41-54b1-4490-8bc6-4255392c1279"],["8I811","d903a783-d232-4b50-905c-031a9613abc9"]],"E":[["ZAT29","c74ca91b-7b02-4e57-abbb-0b9bf58326ca"],["ZAT36","283fea2d-f956-4137-81cf-8429b106df66"],["ZAT39","44942146-8c97-40a3-89b3-ad1a50ada16f"],["ZAT19","5bd64dd0-fb1a-45bd-ac80-3177344756ba"],["ZAT13","e0ce99b6-72b1-466d-9fc4-b2f53a7406ca"],["ZAT32","6db4a163-12f9-4306-8b09-6aa936f277c7"],["ZAT42","7970a0ff-ba25-4e55-9454-ec1fe127028a"],["ZAT40","52264798-cbb2-4c5f-ad17-ba4209774524"],["ZAT08","c7d0ab80-d4a3-4bda-ab54-97a6d4da61d1"],["ZAT26","a5979043-2f4e-4d11-bbe5-c9d04483c2c2"],["ZAT43","26956dba-2665-478a-89d1-83ca5f85d57c"],["ZAT44","374915be-51d6-455b-a444-a911e6c5c199"],["ZAT47","a24d5511-b73b-44f1-a843-67080e8484bc"],["ZAT38","011d58ed-9853-4315-825b-ef619cf6aa96"],["ZAT41","17bf8684-7393-4bd0-87f3-3dee0b408384"],["ZAT35","488f6418-16bb-4d84-b344-eb2192d0f8d3"],["ZAT22","af5f2092-a476-410b-bc29-0938ffd8b11e"],["ZAT14","e405cb60-4805-4b24-96e4-0adf5e4d1ecd"],["ZAT46","2e02caee-ff55-4b77-abec-cff32f10e402"],["ZAT34","09dc7ba0-4cfc-4175-9080-bcbad2e1f5f5"],["ZAT15","35447677-db16-4609-aa2d-6f0b7dec6833"],["ZAT37","01560f2c-f89d-4a09-8799-e1b88783d340"],["ZAT31","ef178350-8c33-4b10-80bb-6edad984deed"],["ZAT33","c9561eef-8595-4978-981c-68ec4d17689f"],["ZAT45","2b7ad097-d57f-4ea8-bc79-1baefbd9e19a"]],"F":[["82T25","b1bb2485-fafb-4a0d-be67-091a95efabba"],["82T44","e39e5623-b3b5-4173-b006-22649f15f15c"],["82T20","779c3e41-db1e-44ec-b37a-91b3b34c6163"],["82T33","388965f4-1ac2-48ad-a403-f262251724ab"],["82T36","ee088b8a-75a8-4bb0-b4ce-b9a7afcb36db"],["82T21","761db6f7-4c6e-4939-89b4-d0f8a9dd1708"],["82T43","181dfd5f-6ae1-438b-a16a-3ce2ae980047"],["82T42","334de429-1bdf-484f-9912-79b5a63b714d"],["82T47","2a45caab-f2d1-4172-9afc-8e886fee0536"],["82T26","3dc38f71-b446-4fec-9f36-476c50a872fc"],["82T22","2f0d9ef7-7ce6-418d-bc6f-b66b1353fac3"],["82T37","2f1867d1-07b6-474d-8b4b-1df0f1ee6101"],["82T15","3c6818ac-1644-4c53-9781-f933076eaf19"],["82T35","6f18dfa4-e527-4922-a445-9df5b1ea2cae"],["82T14","b8a3889f-626d-4f70-ae3d-c8351700d0bc"],["82T34","b85271d6-4e31-4f6d-9601-c10240867b61"],["82T31","24d37428-31d8-4006-acfc-a31c01d42ec5"],["82T16","e7b1e5c3-d2a1-4ccb-8a82-f1e23d5bd450"],["82T19","513f919f-9734-4ef7-b707-7c8fb0c71016"],["82T52","4238fd8e-bf58-4722-9a1c-91d1cdab608d"],["82T39","b5d5b015-f286-4aec-897f-edf6c0dc996d"],["82T46","14cf3085-126e-4c38-9316-7451e99058db"],["82T12","d4c57419-b80f-4ab0-af26-b8f77b0df63e"],["82T18","471591bd-fbed-41ae-b2e1-e410840fdc79"],["82T48","9336a626-86eb-4dd4-bda5-a556a624bf67"],["82T30","e4f68772-21db-4fe0-a931-0b9bfb2a5f12"],["82T51","8fb6ac64-9e74-4686-95c6-c5667d8482a2"],["82T23","69564cf5-180f-496c-bfc1-5185fc9c58df"],["82T27","b2562cc5-26c6-40c0-ac79-829cb6541178"],["82T13","28e6246c-e55e-415d-9e1e-a846657ab43c"],["82T32","e99ad0f2-e120-4655-82cb-86335412a91e"],["82T17","0422fe4d-3346-413d-86af-a269e4959bb8"],["82T38","1508e0fe-adfd-4783-9233-20b065626b0c"],["82T28","7e7d3d6d-4d5a-4af9-9061-f3003a2bdcbe"],["82T50","d43b4394-dac3-4d75-b9d5-c06150d77d17"],["82T24","4447a9db-be96-457e-be5c-c6b9ff18725d"],["82T49","2e5c8abc-7d85-415e-a14b-9ac04a06379e"],["74M28","f1419221-9b4b-4d6f-b596-0381b76d6897"],["74M35","d32b0056-de9e-47fb-aab1-f0b225ea5899"],["74M41","3a6c0e4f-5d78-4b94-bee5-043874d4d8a2"],["74M26","32c36778-b5fd-4aae-9824-473e2af8a06a"],["74M23","a274b69e-eeaf-4c97-8c23-72a1c0448ace"],["74M03","fdedc158-d911-4200-a1f4-e97949fbdcaa"],["74M15","205d9139-9ae4-4978-afac-08873ca6aaa1"],["74M32","dae0f8ea-e048-49cc-a214-c289a4ca4c67"],["74M24","b16b9111-bd92-4f09-bbca-d98b4c34d244"],["74M08","97286658-c0cc-4575-983d-7deb700d3bc2"],["74M20","ae028ce6-e613-4c1f-8a6b-29e2e2d88306"],["74M29","4d970a79-8516-4bfd-8120-c79922fcd347"],["74M33","4df83833-ed4f-4d6c-b117-136d00b1020d"],["74M25","6e5c79f5-d358-4ecc-9a42-ce8deaf66756"],["74M39","ae6370b7-bb93-427b-9746-4dca833ae22f"],["74M37","06d5a139-eefc-4918-9235-7b457a1b2339"],["74M19","53d51704-fc44-40ae-959e-8da9d538a803"],["74M31","c7703125-8f10-4deb-88d6-273b656f3a04"],["74M02","8f0a92ca-9122-44d5-a0da-b778ed56e7ac"],["74M04","3330b957-cc17-4626-b7fc-db37cd059766"],["74M40","dc20e299-b911-4bd5-bfa9-5e1d91ef4dbe"],["74M22","93e804a3-ddd1-400d-8221-a08e118f1eb0"],["74M16","811a7de9-c7f8-43df-ade1-03922d68be33"],["74M38","7919dd81-f623-40a8-b302-de1d9187f7e9"],["74M01","d48ada8a-6315-421d-af6e-58f02447aca3"],["74M14","4485f404-1aa6-496d-b6c6-3fddd98bca38"],["74M09","a0bcd652-157e-4443-b250-328c30563032"],["74M30","9d5593b1-7519-43ed-8845-6fa87d01e06a"],["74M07","7340d340-3a1a-4401-a6d2-4a7b93881482"],["74M21","08364fca-db15-46bd-a48d-995a348bdb77"],["74M11","84dba6aa-d790-4487-b8fd-8576a756e534"],["74M34","d6e23770-e4bb-4cae-949a-cb0b6b871bc3"],["74M36","10d6f26f-b312-494c-a603-40e193b3439a"],["74M27","c392b5d6-c2b2-41c8-b80d-1e048520e735"],["V9G20","f6977d65-cf62-4099-a304-43bc96d7658e"],["V9G19","8834fa4d-1cad-4f86-a621-f42176d5a3f6"],["V9GV","1ab842ec-3b86-46d7-8814-8cddecc048c7"],["V9G22","9e190106-6d04-45e3-8038-0f038b9a4ac3"],["V9GU","58e54d94-4fd2-42d0-b3f6-1879440184e9"],["V9G2","03315554-f361-41a0-a3ff-4e2314d6d095"],["V9G18","acc3a85f-a1db-458e-bb6c-424ebd1a6006"],["V9GX","62166016-ea13-485e-8abb-e33933d4c11d"],["V9GY","018c945a-56e2-4870-a7df-765ed4f26f9d"],["V9GG","4730c087-a090-412d-a667-6b7d7e1fb626"],["V9GW","42b82e64-4b86-4aa0-8fb7-8145c833fbd6"],["V9G4","5d2d1a3f-98d4-466b-9ba7-5b50cf93ad17"],["V9GQ","a8963522-a16b-4031-8d42-02e72b47eb17"],["V9G21","71ab2d08-56e4-4f16-a51f-2ba1d1bc6db7"],["V9G3","a43b63a9-1130-439a-bbec-9d18a87aa485"],["V9GS","155fe44e-1fcb-4cf8-8a60-fe3d4b1d7e1a"],["V9G1","4d16a5d7-7c90-4111-a88a-b208bcab9fce"],["V9BP","45720b62-94ef-4165-ad1a-1469541df8d4"],["V9BM","fbac75ab-1854-4878-a891-d2e8f153d30c"],["V9BL","30879e7c-cb6a-457b-a916-4781596e522b"],["V9B8","def50882-4b2a-4c4f-bdac-3eba3a9aa6df"],["V9B5","6ae2ec1a-7d56-4c64-8a69-5eb9d0e1670c"],["V9BC","19d5f1c6-9a56-4e68-af2a-1229bf5fc842"],["V9BN","c69a71a6-646c-4d8f-a92c-51ba53af3b3a"],["V9B9","297ee3df-b74f-4a05-ab54-234ebb73135c"],["V9BA","c3d38152-79d3-4356-927c-4f5be578ac94"],["V9BH","7946a25c-c181-4ac9-b946-c1393eb373b7"],["V9B7","b6bc9404-2255-4340-bd09-c3be040ab275"],["V9B6","2c02fb32-3e39-4ad3-b71c-eecc64dbd8fa"],["V9BG","a242282b-cda4-4c3f-b92d-b90ae847bb2d"],["V9BF","838d34e2-de62-48a1-a7a8-7f6da66afbf3"],["Z3308","886fa34e-44b7-44ce-bdd3-9534cfc4d021"],["Z3307","44e99368-c6e7-41af-844a-411044e64d00"],["Z3306","8d1f41c0-3f50-4d95-9433-a92b06b717a8"],["Z3312","b971e391-033c-419c-a6ee-a01fd77e26bc"],["Z3301","d2cdde5c-4c16-41f4-812f-a382071524f5"],["Z3304","f17073ba-39fb-4265-a4ed-13b546d319be"],["Z3302","b578af43-b60c-415b-a5fc-398cf9264980"]],"G":[["8AR02","e19f3cf7-9e10-4ead-b49d-87dde6ba44d6"],["8AR09","b7dd8ef1-c93b-4bd6-b734-8b976c42ff32"],["8AR01","40f50695-79c5-4df2-8cb7-f4380c277d5e"],["8AR06","fa82924b-821b-4a94-b916-7b3e138040fb"],["8AR10","3e2b3fff-ba1c-4c80-a08e-e5d85facf4c4"],["8AR11","a5e8f49f-83d1-4c5b-91ee-5ead75834123"],["8AR08","a7569e2c-23d3-46c5-afa1-ac58ba5f9a08"],["8AR12","c337457e-fac2-4cb5-a308-ad192c299cf2"],["8AR05","53894d82-142a-44e2-90a4-68b46fb07936"],["8AR04","f400bea5-e908-46dc-8ba3-bd4dc1a7d14e"],["8AR03","d2b59a76-5fb5-4742-83fd-d3f285025421"],["8AR07","dc916aec-1f0e-4f75-b64c-d4d8e69a83f3"]],"R":[["ZSV17","af5f05c5-f219-488e-8623-5857e9a6ca97"],["ZSV21","c3df963e-3e9f-424a-8a79-bcb4fab1b441"],["ZSV25","c1fdfe6f-8cf8-436b-bc19-5ff8f2190d88"],["ZSV20","bc65e5b1-6f2b-476c-bbe1-b98b2ed9137a"],["ZSV10","e6f6fe6d-7eb8-44bb-b6a7-a60faedfed97"],["ZSV07","db8d4fc7-ea24-427b-ba94-fbd3d73ab1e5"],["ZSV02","8fd6d5c1-7874-4146-afab-1b40eb92e70a"],["ZSV05","84b702f7-c988-47e6-8b40-8797f1cdd6cd"],["ZSV04","06f6b838-85cc-4261-aee8-921eb2e7f2be"],["ZSV09","b4ed65e9-7ccb-4473-9ac6-a533158f0d3c"],["ZSV18","a7817eb3-eba9-48b4-94cf-29238b6d6389"],["ZSV03","5c900ff6-cef4-4d29-a3f0-b7221a7cf1fe"],["ZSV19","ffeba837-104a-49e5-883b-3c59d85b3275"],["ZSV13","46219d72-e033-402e-bda0-ab52230c27c3"],["ZSV01","78c215e3-6e5a-4221-9001-1e3f55bbda17"],["ZSV08","5f4ccfcf-e7d8-4a76-a186-fe445a291724"],["ZSV16","243abe52-3535-4ee0-ac8b-dbee263a322a"],["ZSV26","ddd4aada-5fdc-41e5-931d-26334dc49f06"],["ZSV06","5e71fce3-7801-45cd-97c9-cfaf56a11d8a"],["ZSV12","4c9bb2ae-12e8-4b75-a04a-99fc3647c3aa"],["ZSV11","72582a6c-bf02-4971-b715-faed1e3a137b"],["ZSV14","23699913-a769-4c96-ab5d-2141f566c80f"],["ZSV15","9bf8b01d-9181-4083-a76e-c16288824a51"],["ZSV22","efab790d-00a7-4f34-9dd7-9c8e373edf36"],["ZSV24","8fa6ae9a-d73f-447f-a0e5-aa6798b411e8"],["ZSV23","cf6c5179-779c-4f33-a82b-f16a7fbad26a"]],"10M":[["ZPA13","66533cb3-3c85-4180-a086-598d24575105"],["ZPA21","ba42b3ee-4833-4893-a0ba-da55da32825e"],["ZPA10","76f57608-2042-49a4-9973-99d82ea06104"],["ZPA25","47747184-db08-43b3-8489-3bdff18b04d3"],["ZPA18","543f991d-0d10-4e3a-8834-4bf62e70edde"],["ZPA24","8172705c-c543-4e5b-9b30-7ba3937b5cf8"],["ZPA09","f7eb6b84-a159-4b49-9692-61569d35fd93"],["ZPA32","3ba6411a-f5ec-46a7-ba66-789438268563"],["ZPA03","4890bcba-c18e-4daa-8663-69b2da974db9"],["ZPA29","8ed0012a-3f21-4fe5-ba8e-b8430f8e82d5"],["ZPA33","e3bc6e73-84f7-45ef-a491-bc9054dee53c"],["ZPA19","3b688a9c-9fa2-4a32-b283-08042d5eb8d6"],["ZPA08","4983f0be-9ba9-44e0-8f64-1f4418df28e9"],["ZPA14","b5fc8a3d-856e-4d50-b0d5-737bbbda0464"],["ZPA04","d717d5b4-0ce6-42d3-81d4-8fb329d8c17c"],["ZPA28","65c4941a-0f4e-45a9-89b4-8377974decdb"],["ZPA20","f23afff5-9ff7-410f-86e9-6e97e8220cda"],["ZPA07","fd7ec312-aa57-40ce-99b8-bd636a2cf106"],["ZPA31","c90cd795-4a2f-474a-9c81-1c999f47d57f"],["ZPA11","cb1a4504-2849-4c85-b025-34350b28b9fe"],["ZPA30","d30b2b76-244e-4dd7-8716-a2ed1ab0f38d"],["ZPA15","cbb60808-f841-46d2-9629-59305cadceda"],["ZPA27","9b9ca1d2-f90c-4f6f-88a0-662a4c993ca3"],["ZPA22","ebf741bc-4630-4802-90fd-5b026749fbc8"],["ZPA12","d884d56d-3b0d-4d7d-8c9e-3558937d0864"],["ZPA02","e31bc1f1-e092-4f2f-8304-1beec06384f1"],["ZPA05","3e308e8f-29aa-46f9-b1d6-b2fe0f61e352"],["ZPA23","c29c40e9-c7a4-4e2c-ba6e-05ac99b3c8e0"],["ZPA06","a4b482df-8842-41e3-8489-90579cab021b"],["ZPA26","4a1eb3ee-ff32-46f6-ab3a-c403e5f59659"],["ZPA34","33f0e21b-2913-4f4c-996d-91e6642ab0f8"],["ZPA17","17afbe40-69c5-40b0-a482-d19b6f5452df"],["ZPA16","3c04cade-260c-444b-a04b-fba9554216f2"],["ZPA01","3e090277-f28a-4f32-bec1-a6213b495e77"],["ZPA35","ca8511b4-bdc6-4a66-a887-75c9b83dfbd8"]],"15M":[["ZLM06","7f12c0af-3ccd-431e-a568-d95d3b10fc58"],["ZLM07","7f002573-e79a-4bb2-9dbe-8543d94a9564"],["ZLM03","37c773b1-ade9-458d-bf98-92bf7ed3cf49"],["ZLM04","8416d9ac-3c04-4d7b-a4b1-a10ecf504fcc"],["ZLM02","b0915ef6-e9f2-4f1b-a2c3-828cdf1be60e"],["ZLM08","d4ca5e66-933a-48ec-9db6-8c114b854fef"],["ZLM01","cf8db37d-2023-4ffc-aa85-f8e1872ec293"],["ZLM05","4cdc88ec-4797-42bc-bb9b-1261acafbddd"]]};
+function fabricCategory(tok){ for(var i=0;i<FABRIC_PREFIXES.length;i++){ if(tok.indexOf(FABRIC_PREFIXES[i])===0) return FABRIC_CAT[FABRIC_PREFIXES[i]]; } return null; }
 function chF(n){ return "$" + n.toLocaleString("en-US"); }
 function chVal(id){ var e=document.getElementById(id); return e? e.value : ""; }
 
@@ -4271,16 +4527,16 @@ function chairBreakdown(c){
    + '<details class="feature-details" style="margin-bottom:14px;"><summary>部位拆解與選配說明 Part-by-Part Guide</summary>'
    + '<div class="bk-body">'
    + '<div class="bk-row"><div class="bk-part">基碼／型號<small>'+c.family+'</small></div><div class="bk-desc">產品家族碼,系統自動帶入,業務不需手動輸入。<small> Base model family code.</small></div></div>'
-   + '<div class="bk-row"><div class="bk-part">升降＋扶手<small>Seat-Height / Arms</small></div><div class="bk-desc"><b>價格主軸,決定基價。</b>手動 vs 氣壓升降(標準/加長行程＋傾仰鎖定);扶手:無／一般／含扶手墊。<small> Manual vs pneumatic (std/extended) + tilt lock; arms / arms+pads / no arms — sets base price.</small></div></div>'
+   + '<div class="bk-row"><div class="bk-part">升降＋扶手<small>Seat-Height / Arms</small></div><div class="bk-desc"><b>價格主軸,決定基價。</b>手動或氣壓升降;氣壓款再分「一般座高」與「加高座高」(加高型氣壓棒可升更高,適合身高較高或搭配高桌、櫃台),皆含傾仰鎖定。扶手:無、一般、或含扶手墊。<small> Manual vs pneumatic (std/extended) + tilt lock; arms / arms+pads / no arms — sets base price.</small></div></div>'
    + '<div class="bk-row"><div class="bk-part">滑輪／腳墊<small>Casters / Glides</small></div><div class="bk-desc">'+glideTxt+'</div></div>'
    + '<div class="bk-row"><div class="bk-part">底座＋骨架飾面<small>Base + Frame Finish</small></div><div class="bk-desc">'+c.finishNote+'。<small> Polished aluminum / graphite $0; black / white powder-coat surcharge.</small></div></div>'
-   + '<div class="bk-row"><div class="bk-part">椅面布料分級<small>Seat Fabric Category</small></div><div class="bk-desc"><b>第二大加價來源。</b>依布料所屬 Price Category 加價,業務需先從 textiles 清單查出布號對應的分級再選。<small> Look up the textile category from the fabric list, then pick it here.</small></div></div>'
+   + '<div class="bk-row"><div class="bk-part">椅面布料分級<small>Seat Fabric Category</small></div><div class="bk-desc"><b>第二大加價來源。</b>不同布料分屬不同價格級距(Price Category),先到布料清單查出這支布是第幾階,再選對應級距。<small> Look up the textile category from the fabric list, then pick it here.</small></div></div>'
    + apRow
    + '</div></details>';
 }
 
 function selectChair(k){
-  curChair = k; renderChairChips();
+  curChair = k; chFabNum=""; renderChairChips();
   var c = CHAIRS[k];
   function opt(arr, fn){ return arr.map(function(x,i){ return '<option value="'+i+'">'+fn(x,i)+'</option>'; }).join(""); }
   var varOpts = opt(c.variants, function(v){ return v[3]+"  ·  "+(v[1])+"  ·  "+chF(v[2]); });
@@ -4294,9 +4550,9 @@ function selectChair(k){
     + '<div class="chair-photo-fallback">圖片需連網載入<br>點下方官網連結</div>';
 
   var head = '<div class="chair-head">'+photo
-    + '<div class="chair-meta"><h2>'+c.name_zh+'</h2><div class="ch-en">'+c.name_en+'</div>'
+    + '<div class="chair-meta"><h2>'+c.name_en+'</h2><div class="ch-en">'+c.name_zh+'</div>'
     + '<span class="ch-fam">'+c.family+'</span>'
-    + '<div class="ch-desc">'+c.desc_zh+'</div>'
+    + '<div class="ch-desc">'+c.desc_zh+'</div>' + specHtml(k)
     + '<div style="margin-top:6px;"><a class="ch-link" href="'+c.store+'" target="_blank">官網產品頁(外觀／實境圖)</a></div>'
     + '</div></div>';
 
@@ -4310,15 +4566,16 @@ function selectChair(k){
     + '<div class="eames-config-item" style="grid-column:1 / -1;"><div class="config-item-label">升降＋扶手 Seat-Height / Arms <span class="config-item-step">Step 2</span></div><select class="eames-select" id="chV" onchange="chairOnVariant()">'+varOpts+'</select></div>'
     + '<div class="eames-config-item"><div class="config-item-label">底座＋骨架飾面 Finish <span class="config-item-step">Step 4-5</span></div><select class="eames-select" id="chF" onchange="chairRecalc()">'+finOpts+'</select></div>'
     + '<div class="eames-config-item"><div class="config-item-label">滑輪／腳墊 Casters <span class="config-item-step">Step 3</span></div><select class="eames-select" id="chC" data-kind="cast" onchange="chairRecalc()">'+castOpts+'</select></div>'
-    + '<div class="eames-config-item" style="grid-column:1 / -1;"><div class="config-item-label">椅面布料分級 Fabric Category <span class="config-item-step">Step 6</span></div><select class="eames-select" id="chFab" onchange="chairRecalc()">'+fabOpts+'</select></div>'
+    + '<div class="eames-config-item" style="grid-column:1 / -1;"><div class="config-item-label">椅面布料分級 Fabric Category <span class="config-item-step">Step 6</span></div><select class="eames-select" id="chFab" onchange="chFabReset()">'+fabOpts+'</select></div>'
+    + '<div class="sw-wrap" id="chSwatches"></div>'
     + apItem
     + '</div>'
     + ''
     + '</div>';
 
   var result = '<div class="result-block show" id="chResult">'
-    + '<div class="line-badges"><div class="line-badge us active"><div class="line-name">美國線</div><div class="line-price" id="chUsPrice">—</div><div class="line-method">累加法(基價＋各 Step 加價)</div></div>'
-    + '<div class="line-badge asia pending"><div class="line-name">亞洲線</div><div class="line-price na">需走美國線進口</div><div class="line-method">Ancillary 不在 80-day Asia 手冊</div></div></div>'
+    + '<div class="line-badges"><div class="line-badge us active"><div class="line-name">美國線</div><div class="line-price" id="chUsPrice">—</div></div>'
+    + '</div>'
     + '<div class="model-badge"><span class="model-badge-label">配置碼</span><span id="chModel">—</span></div>'
     + '<div class="parse-card"><div class="parse-header us-h"><span>美國線解析</span></div>'
     + '<table class="steps-table"><thead><tr><th style="width:80px">Step</th><th style="width:90px">代碼</th><th>說明</th><th style="width:120px">加價 (USD)</th></tr></thead><tbody id="chSteps"></tbody></table></div>'
@@ -4330,14 +4587,14 @@ function selectChair(k){
 
   var footer = '<details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">'
     + '※ 來源:2026 Herman Miller Ancillary Price Book（5/26,美國線合約列價 USD）。<br>'
-    + '※ 基價為價格書「Prices for Steps 1-2」;飾面為 Step 4 底座＋Step 5 骨架合併(同色);布料 Step 6 依 Price Category 加價,需先查 textiles 清單確認布號分級;扶手墊布 Step 7 僅扶手含墊版適用。<br>'
+    + '※ 基價為價格書「Prices for Steps 1-2」;飾面為 Step 4 底座＋Step 5 骨架合併(同色);布料 Step 6 依布料價格級距加價,需先查布料清單確認這支布是第幾階;扶手墊布 Step 7 僅扶手含墊版適用。<br>'
     + '※ 滑輪/腳墊與底座飾面 G1/L 均 +$0;黑(BK)、白(91)為粉體烤漆加價。<br>'
-    + '※ 亞洲線 80-day Asia Seating 為辦公椅手冊,不含 Ancillary,客戶需求走美國線進口(交期較長、需報關)。<br>'
     + '※ 定價為美金 USD,不含稅、運費及其他費用;台幣換算僅供參考(500 進位)。'
     + '</div></details>';
 
   document.getElementById("chairBody").innerHTML = head + chairBreakdown(c) + controls + result + footer;
   chairOnVariant();
+  renderSwatches();
 }
 
 function chairOnVariant(){
@@ -4360,6 +4617,25 @@ function chairOnVariant(){
   chairRecalc();
 }
 
+function chFabReset(){ chFabNum=''; chairRecalc(); renderSwatches(); }
+function renderSwatches(){
+  var wrap=document.getElementById('chSwatches'); if(!wrap) return;
+  var sel=document.getElementById('chFab'); if(!sel) return;
+  var c=CHAIRS[curChair]; var cat=c.fabric[+sel.value][0];
+  var list=(typeof SWATCH!=='undefined' && SWATCH[cat])?SWATCH[cat]:[];
+  if(!list.length){ wrap.innerHTML='<div class="sw-hint">此級距暫無線上色卡(可能為 Geiger 或皮革專屬),請參考官網布料頁。</div>'; return; }
+  var h='<div class="sw-hint">'+cat+' 級色卡共 '+list.length+' 色 — 點選即帶入布號:</div>';
+  for(var i=0;i<list.length;i++){ var s2=list[i];
+    var hm='https://images.hermanmiller.group/asset/'+s2[1]+'/W/x.png?w=80';
+    var mh='https://media.maharam.com/asset/'+s2[1]+'/x.jpg.rendition.'+s2[0]+'_233.jpg';
+    h+='<div class="sw-cell'+(s2[0]===chFabNum?' active':'')+'" title="'+s2[0]+'" onclick="pickSwatch(\''+s2[0]+'\')"><img loading="lazy" src="'+hm+'" data-mh="'+mh+'" onerror="if(this.dataset.mh){this.src=this.dataset.mh;this.removeAttribute(&quot;data-mh&quot;);}else{this.style.visibility=&quot;hidden&quot;;}"><small>'+s2[0]+'</small></div>';
+  }
+  wrap.innerHTML=h;
+}
+function pickSwatch(code){ chFabNum=code; renderSwatches(); chairRecalc();
+  var info=document.getElementById('chPasteInfo'), im=document.getElementById('chPasteInfoMsg');
+  if(im && info){ im.innerHTML='已選色卡 <b>'+code+'</b>。目前單價 <b>'+document.getElementById('chTotal').textContent+'</b>。'; info.classList.add('show'); }
+}
 function chairRecalc(){
   var c = CHAIRS[curChair];
   var v = c.variants[+chVal("chV")];
@@ -4384,9 +4660,13 @@ function chairRecalc(){
   }
   document.getElementById("chSteps").innerHTML = rows;
 
-  var modelCode = v[1] + " " + f[0] + " " + ca[0];
-  document.getElementById("chModel").textContent = modelCode.trim();
-  document.getElementById("chFull").textContent = (v[1]+" · 飾面 "+f[0]+" · 滑輪 "+(ca[0]||"-")+" · 布階 "+fb[1]+(showAP?(" · 墊 "+ap[0]):"")).trim();
+  var fabPart = chFabNum ? chFabNum : ("〔布號〕"+fb[0]);
+  var sf = CHAIRS[curChair].singleFin;
+  var finCode = sf ? f[0] : (f[0]+" "+f[0]);
+  var modelCode = (v[1]+" "+(ca[0]||"")+" "+finCode+" "+fabPart).replace(/\s+/g," ").trim();
+  document.getElementById("chModel").textContent = modelCode;
+  var finFull = sf ? ("飾面 "+f[0]) : ("底座 "+f[0]+" ＋ 骨架 "+f[0]);
+  document.getElementById("chFull").textContent = (v[1]+" ＋ "+(ca[0]?("配件 "+ca[0]+" ＋ "):"")+finFull+" ＋ 布料 "+(chFabNum?(chFabNum+"("+fb[1]+")"):fb[1])+(showAP?(" ＋ 扶手墊 "+ap[0]):"")).trim();
   document.getElementById("chUsPrice").textContent = chF(total);
   document.getElementById("chTotal").textContent = chF(total);
 
@@ -4404,7 +4684,9 @@ selectChair("AGE");
 function chairParse(){
   var inp=document.getElementById("chPasteInput");
   var err=document.getElementById("chPasteErr"), em=document.getElementById("chPasteErrMsg");
+  var info=document.getElementById("chPasteInfo"), im=document.getElementById("chPasteInfoMsg");
   if(err) err.classList.remove("show");
+  if(info) info.classList.remove("show");
   var raw=(inp.value||"").toUpperCase().replace(/[,\/]/g," ").trim();
   if(!raw) return;
   var tokens=raw.split(/\s+/);
@@ -4418,30 +4700,62 @@ function chairParse(){
       if(tokens.indexOf(m)>=0 || joined.indexOf(m)===0){ found={k:k, vi:idx[j]}; break; }
     }
   }
-  if(!found){ if(em){em.innerHTML="無法辨識型號。請確認含變體碼，例如 <b>EA337P</b>、<b>EA435N</b>、<b>EA437E2</b> 或 <b>ES204</b>。"; err.classList.add("show");} return; }
+  if(!found){ if(em){em.innerHTML="無法辨識型號。第一段需是變體碼,例如 <b>EA337P</b>、<b>EA435N</b>、<b>EA437E2</b> 或 <b>ES204</b>。"; err.classList.add("show");} return; }
   selectChair(found.k);
-  var vsel=document.getElementById("chV"); vsel.value=found.vi; chairOnVariant();
   var c=CHAIRS[found.k];
-  var fcodes=c.finishes.map(function(f){return f[0];});
-  for(var t=0;t<tokens.length;t++){ var fi=fcodes.indexOf(tokens[t]); if(fi>=0){ document.getElementById("chF").value=fi; break; } }
-  var fabCode=null;
-  for(var t2=0;t2<tokens.length;t2++){ var mm=tokens[t2].match(/^CAT(.+)$/); if(mm){ fabCode=mm[1]; break; } }
-  if(fabCode){ var fbi=c.fabric.findIndex(function(x){return x[0]===fabCode;}); if(fbi>=0) document.getElementById("chFab").value=fbi; }
-  chairRecalc();
-  var rb=document.getElementById("chResult"); if(rb&&rb.scrollIntoView) rb.scrollIntoView({behavior:"smooth",block:"nearest"});
+  document.getElementById("chV").value=found.vi; chairOnVariant();
+  var v=c.variants[found.vi];
+  var recog=["<b>"+v[1]+"</b>（"+v[3]+"）"];
+  var used={}; used[v[1]]=1;
+  // finish (base/frame use same code; take the matched one)
+  var fcodes=c.finishes.map(function(f){return f[0];}), finIdx=-1;
+  for(var t=0;t<tokens.length;t++){ var fi=fcodes.indexOf(tokens[t]); if(fi>=0){ finIdx=fi; used[tokens[t]]=1; } }
+  if(finIdx>=0){ document.getElementById("chF").value=finIdx; recog.push("飾面 "+c.finishes[finIdx][1]); }
+  // caster (skip when variant uses glides)
+  var castSel=document.getElementById("chC");
+  var ccodes=c.casters.map(function(x){return x[0];}), castIdx=-1;
+  for(var t=0;t<tokens.length;t++){ var cI=ccodes.indexOf(tokens[t]); if(cI>=0){ castIdx=cI; used[tokens[t]]=1; } }
+  if(castIdx>=0 && castSel && castSel.dataset.kind!=="glide"){ castSel.value=castIdx; recog.push("滑輪 "+c.casters[castIdx][1]); }
+  // fabric: accept CAT code OR an actual textile number (auto-mapped to category)
+  chFabNum="";
+  var fabCode=null, fabNote="";
+  for(var t=0;t<tokens.length;t++){ var mm=tokens[t].match(/^CAT(.+)$/); if(mm){ fabCode=mm[1]; used[tokens[t]]=1; break; } }
+  if(fabCode){
+    var fbi=c.fabric.findIndex(function(x){return x[0]===fabCode;});
+    if(fbi>=0){ document.getElementById("chFab").value=fbi; recog.push("布階 "+c.fabric[fbi][1]); }
+    else { fabNote="布階 CAT"+fabCode+" 不在此款清單,請於下方 Step 6 手動選。"; }
+  } else {
+    var leftover=[]; for(var t=0;t<tokens.length;t++){ if(!used[tokens[t]]) leftover.push(tokens[t]); }
+    if(leftover.length){
+      var fnum=leftover[0], cat=fabricCategory(fnum);
+      if(cat){
+        var fbi2=c.fabric.findIndex(function(x){return x[0]===cat;});
+        if(fbi2>=0){ document.getElementById("chFab").value=fbi2; chFabNum=fnum; recog.push("布號 "+fnum+" → "+c.fabric[fbi2][1]); }
+        else { fabNote="布號 "+fnum+" 對應級距 "+cat+",但本款價格書未列此級距,請確認。"; }
+      } else {
+        fabNote="布號 <b>"+leftover.join(" ")+"</b> 無法自動對應級距(可能為 Geiger 或客製布),請於下方 Step 6 手動選。";
+      }
+    }
+  }
+  chairRecalc(); renderSwatches();
+  var total=document.getElementById("chTotal").textContent;
+  if(im){ im.innerHTML="已辨識:"+recog.join("、")+"。目前單價 <b>"+total+"</b>。"+(fabNote?"<br>⚠ "+fabNote:""); info.classList.add("show"); }
 }
 function chairPasteEx(x){ var e=document.getElementById("chPasteInput"); e.value=x; chairParse(); }
 </script>
 <style>
 @media (max-width: 640px){
-  body{ padding:14px 10px 30px; font-size:13px; }
+  html, body{ overflow-x:hidden; }
+  body{ padding:12px 10px 28px; font-size:13px; }
   .container{ max-width:100%; }
+  .header h1{ font-size:17px; }
+  .header-version{ font-size:10px; }
   .parse-card{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
   .steps-table{ font-size:11px; }
-  .steps-table th, .steps-table td{ padding:5px 7px; }
+  .steps-table th, .steps-table td{ padding:5px 6px; }
   .product-tabs{ overflow-x:auto; flex-wrap:nowrap; }
-  .product-tab-btn{ padding:9px 11px; font-size:12px; white-space:nowrap; }
-  .total-price{ font-size:21px; }
+  .product-tab-btn{ padding:9px 10px; font-size:12px; white-space:nowrap; }
+  .total-price{ font-size:20px; }
   .total-bar, .twd-bar{ padding:12px 14px; }
   .model-input{ min-width:0; flex:1 1 100%; }
   .input-row{ gap:8px; }
@@ -4449,7 +4763,14 @@ function chairPasteEx(x){ var e=document.getElementById("chPasteInput"); e.value
   #product-eamesChairs .chair-head{ flex-direction:column; }
   #product-eamesChairs .chair-photo,
   #product-eamesChairs .chair-photo-fallback{ width:100%; height:200px; }
-  #product-eamesChairs .bk-row{ grid-template-columns:92px 1fr; }
+  #product-eamesChairs .bk-row{ grid-template-columns:88px 1fr; }
+  #product-eamesstool .shape-grid{ grid-template-columns:1fr 1fr; }
+  .model-badge{ max-width:100%; flex-wrap:wrap; gap:6px; padding:8px 12px; }
+  .model-badge > span{ word-break:break-all; }
+  .config-item-label{ flex-wrap:wrap; gap:4px; }
+  #product-embody .emb-meta, #product-eamesChairs .chair-meta{ min-width:0; }
+  #product-embody .emb-head{ }
+  .feature-body .feat-row{ grid-template-columns:80px 1fr; }
 }
 @media (max-width: 380px){
   .total-price{ font-size:18px; }
@@ -4457,5 +4778,103 @@ function chairPasteEx(x){ var e=document.getElementById("chPasteInput"); e.value
 }
 </style>
 
+<style>
+#product-eamesChairs .ch-specs{ margin-top:8px; border:1px solid var(--border); border-radius:6px; background:var(--step-bg); }
+#product-eamesChairs .ch-specs summary{ cursor:pointer; padding:7px 10px; font-size:12px; font-weight:700; color:var(--accent); list-style:none; }
+#product-eamesChairs .ch-specs summary::-webkit-details-marker{ display:none; }
+#product-eamesChairs .ch-specs summary::after{ content:'＋'; float:right; color:var(--text-muted); }
+#product-eamesChairs .ch-specs[open] summary::after{ content:'－'; }
+#product-eamesChairs .cs-body{ padding:2px 10px 8px; }
+#product-eamesChairs .cs-row{ display:grid; grid-template-columns:88px 1fr; gap:8px; padding:4px 0; font-size:12px; border-top:1px dashed var(--border); }
+#product-eamesChairs .cs-row:first-child{ border-top:none; }
+#product-eamesChairs .cs-k{ color:var(--text-muted); font-weight:600; }
+#product-eamesChairs .cs-v{ color:var(--text); }
+</style>
+<style>
+#product-eamesChairs .sw-wrap{ grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:6px; margin-top:-4px; max-height:240px; overflow-y:auto; padding:8px; background:var(--step-bg); border:1px solid var(--border); border-radius:6px; }
+#product-eamesChairs .sw-wrap:empty{ display:none; }
+#product-eamesChairs .sw-hint{ flex-basis:100%; font-size:11px; color:var(--text-muted); margin-bottom:2px; }
+#product-eamesChairs .sw-cell{ width:48px; cursor:pointer; text-align:center; }
+#product-eamesChairs .sw-cell img{ width:44px; height:44px; object-fit:cover; border-radius:6px; border:2px solid transparent; background:#e8e6e2; display:block; }
+#product-eamesChairs .sw-cell.active img{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(26,25,23,0.25); }
+#product-eamesChairs .sw-cell small{ display:block; font-size:8px; color:var(--text-muted); font-family:'Consolas',monospace; margin-top:1px; line-height:1.1; }
+</style>
+
+<script>
+// ===== EMBODY WORK CHAIR (US line only, fixed CN122AWAA, fabric = Sync) =====
+const EMB_BASE=2361, EMB_MODEL="CN122AWAA", EMB_FAB_ADD=147;
+const EMB_BF=[["G1","石墨灰 Graphite (CP)",0],["XT","鈦金 Titanium",40],["CD","拋光鋁 Polished Aluminum",300]];
+const EMB_FF=[["G1","石墨灰 Graphite (CP)",0],["91","白 White (CP)",45],["MG1","石墨灰＋MicrobeCare 抗菌",70],["M91","白＋MicrobeCare 抗菌",115]];
+const EMB_CA=[["BB","2.5吋 硬輪・黑軛・僅地毯",0],["C7","2.5吋 輪・黑軛・硬地或地毯",50],["C9","2.5吋 煞車輪・黑軛・硬地或地毯",50],["H9","2.5吋 透明輪・硬地或地毯",70]];
+const EMB_SYNC=[["3SY12","Black","102f854c-e0a6-4bb1-83b4-4706f4e4ae93"],["3SY03","Canyon","3c58bc22-26f2-46ae-83a3-1df7343fa3d3"],["3SY11","Dark Carbon","b94ed8cc-8870-448d-ba60-9f9a09abfd9c"],["3SY09","Dark Mineral","81d139d4-051d-4576-bb32-03ac649cc4a4"],["3SY06","Everglade","80016b90-f128-4e2d-9417-afa550966560"],["3SY08","Nightfall","529a48e2-75db-408a-8778-fdcdf9a053d9"],["3SY01","Pine Cone","1ab365c6-60e7-4a40-992d-c636b1ab1c3c"],["3SY10","Slate Grey","f464658a-8a65-4717-a7ea-8d013b17cda2"],["3SY04","Truffle","17b9385b-86f3-4796-852e-bd56bc755664"]];
+let embSyncIdx=0;
+function embF(n){ return "$"+n.toLocaleString("en-US"); }
+function embFill(id,arr){ var e=document.getElementById(id); if(!e)return; e.innerHTML=arr.map(function(x,i){return '<option value="'+i+'">'+x[1]+'  ('+(x[2]?"+"+embF(x[2]):"+$0")+')</option>';}).join(""); }
+function embV(id){ var e=document.getElementById(id); return e? +e.value : 0; }
+function renderEmbSync(){
+  var w=document.getElementById("embSync"); if(!w)return; var h='';
+  for(var i=0;i<EMB_SYNC.length;i++){ var x=EMB_SYNC[i];
+    var u='https://images.hermanmiller.group/asset/'+x[2]+'/W/x.png?w=80';
+    var mh='https://media.maharam.com/asset/'+x[2]+'/x.jpg.rendition.'+x[0]+'_233.jpg';
+    h+='<div class="sw-cell'+(i===embSyncIdx?' active':'')+'" title="'+x[0]+' '+x[1]+'" onclick="pickEmbSync('+i+')"><img loading="lazy" src="'+u+'" data-mh="'+mh+'" onerror="if(this.dataset.mh){this.src=this.dataset.mh;this.removeAttribute(&quot;data-mh&quot;);}else{this.style.visibility=&quot;hidden&quot;;}"><small>'+x[1]+'</small></div>';
+  }
+  w.innerHTML=h;
+}
+function pickEmbSync(i){ embSyncIdx=i; renderEmbSync(); embCalc(); }
+function embTotal(){ return EMB_BASE+EMB_BF[embV("embBF")][2]+EMB_FF[embV("embFF")][2]+EMB_CA[embV("embCA")][2]+EMB_FAB_ADD; }
+function embCalc(){
+  var bf=EMB_BF[embV("embBF")], ff=EMB_FF[embV("embFF")], ca=EMB_CA[embV("embCA")], sy=EMB_SYNC[embSyncIdx];
+  var total=embTotal();
+  var rows='';
+  rows+='<tr class="base-row"><td class="step-num">Step 1-3</td><td><span class="step-code">'+EMB_MODEL+'</span></td><td class="step-desc">標準高度＋全功能扶手<small>基價 base</small></td><td class="step-price price-base">'+embF(EMB_BASE)+'</td></tr>';
+  rows+='<tr><td class="step-num">Step 4</td><td><span class="step-code">'+bf[0]+'</span></td><td class="step-desc">底座飾面 '+bf[1]+'</td><td class="step-price '+(bf[2]?'price-add':'price-zero')+'">'+(bf[2]?'+'+embF(bf[2]):'+$0')+'</td></tr>';
+  rows+='<tr><td class="step-num">Step 5</td><td><span class="step-code">'+ff[0]+'</span></td><td class="step-desc">骨架飾面 '+ff[1]+'</td><td class="step-price '+(ff[2]?'price-add':'price-zero')+'">'+(ff[2]?'+'+embF(ff[2]):'+$0')+'</td></tr>';
+  rows+='<tr><td class="step-num">Step 6</td><td><span class="step-code">'+ca[0]+'</span></td><td class="step-desc">滑輪 '+ca[1]+'</td><td class="step-price '+(ca[2]?'price-add':'price-zero')+'">'+(ca[2]?'+'+embF(ca[2]):'+$0')+'</td></tr>';
+  rows+='<tr><td class="step-num">Step 7</td><td><span class="step-code">'+sy[0]+'</span></td><td class="step-desc">Sync '+sy[1]+'<small>Cat 4 椅面布料</small></td><td class="step-price price-add">+'+embF(EMB_FAB_ADD)+'</td></tr>';
+  document.getElementById("embSteps").innerHTML=rows;
+  document.getElementById("embModel").textContent=(EMB_MODEL+" "+bf[0]+" "+ff[0]+" "+ca[0]+" "+sy[0]);
+  document.getElementById("embUs").textContent=embF(total);
+  document.getElementById("embTotal").textContent=embF(total);
+  embRecalcTWD();
+}
+function embRecalcTWD(){
+  var total=embTotal();
+  var rate=parseFloat((document.getElementById("embRate")||{}).value)||40;
+  document.getElementById("embRateDisp").textContent=rate;
+  document.getElementById("embTwd").textContent=(Math.ceil(total*rate/500)*500).toLocaleString("en-US");
+}
+function embPaste(){
+  var raw=((document.getElementById("embPaste")||{}).value||"").toUpperCase().replace(/[,\/]/g," ").trim();
+  var err=document.getElementById("embErr"), em=document.getElementById("embErrMsg");
+  var info=document.getElementById("embInfo"), im=document.getElementById("embInfoMsg");
+  err.classList.remove("show"); info.classList.remove("show");
+  if(!raw) return;
+  if(raw.replace(/\s+/g,"").indexOf("CN122AWAA")!==0){ em.innerHTML="型號需以 <b>CN122AWAA</b> 開頭。"; err.classList.add("show"); return; }
+  var toks=raw.replace("CN122AWAA","").trim().split(/\s+/).filter(Boolean);
+  var bfc=EMB_BF.map(function(x){return x[0];}), ffc=EMB_FF.map(function(x){return x[0];}), cac=EMB_CA.map(function(x){return x[0];}), syc=EMB_SYNC.map(function(x){return x[0];});
+  var fin=[], rec=["<b>CN122AWAA</b>"];
+  toks.forEach(function(t){ if(bfc.indexOf(t)>=0||ffc.indexOf(t)>=0) fin.push(t); });
+  if(fin[0]!==undefined){ var i=bfc.indexOf(fin[0]); if(i>=0){ document.getElementById("embBF").value=i; rec.push("底座 "+EMB_BF[i][1]); } }
+  if(fin[1]!==undefined){ var j=ffc.indexOf(fin[1]); if(j>=0){ document.getElementById("embFF").value=j; rec.push("骨架 "+EMB_FF[j][1]); } }
+  var cIdx=-1; toks.forEach(function(t){ var k=cac.indexOf(t); if(k>=0) cIdx=k; }); if(cIdx>=0){ document.getElementById("embCA").value=cIdx; rec.push("滑輪 "+EMB_CA[cIdx][1]); }
+  var sIdx=-1; toks.forEach(function(t){ var k=syc.indexOf(t); if(k>=0) sIdx=k; });
+  var note="";
+  if(sIdx>=0){ embSyncIdx=sIdx; rec.push("Sync "+EMB_SYNC[sIdx][1]); }
+  else { var lo=toks.filter(function(t){return bfc.indexOf(t)<0&&ffc.indexOf(t)<0&&cac.indexOf(t)<0;}); if(lo.length) note="布號 <b>"+lo.join(" ")+"</b> 非 Sync 色號;本款目前僅建 Sync(3SY01-3SY12),請點下方色卡選色。"; }
+  renderEmbSync(); embCalc();
+  im.innerHTML="已辨識:"+rec.join("、")+"。目前單價 <b>"+document.getElementById("embTotal").textContent+"</b>。"+(note?"<br>⚠ "+note:"");
+  info.classList.add("show");
+}
+embFill("embBF",EMB_BF); embFill("embFF",EMB_FF); embFill("embCA",EMB_CA);
+renderEmbSync(); embCalc();
+</script>
+
+<style>
+#product-embody .sw-wrap{ grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:6px; margin-top:2px; padding:8px; background:var(--step-bg); border:1px solid var(--border); border-radius:6px; }
+#product-embody .sw-cell{ width:52px; cursor:pointer; text-align:center; }
+#product-embody .sw-cell img{ width:46px; height:46px; object-fit:cover; border-radius:6px; border:2px solid transparent; background:#e8e6e2; display:block; }
+#product-embody .sw-cell.active img{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(26,25,23,0.25); }
+#product-embody .sw-cell small{ display:block; font-size:8px; color:var(--text-muted); font-family:'Consolas',monospace; margin-top:1px; line-height:1.1; }
+</style>
 </body>
 </html>
