@@ -36,13 +36,13 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding: 24px 16px 48px;
+    padding: 18px 14px 40px;
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.55;
     font-feature-settings: "tnum";
   }
 
-  .container { max-width: 1100px; margin: 0 auto; }
+  .container { max-width: 860px; margin: 0 auto; }
 
   /* ── TOP HEADER ── */
   .header {
@@ -78,23 +78,23 @@
     display: flex;
     gap: 0;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
+    margin-bottom: 18px;
     background: var(--surface);
     flex-wrap: wrap;
   }
   .product-tab-btn {
-    padding: 12px 22px;
+    padding: 10px 16px;
     border: none;
     background: none;
     cursor: pointer;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text-muted);
     border-bottom: 3px solid transparent;
     margin-bottom: -1px;
     transition: all 0.15s;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
   }
   .product-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
   .product-tab-btn:hover:not(.active) { color: var(--text); background: var(--accent-light); }
@@ -106,7 +106,7 @@
   .tabs {
     display: flex;
     gap: 0;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     border-bottom: 1px solid var(--border);
   }
   .tab-btn {
@@ -133,8 +133,8 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 14px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
   }
   .input-label {
     font-size: 11px;
@@ -203,15 +203,16 @@
 
   /* ── ALERT ── */
   .alert {
-    padding: 12px 16px; border-radius: 6px;
-    font-size: 13px; margin-bottom: 16px;
-    display: none; align-items: flex-start; gap: 8px;
+    padding: 10px 14px; border-radius: 6px;
+    font-size: 13px; margin-bottom: 14px;
+    display: none; border-left: 3px solid currentColor;
   }
-  .alert.show { display: flex; }
-  .alert-error { background: var(--red-light); border: 1px solid #f5c6c2; color: var(--red); }
-  .alert-warn  { background: var(--yellow-light); border: 1px solid #fae5a0; color: var(--yellow); }
-  .alert-info  { background: var(--us-light); border: 1px solid #c5dcec; color: var(--us-line); }
-  .alert-icon  { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert.show { display: block; }
+  .alert-error { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .alert-warn  { background: var(--yellow-light); border-color: #c8a000; color: var(--yellow); }
+  .alert-info  { background: var(--us-light); border-color: var(--us-line); color: var(--us-line); }
+  .alert > div { color: var(--text); }
+  .alert-error > div, .alert-warn > div, .alert-info > div { color: inherit; }
 
   /* ── 更新時間戳橫條（計算/確認後回饋）── */
   .update-stamp {
@@ -235,13 +236,13 @@
   }
 
   /* ── DUAL LINE BADGES ── */
-  .line-badges { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .line-badges { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
   .line-badge {
-    flex: 1; min-width: 240px;
-    padding: 14px 18px;
-    border: 2px solid;
+    flex: 1; min-width: 200px;
+    padding: 10px 14px;
+    border: 1.5px solid;
     background: var(--surface);
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.2s;
     position: relative;
   }
@@ -254,13 +255,13 @@
 
   .line-name {
     font-size: 11px; font-weight: 700;
-    letter-spacing: 0.15em; text-transform: uppercase;
+    letter-spacing: 0.1em; text-transform: uppercase;
   }
   .line-badge.us .line-name { color: var(--us-line); }
   .line-badge.asia .line-name { color: var(--asia-line); }
   .line-price {
-    font-size: 26px; font-weight: 700;
-    margin-top: 6px; letter-spacing: -0.02em;
+    font-size: 21px; font-weight: 700;
+    margin-top: 3px; letter-spacing: -0.02em;
     font-family: 'Consolas', monospace;
   }
   .line-badge.us .line-price { color: var(--us-line); }
@@ -693,13 +694,37 @@
     border-top: 1px solid var(--border); padding-top: 14px; line-height: 1.8;
   }
 
+  /* ── 可摺疊頁尾附註 ── */
+  .footer-fold {
+    margin-top: 18px; border-top: 1px solid var(--border); padding-top: 6px;
+  }
+  .footer-fold summary {
+    list-style: none; cursor: pointer; user-select: none;
+    font-size: 11px; color: var(--text-muted); font-weight: 600;
+    letter-spacing: 0.05em; padding: 4px 0;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .footer-fold summary::-webkit-details-marker { display: none; }
+  .footer-fold summary::before {
+    content: '+'; font-family: 'Consolas', monospace;
+    color: var(--text-muted); font-weight: 700;
+  }
+  .footer-fold[open] summary::before { content: '–'; }
+  .footer-fold summary:hover { color: var(--text); }
+  .footer-fold-body {
+    font-size: 11px; color: var(--text-muted); line-height: 1.8;
+    padding: 6px 0 4px;
+  }
+
   /* ── PRINT ── */
   @media print {
     body { background: #fff; padding: 0; font-size: 11px; }
     .container { max-width: 100%; }
     .product-tabs, .tabs, .input-section, .examples,
     .btn-primary, .btn-clear, .btn-build, .btn-calc,
-    .twd-input-row, .qty-row { display: none !important; }
+    .twd-input-row, .qty-row, .series-pills { display: none !important; }
+    .footer-fold-body { display: block !important; }
+    .footer-fold summary { display: none !important; }
     .product-panel { display: block !important; page-break-after: always; }
     .product-panel:last-child { page-break-after: auto; }
     .tab-panel { display: block !important; }
@@ -716,17 +741,17 @@
   <!-- ── TOP HEADER ── -->
   <div class="header">
     <span class="header-brand">HermanMiller</span>
-    <h1>選配計算器 v6</h1>
-    <span class="header-version">Price Book 4/26 · 美亞雙線 · v6 · +Mirra 2</span>
+    <h1>選配計算器</h1>
+    <span class="header-version">Price Book 4/26 · 美亞雙線</span>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
   <div class="product-tabs">
-    <button class="product-tab-btn active" onclick="switchProduct('aeron')">🪑 Aeron® Work Chair</button>
-    <button class="product-tab-btn" onclick="switchProduct('cosm')">💺 Cosm® 全系列</button>
-    <button class="product-tab-btn" onclick="switchProduct('sayl')">🌐 Sayl® AS1YA</button>
-    <button class="product-tab-btn" onclick="switchProduct('mirra')">🦋 Mirra® 2 MRFN</button>
-    <button class="product-tab-btn" onclick="switchProduct('eames')">🛋 Eames® Lounge + Ottoman</button>
+    <button class="product-tab-btn active" onclick="switchProduct('aeron')">Aeron</button>
+    <button class="product-tab-btn" onclick="switchProduct('cosm')">Cosm</button>
+    <button class="product-tab-btn" onclick="switchProduct('sayl')">Sayl</button>
+    <button class="product-tab-btn" onclick="switchProduct('mirra')">Mirra 2</button>
+    <button class="product-tab-btn" onclick="switchProduct('eames')">Eames</button>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -736,8 +761,8 @@
 
     <!-- Inner tabs -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchAeronTab('paste')">📋 貼上型號計算</button>
-      <button class="tab-btn" onclick="switchAeronTab('manual')">🎛 下拉手動選配</button>
+      <button class="tab-btn active" onclick="switchAeronTab('paste')">貼上型號計算</button>
+      <button class="tab-btn" onclick="switchAeronTab('manual')">下拉手動選配</button>
     </div>
 
     <!-- ── AERON TAB 1: PASTE ── -->
@@ -757,10 +782,10 @@
       </div>
 
       <div class="alert alert-error" id="aeronAlertError">
-        <span class="alert-icon">⚠️</span><div id="aeronAlertErrorMsg"></div>
+        <div id="aeronAlertErrorMsg"></div>
       </div>
       <div class="alert alert-warn" id="aeronAlertWarn">
-        <span class="alert-icon">💡</span><div id="aeronAlertWarnMsg"></div>
+        <div id="aeronAlertWarnMsg"></div>
       </div>
 
       <div class="result-block" id="aeronResultBlock">
@@ -768,13 +793,13 @@
         <div class="line-badges">
           <div class="line-badge us" id="aeronUsBadgeBox">
             <span class="badge-tag" id="aeronUsTag">美國線適用</span>
-            <div class="line-name">🇺🇸 美國線 / PB_AEN</div>
+            <div class="line-name">美國線 / PB_AEN</div>
             <div class="line-price" id="aeronUsPrice">—</div>
             <div class="line-method">累加法（base + Step 加價）</div>
           </div>
           <div class="line-badge asia" id="aeronAsiaBadgeBox">
             <span class="badge-tag" id="aeronAsiaTag">亞洲線適用</span>
-            <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+            <div class="line-name">亞洲線 / 80-day Asia</div>
             <div class="line-price" id="aeronAsiaPrice">—</div>
             <div class="line-method">查表法（5 碼 base + arm 組合）</div>
           </div>
@@ -792,11 +817,11 @@
     <!-- ── AERON TAB 2: MANUAL ── -->
     <div id="aeron-tab-manual" class="tab-panel">
       <div class="config-grid" id="aeronConfigGrid"></div>
-      <button class="btn-build" onclick="aeronBuildFromSelects()">產生型號並計算價格 →</button>
+      <button class="btn-build" onclick="aeronBuildFromSelects()">產生型號並計算價格</button>
       <div class="generated-code-box" id="aeronGeneratedCode"></div>
       <div class="section-divider"></div>
       <div class="alert alert-error" id="aeronAlertErrorM">
-        <span class="alert-icon">⚠️</span><div id="aeronAlertErrorMMsg"></div>
+        <div id="aeronAlertErrorMMsg"></div>
       </div>
       <div class="result-block" id="aeronResultBlockM">
         <div class="model-badge">
@@ -804,7 +829,7 @@
           <span id="aeronBadgeModelM"></span>
         </div>
         <div class="parse-card">
-          <div class="parse-header us-h"><span>🇺🇸 美國線解析</span></div>
+          <div class="parse-header us-h"><span>美國線解析</span></div>
           <table class="steps-table">
             <thead><tr>
               <th style="width:72px">Step</th>
@@ -828,7 +853,7 @@
       </div>
     </div><!-- /aeron-tab-manual -->
 
-    <div class="footer-note">
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
       ※ 本計算器依據 Herman Miller New Aeron® Chairs Price Book (4/26) AER1 美國線 + 80-day Asia Seating (4/26) 亞洲線雙線定價。<br>
       ※ 亞洲線採「查表法」：以 5 碼主碼 + 9 種 arm+armpad 組合（如 AER1B23DW = $2,347）為基礎，再加 Step 8-15 incremental。<br>
       ※ 亞洲線專屬色系：DN2 Nightfall（暮藍）、DJ2 Jasper（碧玉綠）、MN2/MJ2 加 MicrobeCare、扶手墊色 DN4/DJ4、皮革 2119 Dark Carbon。美國線目前未確認支援這些色號。<br>
@@ -836,7 +861,7 @@
       ※ 真皮扶手墊（皮革選項 F）適用 Price Category / Band 9 加價 +$90；九級皮革（黑色 2109 / 灰色 2118 / 亞洲深碳 2119）由您提供。<br>
       ※ 8Z Pellicle 網布 6 色：23103 Graphite / 23101 Mineral / 23102 Carbon / 23105 Black / 23120 Nightfall / 23121 Jasper（均屬 Cat.1，加價 +$0）。<br>
       ※ 所有定價為美金 USD，不含稅、運費及其他費用。
-    </div>
+    </div></details>
 
   </div><!-- /product-aeron -->
 
@@ -868,18 +893,10 @@
         <button class="example-btn" onclick="cosmSetExample('FLC755SFH G1 G1 G1 SC8 BK 84501')">FLC7 Stool</button>
         <button class="example-btn" onclick="cosmSetExample('FLC855SFP DB3 DB3 DB3 OC 84505')">FLC8 DIC Stool</button>
       </div>
-      <div class="series-pills">
-        <span class="series-pill">FLC1 標準</span>
-        <span class="series-pill">FLC2 KD</span>
-        <span class="series-pill">FLC3 DIC</span>
-        <span class="series-pill">FLC4 DIC+KD</span>
-        <span class="series-pill">FLC7 Stool</span>
-        <span class="series-pill">FLC8 DIC Stool</span>
-      </div>
     </div>
 
     <div class="alert alert-error" id="cosmAlertError">
-      <span class="alert-icon">⚠️</span><div id="cosmAlertErrorMsg"></div>
+      <div id="cosmAlertErrorMsg"></div>
     </div>
 
     <div class="series-banner" id="cosmSeriesBanner">
@@ -894,13 +911,13 @@
       <div class="line-badges">
         <div class="line-badge us" id="cosmUsBadge">
           <span class="badge-tag" id="cosmUsTag">本料號適用</span>
-          <div class="line-name">🇺🇸 美國線 / PB_CSM</div>
+          <div class="line-name">美國線 / PB_CSM</div>
           <div class="line-price" id="cosmUsPrice">—</div>
           <div class="line-method">累加法 · S tilt（auto-harmonic）</div>
         </div>
         <div class="line-badge asia" id="cosmAsiaBadge">
           <span class="badge-tag" id="cosmAsiaTag">本料號適用</span>
-          <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+          <div class="line-name">亞洲線 / 80-day Asia</div>
           <div class="line-price" id="cosmAsiaPrice">—</div>
           <div class="line-method">查表法 · Y tilt</div>
         </div>
@@ -909,13 +926,13 @@
       <div id="cosmParseArea"></div>
     </div>
 
-    <div class="footer-note">
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
       ※ 本計算器依據 Herman Miller PB_CSM (4/26) 美國線 + 80-day Asia Seating 亞洲線定價。<br>
       ※ <b>FLC1/FLC2</b> = Cosm 標準款（美亞雙線同價）；<b>FLC3/FLC4</b> = Dipped in Color 彩色款（FLC4 無 Leaf 扶手）。<br>
       ※ <b>FLC7/FLC8</b> = Cosm Work Stool 吧檯椅（僅美國線供應，亞洲線需走美國線進口）。<br>
       ※ Tilt 代碼：<b>S</b> = auto-harmonic（美國線）／<b>Y</b> = standard（亞洲線），下單時必須對應正確線別。<br>
       ※ 所有定價為美金 USD，不含稅、運費及其他費用。
-    </div>
+    </div></details>
 
   </div><!-- /product-cosm -->
 
@@ -948,7 +965,7 @@
     </div>
 
     <div class="alert alert-error" id="saylAlertError">
-      <span class="alert-icon">⚠️</span><div id="saylAlertErrorMsg"></div>
+      <div id="saylAlertErrorMsg"></div>
     </div>
 
     <div class="config-wrapper">
@@ -1010,7 +1027,7 @@
       <!-- ── 框架/Y-Tower 色塊 ── -->
       <div class="leather-section" style="padding-top:10px; border-top:1px solid var(--border);">
         <div class="leather-sel-label">
-          🎨 框架/Y-Tower <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 9</span>
+          框架/Y-Tower <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 9</span>
           <span class="selected-leather-name" id="saylFrameName">BK — Black 黑色</span>
         </div>
         <div class="swatch-container" id="saylFrameSwatches"></div>
@@ -1019,7 +1036,7 @@
       <!-- ── 網背 Suspension 色塊 ── -->
       <div class="leather-section">
         <div class="leather-sel-label">
-          🌐 網背 Suspension <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 11</span>
+          網背 Suspension <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 11</span>
           <span class="selected-leather-name" id="saylSuspName">BK — Black 黑色</span>
         </div>
         <div class="swatch-container" id="saylSuspSwatches"></div>
@@ -1028,7 +1045,7 @@
       <!-- ── 扶手墊色塊 ── -->
       <div class="leather-section" id="saylArmpadSection">
         <div class="leather-sel-label">
-          🤚 扶手墊 Armpad <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 12</span>
+          扶手墊 Armpad <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 12</span>
           <span class="selected-leather-name" id="saylArmpadName">BK — Black 黑色</span>
         </div>
         <div class="swatch-container" id="saylArmpadSwatches"></div>
@@ -1036,11 +1053,11 @@
 
       <!-- ── 布料 (固定 Band 2) ── -->
       <div style="margin-top:10px; padding:8px 10px; background:var(--step-bg); border:1px solid var(--border); border-radius:6px; font-size:11px; color:var(--text-muted);">
-        💺 <b>座墊布料 Step 13</b>：固定 Band 2（標準布料）+$0｜亞洲線 4-5 碼數字色號（如 9105、7311）統一不加價
+        <b>座墊布料 Step 13</b>：固定 Band 2（標準布料）+$0｜亞洲線 4-5 碼數字色號（如 9105、7311）統一不加價
       </div>
 
       <input type="hidden" id="sayl_fabric" value="2">
-      <button class="btn-calc" onclick="saylRecalc()">重新計算 →</button>
+      <button class="btn-calc" onclick="saylRecalc()">重新計算</button>
     </div><!-- /config-wrapper -->
 
     <!-- RESULT -->
@@ -1048,12 +1065,12 @@
       <!-- Dual line badges -->
       <div class="line-badges">
         <div class="line-badge us unavailable">
-          <div class="line-name">🇺🇸 美國線</div>
+          <div class="line-name">美國線</div>
           <div class="line-price na">本表只做亞洲線</div>
           <div class="line-method">如需美國線請參考 PB_SYL 累加法</div>
         </div>
         <div class="line-badge asia active">
-          <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+          <div class="line-name">亞洲線 / 80-day Asia</div>
           <div class="line-price" id="saylAsiaPrice">—</div>
           <div class="line-method">查表法（base + incremental）</div>
         </div>
@@ -1066,7 +1083,7 @@
 
       <!-- 亞洲線解析 -->
       <div class="parse-card">
-        <div class="parse-header asia-h"><span>🌏 亞洲線解析(80-day Asia 查表法)</span></div>
+        <div class="parse-header asia-h"><span>亞洲線解析(80-day Asia 查表法)</span></div>
         <table class="steps-table">
           <thead><tr>
             <th style="width:72px">Step</th>
@@ -1091,21 +1108,21 @@
 
       <!-- ── 完整功能說明（摺疊區）── -->
       <details class="feature-details" id="saylFeatureDetails">
-        <summary>📋 點此展開：本配置完整功能說明（給客戶看的功能清單）</summary>
+        <summary>點此展開：本配置完整功能說明（給客戶看的功能清單）</summary>
         <div class="feature-body" id="saylFeatureBody">
           <!-- JS 動態生成 -->
         </div>
       </details>
     </div>
 
-    <div class="footer-note">
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
       ※ 本計算器依據 Herman Miller 80-day Asia Seating (4/26) Sayl 章節亞洲線定價。<br>
       ※ <b>本面板僅做 AS1YA</b>（Work Chair, Suspension Mid-Back, Fully Assembled / 網背中背、整裝出貨）。<br>
       ※ <b>固定條件</b>：高度只取 Standard（2）、布料只取 Band 2，下單時不需另行指定。<br>
       ※ <b>布料色號</b>：亞洲線實際使用 4-5 碼數字色號（如 9105、7311），統一屬 Band 2 不加價，色號需詢台灣總代理。<br>
       ※ 框架/Y-Tower、網背、扶手墊三色為色卡上標示之亞洲線可訂顏色。<br>
       ※ 所有定價為美金 USD，不含稅、運費及其他費用。
-    </div>
+    </div></details>
 
   </div><!-- /product-sayl -->
 
@@ -1139,10 +1156,10 @@
     </div>
 
     <div class="alert alert-error" id="mirraAlertError">
-      <span class="alert-icon">⚠️</span><div id="mirraAlertErrorMsg"></div>
+      <div id="mirraAlertErrorMsg"></div>
     </div>
     <div class="alert alert-warn" id="mirraAlertWarn">
-      <span class="alert-icon">💡</span><div id="mirraAlertWarnMsg"></div>
+      <div id="mirraAlertWarnMsg"></div>
     </div>
 
     <div class="config-wrapper">
@@ -1150,7 +1167,7 @@
 
       <!-- ── 固定規格徽章（亞洲線只能訂這種） ── -->
       <div style="margin-bottom:12px; padding:8px 12px; background:var(--accent-light); border:1px solid var(--border); border-radius:6px; font-size:12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-        <span style="font-weight:700; color:var(--accent);">📌 亞洲線固定規格</span>
+        <span style="font-weight:700; color:var(--accent);">亞洲線固定規格</span>
         <span style="font-family:'Consolas',monospace; background:var(--surface); padding:2px 8px; border:1px solid var(--border); border-radius:4px; font-weight:700;">MRFN12_</span>
         <span style="color:var(--text-muted);">＝ Fully assembled 整裝 + Standard height 406-521mm（不可變更）</span>
       </div>
@@ -1225,10 +1242,10 @@
         </div>
       </div>
 
-      <!-- ── 🎨 背套色（6 色，影響 背框/腰帶/蝴蝶布料/座墊） ── -->
+      <!-- ── 背套色（6 色，影響 背框/腰帶/蝴蝶布料/座墊） ── -->
       <div class="leather-section" style="padding-top:10px; border-top:1px solid var(--border);">
         <div class="leather-sel-label">
-          🎨 背套色 Back Color Set
+          背套色 Back Color Set
           <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 9, 14, 15, 16</span>
           <span class="selected-leather-name" id="mirraBackColorName">G1 — Graphite 石墨黑（標準）</span>
         </div>
@@ -1238,10 +1255,10 @@
         <div class="swatch-container" id="mirraBackColorSwatches"></div>
       </div>
 
-      <!-- ── 🪑 椅架套色（2 色，影響 椅架/扶手墊/底盤） ── -->
+      <!-- ── 椅架套色（2 色，影響 椅架/扶手墊/底盤） ── -->
       <div class="leather-section">
         <div class="leather-sel-label">
-          🪑 椅架套色 Frame Color Set
+          椅架套色 Frame Color Set
           <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 10, 11, 12</span>
           <span class="selected-leather-name" id="mirraFrameColorName">G1 — Graphite 石墨黑（標準）（扶手墊→Black 黑色）</span>
         </div>
@@ -1257,7 +1274,7 @@
         <span id="mirraHintsText"></span>
       </div>
 
-      <button class="btn-calc" onclick="mirraRecalc()">重新計算 →</button>
+      <button class="btn-calc" onclick="mirraRecalc()">重新計算</button>
     </div><!-- /config-wrapper -->
 
     <!-- RESULT -->
@@ -1265,12 +1282,12 @@
       <!-- Dual line badges -->
       <div class="line-badges">
         <div class="line-badge us unavailable">
-          <div class="line-name">🇺🇸 美國線</div>
+          <div class="line-name">美國線</div>
           <div class="line-price na">本表只做亞洲線</div>
           <div class="line-method">如需美國線請參考 PB_MIT 累加法</div>
         </div>
         <div class="line-badge asia active">
-          <div class="line-name">🌏 亞洲線 / 80-day Asia</div>
+          <div class="line-name">亞洲線 / 80-day Asia</div>
           <div class="line-price" id="mirraAsiaPrice">—</div>
           <div class="line-method">查表法（base + incremental）</div>
         </div>
@@ -1283,7 +1300,7 @@
 
       <!-- 亞洲線解析 -->
       <div class="parse-card">
-        <div class="parse-header asia-h"><span>🌏 亞洲線解析（80-day Asia 查表法）</span></div>
+        <div class="parse-header asia-h"><span>亞洲線解析（80-day Asia 查表法）</span></div>
         <table class="steps-table">
           <thead><tr>
             <th style="width:72px">Step</th>
@@ -1308,14 +1325,14 @@
 
       <!-- 完整功能說明 -->
       <details class="feature-details" id="mirraFeatureDetails">
-        <summary>📋 點此展開：本配置完整功能說明（給客戶看的功能清單）</summary>
+        <summary>點此展開：本配置完整功能說明（給客戶看的功能清單）</summary>
         <div class="feature-body" id="mirraFeatureBody">
           <!-- JS 動態生成 -->
         </div>
       </details>
     </div>
 
-    <div class="footer-note">
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
       ※ 本計算器依據 Herman Miller 80-day Asia Seating (4/26) Mirra 2 章節亞洲線定價。<br>
       ※ <b>主碼前綴固定 MRFN12_</b>：亞洲線實務上只能訂 Fully assembled（整裝）+ Standard height（406-521mm 標準座高）。<br>
       ※ <b>本面板僅做工作椅 MRFN 系列</b>，不含 Stool 吧台椅。<br>
@@ -1325,7 +1342,7 @@
       ※ <b>背材限制</b>：選 TriFlex 聚合物背（P）時，蝴蝶背布料色（Step 15）不適用；其餘背套色仍套用於座墊與腰帶。<br>
       ※ <b>台灣總代理 Style 另有 8 種彩色款</b>（Slate Grey、Lime Green、French Press、Urban Orange、Dark Turquoise、Twilight 等），需另詢台灣代理報價。<br>
       ※ 所有定價為美金 USD，不含稅、運費及其他費用。
-    </div>
+    </div></details>
 
   </div><!-- /product-mirra -->
 
@@ -1397,16 +1414,16 @@
 
       <!-- 數量 -->
       <div class="qty-row">
-        <span class="qty-label">🪑 訂購數量（套組）</span>
+        <span class="qty-label">訂購數量（套組）</span>
         <input type="number" class="qty-input" id="eames_qty" value="1" min="1" max="999" onchange="eamesRecalc()">
         <span class="qty-total" id="eamesQtyTotal"></span>
       </div>
 
-      <button class="btn-calc" onclick="eamesCalcAll()">計算總價 →</button>
+      <button class="btn-calc" onclick="eamesCalcAll()">計算總價</button>
     </div><!-- /config-wrapper -->
 
     <div class="alert alert-warn" id="eamesAlertWarn">
-      <span class="alert-icon">💡</span><div id="eamesAlertWarnMsg"></div>
+      <div id="eamesAlertWarnMsg"></div>
     </div>
 
     <!-- RESULT -->
@@ -1414,12 +1431,12 @@
       <!-- Dual line badges -->
       <div class="line-badges">
         <div class="line-badge us active">
-          <div class="line-name">🇺🇸 美國線</div>
+          <div class="line-name">美國線</div>
           <div class="line-price" id="eamesUsBadgePrice">—</div>
           <div class="line-method">累加法（套組 = 椅 + 腳凳）</div>
         </div>
         <div class="line-badge asia unavailable">
-          <div class="line-name">🌏 亞洲線</div>
+          <div class="line-name">亞洲線</div>
           <div class="line-price na">需走美國線進口</div>
           <div class="line-method">80-day Asia 不含 Lounge 系列</div>
         </div>
@@ -1432,7 +1449,7 @@
 
       <!-- 美國線解析 -->
       <div class="parse-card">
-        <div class="parse-header us-h"><span>🇺🇸 美國線解析</span></div>
+        <div class="parse-header us-h"><span>美國線解析</span></div>
         <table class="steps-table">
           <thead><tr>
             <th style="width:72px">Step</th>
@@ -1446,7 +1463,7 @@
 
       <!-- 亞洲線：需走美國線進口 -->
       <div class="parse-card">
-        <div class="parse-header unavailable"><span>🌏 亞洲線解析</span></div>
+        <div class="parse-header unavailable"><span>亞洲線解析</span></div>
         <div class="unavailable-card">
           <strong>Eames® Lounge Chair + Ottoman 亞洲線無在地供應</strong><br><br>
           80-day HM Asia Seating 為辦公椅手冊，不含 Lounge 系列。<br>
@@ -1497,14 +1514,14 @@
       </div>
     </div><!-- /eamesResultBlock -->
 
-    <div class="footer-note">
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
       ※ 本計算器依據 Herman Miller Ancillary Price Book (4/26) · Eames® Lounge Chair + Ottoman 套組美國線定價。<br>
       ※ 套組基本售價已包含椅 + 腳凳。殼面加價為 Step 3 Shell Finish 加價；梣木系列殼面已內含於固定型號中。<br>
       ※ Tall 尺寸：胡桃木 / 白橡木 / 油胡桃 / 桑托斯 / 油桑托斯各加 +$366；黑梣木 / 白梣木 Tall 基本售價 $9,602（已含加價）。<br>
       ※ Category 9 皮革加價 +$734 / Category 11 Prone 皮革加價 +$1,072（套組含椅＋腳凳）。<br>
       ※ <b>亞洲線無在地供應</b>：80-day Asia Seating 僅含辦公椅，Eames Lounge 客戶需求請走美國線進口（交期較長、需報關）。<br>
       ※ 所有定價為美金 USD，不含稅、運費及其他費用。台幣換算僅供參考。
-    </div>
+    </div></details>
 
   </div><!-- /product-eames -->
 
@@ -1793,7 +1810,7 @@ function _aeronCalcAsia(parsed) {
   const basePrice = AERON_ASIA_BASE_PRICES[parsed.baseLookupKey];
   if (basePrice === undefined) {
     errors.push(`亞洲線查表失敗：找不到 ${parsed.baseLookupKey}（A size 只有 height 1，C size 不能 height 1）`);
-    return { rows: [{step:'查表', code:parsed.baseLookupKey, desc:'⚠️ 亞洲線無此基礎組合', sub:'Step 1-7 合併計價', price:null}], total: null, errors };
+    return { rows: [{step:'查表', code:parsed.baseLookupKey, desc:'亞洲線無此基礎組合', sub:'Step 1-7 合併計價', price:null}], total: null, errors };
   }
   total = basePrice;
   const armComboDesc = {
@@ -1921,8 +1938,8 @@ function _aeronRenderDualLine(parsed) {
 
   // 雙線解析卡片
   const area = document.getElementById('aeronParseArea');
-  area.innerHTML = _aeronRenderCard('🇺🇸 美國線解析（PB_AEN 累加法）', 'us', usResult)
-                 + _aeronRenderCard('🌏 亞洲線解析（80-day Asia 查表法）', 'asia', asiaResult);
+  area.innerHTML = _aeronRenderCard('美國線解析（PB_AEN 累加法）', 'us', usResult)
+                 + _aeronRenderCard('亞洲線解析（80-day Asia 查表法）', 'asia', asiaResult);
 
   document.getElementById('aeronResultBlock').classList.add('show');
 
@@ -1941,7 +1958,7 @@ function _aeronRenderCard(title, lineClass, result) {
   let errorHtml = '';
   if (result.errors.length > 0) {
     errorHtml = `<div style="background:var(--yellow-light);border-bottom:1px solid #fae5a0;padding:12px 16px;font-size:12px;color:var(--yellow);">
-      <strong>⚠️ 偵測到 ${result.errors.length} 個問題：</strong><br>${result.errors.map(e => `• ${e}`).join('<br>')}
+      <strong>偵測到 ${result.errors.length} 個問題：</strong><br>${result.errors.map(e => `• ${e}`).join('<br>')}
     </div>`;
   }
 
@@ -1958,7 +1975,7 @@ function _aeronRenderCard(title, lineClass, result) {
 
   const totalHtml = result.total !== null ? `
     <tr class="${totalClass}">
-      <td colspan="3" class="label">${lineClass === 'asia' ? '🌏 亞洲線' : '🇺🇸 美國線'} 單張定價合計</td>
+      <td colspan="3" class="label">${lineClass === 'asia' ? '亞洲線' : '美國線'} 單張定價合計</td>
       <td class="amount">$${result.total.toLocaleString()}</td>
     </tr>` : '';
 
@@ -2035,7 +2052,7 @@ function aeronBuildFromSelects() {
     const ps = r.price === null ? '—' : (r.isBase ? `$${r.price.toLocaleString()}` : (r.price === 0 ? '+$0' : `+$${r.price.toLocaleString()}`));
     const rc = r.isBase ? 'base-row' : '';
     return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub||''}</small></td><td class="step-price ${pc}">${ps}</td></tr>`;
-  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">🇺🇸 美國線單張定價合計</td><td class="amount">$${usResult.total.toLocaleString()}</td></tr>`;
+  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">美國線單張定價合計</td><td class="amount">$${usResult.total.toLocaleString()}</td></tr>`;
   document.getElementById('aeronResultBlockM').classList.add('show');
 }
 
@@ -2333,7 +2350,7 @@ function _cosmCalcUS(parsed) {
     if (ch) {
       const allowed = ch.allowedFrames === "ANY" || ch.allowedFrames.includes(parsed.frame);
       if (!allowed) errors.push(`Step 8 Chassis "${parsed.chassis}" 與 Frame "${parsed.frame}" 互斥`);
-      steps.push({ pos: 8, code: parsed.chassis, step: "Step 8", category: "Chassis Finish", desc: ch.name + (allowed ? "" : " ⚠️"), price: ch.price });
+      steps.push({ pos: 8, code: parsed.chassis, step: "Step 8", category: "Chassis Finish", desc: ch.name + (allowed ? "" : " "), price: ch.price });
       total += ch.price;
     } else {
       errors.push(`Step 8 Chassis "${parsed.chassis}" 不適用 ${parsed.seriesKey}`);
@@ -2345,7 +2362,7 @@ function _cosmCalcUS(parsed) {
     if (ba) {
       const allowed = ba.allowedFrames === "ANY" || ba.allowedFrames.includes(parsed.frame);
       if (!allowed) errors.push(`Step 9 Base "${parsed.base}" 與 Frame "${parsed.frame}" 互斥`);
-      steps.push({ pos: 9, code: parsed.base, step: "Step 9", category: "Base Finish", desc: ba.name + (allowed ? "" : " ⚠️"), price: ba.price });
+      steps.push({ pos: 9, code: parsed.base, step: "Step 9", category: "Base Finish", desc: ba.name + (allowed ? "" : " "), price: ba.price });
       total += ba.price;
     } else {
       errors.push(`Step 9 Base "${parsed.base}" 不適用 ${parsed.seriesKey}`);
@@ -2399,7 +2416,7 @@ function _cosmCalcAsia(parsed) {
   const baseKey = `FLC${parsed.seriesKey.substring(3)}${parsed.backHeight}${parsed.heightAdj}YF${parsed.armsCode}`;
   const basePrice = COSM_ASIA_BASE_PRICES[baseKey];
 
-  steps.push({ pos: "1-6", code: baseKey, step: "查表", category: "🔵 基礎價（已內含 Step 1-6）",
+  steps.push({ pos: "1-6", code: baseKey, step: "查表", category: "基礎價（已內含 Step 1-6）",
     desc: `Back Height + Height Adj + Tilt(Y) + Seat Depth + Arms 五項合併計價`, price: basePrice, isBase: true });
 
   if (basePrice === undefined) {
@@ -2409,7 +2426,7 @@ function _cosmCalcAsia(parsed) {
   total = basePrice;
 
   if (parsed.tilt === "S") {
-    steps[0].desc += " ⚠️ 實際下亞洲線需把 tilt 改為 Y";
+    steps[0].desc += " 實際下亞洲線需把 tilt 改為 Y";
   }
 
   const addStep = (cond, posNum, stepNum, cat, code, lookupTable, lookupValueTable) => {
@@ -2425,7 +2442,7 @@ function _cosmCalcAsia(parsed) {
       allowed = usEntry.allowedFrames.includes(parsed.frame);
       if (!allowed) errors.push(`Step ${stepNum} ${cat} "${code}" 與 Frame "${parsed.frame}" 互斥`);
     }
-    const desc = (usEntry?.name || code) + (allowed ? "" : " ⚠️");
+    const desc = (usEntry?.name || code) + (allowed ? "" : " ");
     steps.push({ pos: posNum, code, step: `Step ${stepNum}`, category: cat, desc, price });
     total += price;
   };
@@ -2504,11 +2521,11 @@ function cosmRender() {
   // Parse cards
   const parseArea = document.getElementById('cosmParseArea');
   let html = '';
-  html += _cosmRenderCard('🇺🇸 美國線解析（PB_CSM 累加法）', 'us', usResult);
+  html += _cosmRenderCard('美國線解析（PB_CSM 累加法）', 'us', usResult);
 
   if (asiaResult.unavailable) {
     html += `<div class="parse-card">
-      <div class="parse-header unavailable"><span>🌏 亞洲線解析</span></div>
+      <div class="parse-header unavailable"><span>亞洲線解析</span></div>
       <div class="unavailable-card">
         <strong>${asiaResult.reason}</strong><br><br>
         Cosm Stool（FLC7/FLC8）目前 80-day Asia Seating 與 45-day Asia Seating 章節中均無對應料號，<br>
@@ -2516,7 +2533,7 @@ function cosmRender() {
       </div>
     </div>`;
   } else {
-    html += _cosmRenderCard('🌏 亞洲線解析（80-day Asia 查表法）', 'asia', asiaResult);
+    html += _cosmRenderCard('亞洲線解析（80-day Asia 查表法）', 'asia', asiaResult);
   }
 
   parseArea.innerHTML = html;
@@ -2529,7 +2546,7 @@ function _cosmRenderCard(title, lineClass, result) {
   let errorHtml = '';
   if (result.errors.length > 0) {
     errorHtml = `<div style="background:var(--yellow-light);border-bottom:1px solid #fae5a0;padding:12px 16px;font-size:12px;color:var(--yellow);">
-      <strong>⚠️ 偵測到 ${result.errors.length} 個問題：</strong><br>${result.errors.map(e => `• ${e}`).join('<br>')}
+      <strong>偵測到 ${result.errors.length} 個問題：</strong><br>${result.errors.map(e => `• ${e}`).join('<br>')}
     </div>`;
   }
 
@@ -2558,7 +2575,7 @@ function _cosmRenderCard(title, lineClass, result) {
 
   const totalHtml = result.total !== null ? `
     <tr class="${totalClass}">
-      <td colspan="3" class="label">${lineClass === 'asia' ? '🌏 亞洲線' : '🇺🇸 美國線'} 單張定價合計</td>
+      <td colspan="3" class="label">${lineClass === 'asia' ? '亞洲線' : '美國線'} 單張定價合計</td>
       <td class="amount">$${result.total.toLocaleString()}</td>
     </tr>` : '';
 
@@ -2720,7 +2737,7 @@ function eamesCalcAll(){
     const ps=r.isBase?`$${r.price.toLocaleString()}`:r.price===0?'+$0':`+$${r.price.toLocaleString()}`;
     const rc=r.isBase?'base-row':'';
     return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub}</small></td><td class="step-price ${pc}">${ps}</td></tr>`;
-  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">🇺🇸 美國線單套定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>`;
+  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">美國線單套定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>`;
 
   eamesLastTotal=total;
   document.getElementById('eamesResultBlock').classList.add('show');
@@ -2973,7 +2990,7 @@ function saylRecalc() {
 
   // Step 1-7 base
   if (basePrice === undefined) {
-    rows.push({step:'查表', code:lookupKey, desc:'⚠️ 查表失敗，請檢查組合', sub:'Step 1-7 合併計價', price:null});
+    rows.push({step:'查表', code:lookupKey, desc:'查表失敗，請檢查組合', sub:'Step 1-7 合併計價', price:null});
     document.getElementById('saylAsiaPrice').textContent = '—';
     document.getElementById('saylTotalPrice').textContent = '—';
   } else {
@@ -3064,7 +3081,7 @@ function saylRecalc() {
     else                        priceCell = `<td class="step-price price-add">+$${r.price.toLocaleString()}</td>`;
     const rc = r.isBase ? 'base-row' : '';
     return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub||''}</small></td>${priceCell}</tr>`;
-  }).join('') + (basePrice !== undefined ? `<tr class="total-row asia-total"><td colspan="3" class="label">🌏 亞洲線單張定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>` : '');
+  }).join('') + (basePrice !== undefined ? `<tr class="total-row asia-total"><td colspan="3" class="label">亞洲線單張定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>` : '');
 
   // 渲染完整功能說明
   saylRenderFeatureDetails({tilt, arms, depth, back, caster});
@@ -3107,14 +3124,14 @@ function saylRenderFeatureDetails(cfg) {
     : `${saylSelectedArmpad.code} — ${saylSelectedArmpad.name}（${saylSelectedArmpad.desc}）`;
 
   body.innerHTML = `
-    <h4>🪑 椅體核心結構</h4>
+    <h4>椅體核心結構</h4>
     <div class="feat-row"><span class="feat-code">3D Suspension</span><span class="feat-desc">無框架式 3D Intelligent® 懸浮網背 — 隨身體動作自由變形、提供針對性支撐、有效散熱</span></div>
     <div class="feat-row"><span class="feat-code">Y-Tower®</span><span class="feat-desc">Y 形脊柱結構支撐網背中軸，搭配 ArcSpan® 底部錨定點</span></div>
     <div class="feat-row"><span class="feat-code">PostureFit®</span><span class="feat-desc">內建於網背的被動式骨盆支撐，協助維持健康坐姿、改善下背舒適度</span></div>
     <div class="feat-row"><span class="feat-code">Synchronous Tilt</span><span class="feat-desc">同步傾仰機構，身體前傾後仰時以腳踝/膝蓋/髖關節三軸自然樞紐</span></div>
     <div class="feat-row"><span class="feat-code">5-star Base</span><span class="feat-desc">五星底座（標配）</span></div>
 
-    <h4>⚙️ 本配置選項</h4>
+    <h4>本配置選項</h4>
     <div class="feat-row"><span class="feat-code">高度範圍</span><span class="feat-desc">Standard height range — 座面高度可調 406-521mm（適合 95% 一般成人身高）</span></div>
     <div class="feat-row"><span class="feat-code">傾仰</span><span class="feat-desc">${tiltDesc}</span></div>
     <div class="feat-row"><span class="feat-code">扶手</span><span class="feat-desc">${armsDesc}</span></div>
@@ -3122,13 +3139,13 @@ function saylRenderFeatureDetails(cfg) {
     <div class="feat-row"><span class="feat-code">背部支撐</span><span class="feat-desc">${backDesc}</span></div>
     <div class="feat-row"><span class="feat-code">輪子</span><span class="feat-desc">${casterDesc}</span></div>
 
-    <h4>🎨 顏色配置</h4>
+    <h4>顏色配置</h4>
     <div class="feat-row"><span class="feat-code">框架/底座</span><span class="feat-desc">${frameDesc}</span></div>
     <div class="feat-row"><span class="feat-code">網背</span><span class="feat-desc">${suspDesc}</span></div>
     <div class="feat-row"><span class="feat-code">扶手墊</span><span class="feat-desc">${armpadDesc}</span></div>
     <div class="feat-row"><span class="feat-code">座墊布料</span><span class="feat-desc">${saylParsedFabricCode || 'Band 2 標準'}（亞洲線 Band 2 不加價）</span></div>
 
-    <h4>📦 出貨與保固</h4>
+    <h4>出貨與保固</h4>
     <div class="feat-row"><span class="feat-code">出貨形式</span><span class="feat-desc">Fully assembled — 整裝出貨（AS1YA = Work Chair / 整裝；KD 自組裝為 AS2YA）</span></div>
     <div class="feat-row"><span class="feat-code">承重</span><span class="feat-desc">158 kg 以下（Tested and warranted for persons 158kg and under）</span></div>
     <div class="feat-row"><span class="feat-code">扶手拆卸</span><span class="feat-desc">扶手可現場徒手拆卸，無需工具</span></div>
@@ -3140,7 +3157,7 @@ function saylRenderFeatureDetails(cfg) {
 // MIRRA 2 — DATA & LOGIC（亞洲線 80-day Asia 查表法）
 // =========================================================
 
-// 🎨 背套色（6 色）— 影響：背框 / 腰帶 / 蝴蝶布料 / 座墊
+// 背套色（6 色）— 影響：背框 / 腰帶 / 蝴蝶布料 / 座墊
 // 椅架色獨立，這份只決定「背相關」+「座墊」的顏色
 const MIRRA_BACK_COLORS = [
   { code:'G1',  name:'Graphite',     desc:'石墨黑（標準）', surcharge:0,
@@ -3163,7 +3180,7 @@ const MIRRA_BACK_COLORS = [
     butterflyCode:'8M30', airweaveCode:'1A712' }
 ];
 
-// 🪑 椅架套色（2 色）— 影響：椅架 / 扶手墊 / 底盤（除非另選 L7P 銀色）
+// 椅架套色（2 色）— 影響：椅架 / 扶手墊 / 底盤（除非另選 L7P 銀色）
 const MIRRA_FRAME_COLORS = [
   { code:'G1', name:'Graphite', desc:'石墨黑（標準）', surcharge:0,
     color:'#3a3935', border:false, armpadCode:'BK', armpadName:'Black 黑色' },
@@ -3199,7 +3216,7 @@ let mirraSelectedFrame = MIRRA_FRAME_COLORS[0]; // 椅架套色
 // MIRRA — Build colour swatches（兩組獨立色塊）
 // =========================================================
 
-// 🎨 背套色塊（6 色）
+// 背套色塊（6 色）
 function mirraBuildBackColorSwatches() {
   const c = document.getElementById('mirraBackColorSwatches');
   if (!c) return;
@@ -3224,7 +3241,7 @@ function mirraBuildBackColorSwatches() {
   });
 }
 
-// 🪑 椅架套色塊（2 色）
+// 椅架套色塊（2 色）
 function mirraBuildFrameColorSwatches() {
   const c = document.getElementById('mirraFrameColorSwatches');
   if (!c) return;
@@ -3491,14 +3508,14 @@ function mirraRenderFeatureList() {
   }[caster];
 
   document.getElementById('mirraFeatureBody').innerHTML = `
-    <h4>🪑 標配功能（不可選）</h4>
+    <h4>標配功能（不可選）</h4>
     <div class="feat-row"><span class="feat-code">PostureFit®</span><span class="feat-desc">被動骶部支撐（所有腰靠選項皆含）</span></div>
     <div class="feat-row"><span class="feat-code">Harmonic™ 2</span><span class="feat-desc">和諧 2 傾仰機構（leaf-spring 設計，承重 90-159kg 平衡感佳）</span></div>
     <div class="feat-row"><span class="feat-code">AireWeave™ 2</span><span class="feat-desc">透氣懸浮座墊（溫度中性、不蓄熱）</span></div>
     <div class="feat-row"><span class="feat-code">Loop Spine</span><span class="feat-desc">迴圈脊椎設計（提供側向扭轉彈性，伸展更自然）</span></div>
     <div class="feat-row"><span class="feat-code">5-star Base</span><span class="feat-desc">五星底座（標配）</span></div>
 
-    <h4>⚙️ 本配置選項</h4>
+    <h4>本配置選項</h4>
     <div class="feat-row"><span class="feat-code">出貨形式</span><span class="feat-desc">${asmDesc}</span></div>
     <div class="feat-row"><span class="feat-code">高度範圍</span><span class="feat-desc">${heightDesc}</span></div>
     <div class="feat-row"><span class="feat-code">傾仰</span><span class="feat-desc">${tiltDesc}</span></div>
@@ -3508,12 +3525,12 @@ function mirraRenderFeatureList() {
     <div class="feat-row"><span class="feat-code">腰靠</span><span class="feat-desc">${supportDesc}</span></div>
     <div class="feat-row"><span class="feat-code">輪子</span><span class="feat-desc">${casterDesc}</span></div>
 
-    <h4>🎨 顏色配置</h4>
+    <h4>顏色配置</h4>
     <div class="feat-row"><span class="feat-code">背套色</span><span class="feat-desc">${backColor.code} ${backColor.name} ${backColor.desc}（背框 + 腰帶${back==='F'?' + 蝴蝶布料':''} + 座墊 同色）</span></div>
     <div class="feat-row"><span class="feat-code">椅架套色</span><span class="feat-desc">${frameColor.code} ${frameColor.name} ${frameColor.desc}（椅架 + 扶手墊 + 底盤 同色）</span></div>
     ${arms !== 'N' ? `<div class="feat-row"><span class="feat-code">扶手墊</span><span class="feat-desc">${frameColor.armpadCode} ${frameColor.armpadName}（自動配對椅架色）</span></div>` : ''}
 
-    <h4>📦 出貨與保固</h4>
+    <h4>出貨與保固</h4>
     <div class="feat-row"><span class="feat-code">承重</span><span class="feat-desc">350 lbs / 159 kg 以下</span></div>
     <div class="feat-row"><span class="feat-code">適用人群</span><span class="feat-desc">5th–95th Percentile（涵蓋一般人體尺寸 5%-95%）</span></div>
     <div class="feat-row"><span class="feat-code">產線</span><span class="feat-desc">80-day HM Asia Seating（亞洲線、新加坡出貨）</span></div>
