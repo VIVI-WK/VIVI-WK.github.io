@@ -753,6 +753,7 @@
     <button class="product-tab-btn" onclick="switchProduct('mirra')">Mirra 2</button>
     <button class="product-tab-btn" onclick="switchProduct('eames')">Eames</button>
     <button class="product-tab-btn" onclick="switchProduct('eamesstool')">Eames Stool</button>
+    <button class="product-tab-btn" onclick="switchProduct('eamesChairs')">Eames 座椅</button>
   </div>
 
   <!-- ══════════════════════════════════════════
@@ -1415,200 +1416,6 @@
       </div><!-- /eames-config-grid -->
 
       <!-- 數量 -->
-      <div class="qty-row">
-        <span class="qty-label">訂購數量（套組）</span>
-        <input type="number" class="qty-input" id="eames_qty" value="1" min="1" max="999" onchange="eamesRecalc()">
-        <span class="qty-total" id="eamesQtyTotal"></span>
-      </div>
-
-      <button class="btn-calc" onclick="eamesCalcAll()">計算總價</button>
-    </div><!-- /config-wrapper -->
-
-    <div class="alert alert-warn" id="eamesAlertWarn">
-      <div id="eamesAlertWarnMsg"></div>
-    </div>
-
-    <!-- RESULT -->
-    <div class="result-block" id="eamesResultBlock">
-      <!-- Dual line badges -->
-      <div class="line-badges">
-        <div class="line-badge us active">
-          <div class="line-name">美國線</div>
-          <div class="line-price" id="eamesUsBadgePrice">—</div>
-          <div class="line-method">累加法（套組 = 椅 + 腳凳）</div>
-        </div>
-        <div class="line-badge asia unavailable">
-          <div class="line-name">亞洲線</div>
-          <div class="line-price na">需走美國線進口</div>
-          <div class="line-method">80-day Asia 不含 Lounge 系列</div>
-        </div>
-      </div>
-
-      <div class="model-badge">
-        <span class="model-badge-label">型號</span>
-        <span id="eamesBadgeModel">—</span>
-      </div>
-
-      <!-- 美國線解析 -->
-      <div class="parse-card">
-        <div class="parse-header us-h"><span>美國線解析</span></div>
-        <table class="steps-table">
-          <thead><tr>
-            <th style="width:72px">Step</th>
-            <th style="width:100px">代碼</th>
-            <th>說明</th>
-            <th style="width:130px">加價 (USD)</th>
-          </tr></thead>
-          <tbody id="eamesStepsBody"></tbody>
-        </table>
-      </div>
-
-      <!-- 亞洲線：需走美國線進口 -->
-      <div class="parse-card">
-        <div class="parse-header unavailable"><span>亞洲線解析</span></div>
-        <div class="unavailable-card">
-          <strong>Eames® Lounge Chair + Ottoman 亞洲線無在地供應</strong><br><br>
-          80-day HM Asia Seating 為辦公椅手冊，不含 Lounge 系列。<br>
-          客戶需求請走<b>美國線進口流程</b>（交期較長、需報關），<br>
-          報價以本頁美國線金額為準，再加運費與關稅。<br><br>
-          <span style="font-size:11px; color:var(--text-muted);">如有 Asia Lounge 專屬手冊釋出，可再行補入。</span>
-        </div>
-      </div>
-
-      <div class="total-bar">
-        <div>
-          <div class="total-label">美國線單套定價（USD）</div>
-          <div class="total-sub">套組 = 椅 + 腳凳</div>
-        </div>
-        <div class="total-price">
-          <span class="total-currency">USD</span>
-          <span id="eamesTotalPrice">—</span>
-        </div>
-      </div>
-
-      <!-- Full model string -->
-      <div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:12px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);font-weight:600;white-space:nowrap;">完整型號</span>
-        <span id="eamesFullModel" style="font-family:'Consolas',monospace;font-size:15px;font-weight:700;color:var(--accent);letter-spacing:0.05em;word-break:break-all;text-align:right;">—</span>
-      </div>
-      <div class="twd-bar">
-        <div>
-          <div class="twd-label">台幣換算（含 <span id="eamesQtyLabel">1</span> 套）</div>
-          <div class="twd-rate">匯率：1 USD ＝ <span id="eamesRateDisplay">40</span> TWD（500 進位）</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="twd-price">NT$ <span id="eamesTwdPrice">—</span></div>
-          <div class="twd-input-row" style="justify-content:flex-end; margin-top:6px;">
-            <span style="font-size:11px; color:var(--text-muted);">匯率</span>
-            <input type="number" class="twd-input" id="eamesTwdRate" value="40" step="0.5" min="1" onchange="eamesRecalcTWD()">
-            <span style="font-size:11px; color:var(--text-muted);">TWD</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Multi total -->
-      <div id="eamesMultiBar" style="display:none;" class="total-bar">
-        <div><div class="total-label">合計（<span id="eamesMultiQtyLabel">1</span> 套）</div></div>
-        <div class="total-price">
-          <span class="total-currency">USD</span>
-          <span id="eamesMultiPrice">—</span>
-        </div>
-      </div>
-    </div><!-- /eamesResultBlock -->
-
-    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
-      ※ 本計算器依據 Herman Miller Ancillary Price Book (4/26) · Eames® Lounge Chair + Ottoman 套組美國線定價。<br>
-      ※ 套組基本售價已包含椅 + 腳凳。殼面加價為 Step 3 Shell Finish 加價；梣木系列殼面已內含於固定型號中。<br>
-      ※ Tall 尺寸：胡桃木 / 白橡木 / 油胡桃 / 桑托斯 / 油桑托斯各加 +$366；黑梣木 / 白梣木 Tall 基本售價 $9,602（已含加價）。<br>
-      ※ Category 9 皮革加價 +$734 / Category 11 Prone 皮革加價 +$1,072（套組含椅＋腳凳）。<br>
-      ※ <b>亞洲線無在地供應</b>：80-day Asia Seating 僅含辦公椅，Eames Lounge 客戶需求請走美國線進口（交期較長、需報關）。<br>
-      ※ 所有定價為美金 USD，不含稅、運費及其他費用。台幣換算僅供參考。
-    </div></details>
-
-  </div><!-- /product-eames -->
-
-
-  <!-- ══════════════════════════════════════════
-       PRODUCT PANEL: EAMES TURNED STOOL
-  ══════════════════════════════════════════ -->
-  <style>
-  #product-eamesstool .shape-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:6px; }
-  @media (max-width:600px){ #product-eamesstool .shape-grid { grid-template-columns:1fr 1fr; } }
-  #product-eamesstool .shape-card {
-    border:1.5px solid var(--border); border-radius:8px; background:var(--surface);
-    padding:8px; cursor:pointer; text-align:center; transition:border-color .15s, box-shadow .15s;
-  }
-  #product-eamesstool .shape-card:hover { border-color:var(--border-strong); }
-  #product-eamesstool .shape-card.active { border-color:var(--accent); box-shadow:0 0 0 2px rgba(26,25,23,0.16); }
-  #product-eamesstool .shape-card img { width:100%; height:108px; object-fit:contain; background:var(--step-bg); border-radius:6px; }
-  #product-eamesstool .shape-card .sc-fallback {
-    display:none; height:108px; align-items:center; justify-content:center; text-align:center;
-    background:var(--step-bg); border-radius:6px; color:var(--text-muted); font-size:11px; line-height:1.4; padding:4px;
-  }
-  #product-eamesstool .shape-card .sc-name { font-size:13px; font-weight:700; margin-top:6px; color:var(--accent); font-family:'Consolas',monospace; }
-  #product-eamesstool .shape-card .sc-sub { font-size:10px; color:var(--text-muted); margin-top:1px; }
-  #product-eamesstool .shape-card .sc-tag { font-size:9px; color:var(--green); font-weight:700; margin-top:3px; letter-spacing:.05em; }
-  #product-eamesstool .img-credit { font-size:10px; color:var(--text-muted); margin:2px 0 0; }
-  #product-eamesstool .img-credit a { color:var(--us-line); }
-  </style>
-
-  <div id="product-eamesstool" class="product-panel">
-
-    <div class="config-wrapper">
-      <div class="section-title">Step 2 — 選擇造型 Shape（41 固定；四款同價，外型與重量不同）</div>
-      <div class="shape-grid">
-        <div class="shape-card" data-shape="A" onclick="selectStoolShape('A')">
-          <img src="https://images.hermanmiller.group/m/ea2e1db53cc94dea/W-HM_237_103701_walnut_f.png?w=420&auto=format" alt="Shape A" loading="lazy"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
-          <div class="sc-name">Shape A</div>
-          <div class="sc-sub">411 · 15.5 lbs / 7.0 kg</div>
-          <div class="sc-tag">暢銷</div>
-        </div>
-        <div class="shape-card" data-shape="B" onclick="selectStoolShape('B')">
-          <img src="https://images.hermanmiller.group/m/6ff776eba44645ab/W-HM_OCC_41760.png?w=420&auto=format" alt="Shape B" loading="lazy"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
-          <div class="sc-name">Shape B</div>
-          <div class="sc-sub">412 · 15.5 lbs / 7.0 kg</div>
-          <div class="sc-tag">暢銷</div>
-        </div>
-        <div class="shape-card" data-shape="C" onclick="selectStoolShape('C')">
-          <img src="https://images.hermanmiller.group/m/4018189dd45b5105/W-HM_OCC_41769.png?w=420&auto=format" alt="Shape C" loading="lazy"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
-          <div class="sc-name">Shape C</div>
-          <div class="sc-sub">413 · 17.75 lbs / 8.1 kg</div>
-          <div class="sc-tag">暢銷</div>
-        </div>
-        <div class="shape-card" data-shape="D" onclick="selectStoolShape('D')">
-          <img src="https://images.hermanmiller.group/m/3725cc71fc832a4f/W-HM_OCC_41758.png?w=420&auto=format" alt="Shape D" loading="lazy"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="sc-fallback">圖片需連網載入<br>點下方連結檢視</div>
-          <div class="sc-name">Shape D</div>
-          <div class="sc-sub">414 · 17.75 lbs / 8.1 kg</div>
-          <div class="sc-tag">新增造型</div>
-        </div>
-      </div>
-      <p class="img-credit">圖片來源：Herman Miller 官方圖庫（需連網載入）。完整外觀／實境圖／線圖見
-        <a href="https://store.hermanmiller.com/collection-eames-turned-stool?lang=en_US" target="_blank">官網產品頁</a>。</p>
-
-      <div class="section-title" style="margin-top:14px;">Step 3 — 木材飾面 Finish（EN／OU／WHN，決定價格）</div>
-      <div class="eames-config-item">
-        <div class="config-item-label">木材飾面 Finish <span class="config-item-step">Step 3</span></div>
-        <select class="eames-select" id="stool_finish" onchange="stoolOnChange()">
-          <option value="Walnut">胡桃木（OU / Walnut）— $2,010</option>
-          <option value="White Oak">白橡木（WHN / White Oak）— $1,932</option>
-          <option value="Ebony">黑檀（EN / Ebony）— $1,558</option>
-        </select>
-        <div class="config-price-display has-price" id="stoolFinishPrice">列價 $2,010</div>
-      </div>
-
-      <div class="qty-row">
-        <span class="qty-label">訂購數量（張）</span>
-        <input type="number" class="qty-input" id="stool_qty" value="1" min="1" max="999" onchange="stoolRecalc()">
-        <span class="qty-total" id="stoolQtyTotal"></span>
-      </div>
 
       <button class="btn-calc" onclick="stoolCalc()">計算總價</button>
     </div><!-- /config-wrapper -->
@@ -1659,7 +1466,7 @@
 
       <div class="twd-bar">
         <div>
-          <div class="twd-label">台幣換算（含 <span id="stoolQtyLabel">1</span> 張）</div>
+          <div class="twd-label">台幣換算</div>
           <div class="twd-rate">匯率：1 USD ＝ <span id="stoolRateDisplay">40</span> TWD（500 進位）</div>
         </div>
         <div style="text-align:right;">
@@ -1682,6 +1489,69 @@
     </div></details>
 
   </div><!-- /product-eamesstool -->
+
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL: EAMES WORK CHAIRS (5 models)
+  ══════════════════════════════════════════ -->
+  <style>
+  #product-eamesChairs .chair-chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  #product-eamesChairs .chair-chip {
+    padding:7px 14px; border:1.5px solid var(--border-strong); background:var(--surface);
+    border-radius:20px; cursor:pointer; font-family:inherit; font-size:12px; font-weight:700;
+    color:var(--text-muted); transition:all .15s;
+  }
+  #product-eamesChairs .chair-chip:hover { color:var(--text); }
+  #product-eamesChairs .chair-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  #product-eamesChairs .chair-head { display:flex; gap:14px; margin-bottom:14px; flex-wrap:wrap; }
+  #product-eamesChairs .chair-photo {
+    width:150px; height:150px; object-fit:contain; background:var(--step-bg);
+    border:1px solid var(--border); border-radius:8px; flex-shrink:0;
+  }
+  #product-eamesChairs .chair-photo-fallback {
+    width:150px; height:150px; display:none; align-items:center; justify-content:center; text-align:center;
+    background:var(--step-bg); border:1px solid var(--border); border-radius:8px;
+    color:var(--text-muted); font-size:11px; line-height:1.4; padding:6px; flex-shrink:0;
+  }
+  #product-eamesChairs .chair-meta { flex:1; min-width:240px; }
+  #product-eamesChairs .chair-meta h2 { font-size:17px; font-weight:700; letter-spacing:-0.01em; }
+  #product-eamesChairs .chair-meta .ch-en { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  #product-eamesChairs .chair-meta .ch-fam {
+    display:inline-block; font-family:'Consolas',monospace; font-size:11px; font-weight:700;
+    background:var(--accent-light); border:1px solid var(--border); border-radius:4px;
+    padding:2px 8px; margin-top:6px; color:var(--accent);
+  }
+  #product-eamesChairs .chair-meta .ch-desc { font-size:12px; color:var(--text); margin-top:8px; line-height:1.6; }
+  #product-eamesChairs .chair-meta .ch-link { font-size:11px; color:var(--us-line); }
+  #product-eamesChairs .bk-body { padding:12px 16px; font-size:12px; line-height:1.7; border-top:1px solid var(--border); }
+  #product-eamesChairs .bk-row { display:grid; grid-template-columns:120px 1fr; gap:10px; padding:5px 0; border-bottom:1px dashed var(--border); }
+  #product-eamesChairs .bk-row:last-child { border-bottom:none; }
+  #product-eamesChairs .bk-part { font-weight:700; color:var(--accent); }
+  #product-eamesChairs .bk-part small { display:block; font-weight:400; color:var(--text-muted); font-family:'Consolas',monospace; font-size:10px; }
+  #product-eamesChairs .bk-desc small { color:var(--us-line); font-weight:600; }
+  </style>
+
+  <div id="product-eamesChairs" class="product-panel">
+    <div class="chair-chips" id="chairChips"></div>
+    <div class="input-section" style="margin-bottom:14px;">
+      <label class="input-label">貼上型號直接算價（也可用下方下拉手動選配）</label>
+      <div class="input-row">
+        <input type="text" class="model-input" id="chPasteInput" placeholder="例：EA337P BK CAT9　或　ES204 91 CATR" onkeydown="if(event.key==='Enter') chairParse()">
+        <button class="btn-primary" onclick="chairParse()">計算價格</button>
+        <button class="btn-clear" onclick="document.getElementById('chPasteInput').value=''">清除</button>
+      </div>
+      <div class="input-hint">辨識變體碼（<code>EA337P</code>、<code>EA435N</code>、<code>EA437E2</code>、<code>ES204</code>…）。可加飾面 <code>G1/L/BK/91</code> 與布階 <code>CAT9</code>、<code>CAT10M</code>、<code>CATR</code>。</div>
+      <div class="examples">
+        <span class="examples-label">範例：</span>
+        <button class="example-btn" onclick="chairPasteEx('EA337P BK CAT9')">鋁製主管</button>
+        <button class="example-btn" onclick="chairPasteEx('EA437E2 G1 CAT11')">軟墊主管含墊</button>
+        <button class="example-btn" onclick="chairPasteEx('EA435N L CAT1')">軟墊中階無扶手</button>
+        <button class="example-btn" onclick="chairPasteEx('ES204 91 CATR')">Executive</button>
+      </div>
+    </div>
+    <div class="alert alert-error" id="chPasteErr"><div id="chPasteErrMsg"></div></div>
+    <div id="chairBody"></div>
+  </div>
 
 </div><!-- /container -->
 
@@ -4318,7 +4188,7 @@ function stoolCalc(){
   const sh = STOOL_SHAPES[stoolShape];
   const fkey = document.getElementById('stool_finish').value;
   const f = STOOL_FINISH[fkey];
-  const qty = Math.max(1, parseInt(document.getElementById('stool_qty').value)||1);
+  const qty = 1;
   const unit = f.usd;
   const star = f.confirmed ? '' : ' *';
 
@@ -4342,7 +4212,6 @@ function stoolCalc(){
   document.getElementById('stoolFullModel').textContent = fullModel;
   document.getElementById('stoolUsBadgePrice').textContent = stoolUSD(unit) + star;
   document.getElementById('stoolTotalPrice').textContent = stoolUSD(unit) + star;
-  document.getElementById('stoolQtyTotal').textContent = qty > 1 ? (qty + ' 張 = ' + stoolUSD(unit*qty)) : '';
 
   const warn = document.getElementById('stoolAlertWarn');
   const wmsg = document.getElementById('stoolAlertWarnMsg');
@@ -4359,10 +4228,9 @@ function stoolCalc(){
 function stoolRecalcTWD(){
   const fkey = document.getElementById('stool_finish').value;
   const unit = STOOL_FINISH[fkey].usd;
-  const qty = Math.max(1, parseInt(document.getElementById('stool_qty').value)||1);
+  const qty = 1;
   const rate = parseFloat(document.getElementById('stoolTwdRate').value)||40;
   document.getElementById('stoolRateDisplay').textContent = rate;
-  document.getElementById('stoolQtyLabel').textContent = qty;
   const twd = Math.ceil(unit*qty*rate/500)*500;
   document.getElementById('stoolTwdPrice').textContent = twd.toLocaleString('en-US');
 }
@@ -4370,6 +4238,224 @@ function stoolRecalcTWD(){
 document.querySelector('#product-eamesstool .shape-card[data-shape="A"]').classList.add('active');
 stoolOnChange();
 </script>
+
+
+<script>
+// =========================================================
+// EAMES WORK CHAIRS ENGINE (5 models)
+// =========================================================
+const CHAIRS = {"AGE": {"name_en": "Eames Aluminum Group Executive Chair", "name_zh": "鋁製群組 主管椅(高背)", "family": "EA33", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_aluminum_group_chairs/ig_prd_ovw_eames_aluminum_group_chairs_07.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-aluminum-group-chairs/", "desc_zh": "高背、輕量鋁框＋懸吊式網布椅面;五星腳附滑輪、傾仰旋轉機構、手動或氣壓升降。", "variants": [["7", "EA337", 2954, "手動升降・扶手", 1, 0, 0], ["7P", "EA337P", 3218, "氣壓升降(標準行程)+傾仰鎖定・扶手", 1, 0, 0], ["7E", "EA337E", 3328, "氣壓升降(加長行程)+傾仰鎖定・扶手", 1, 0, 0], ["72", "EA3372", 3069, "手動升降・扶手含扶手墊", 1, 1, 0], ["7P2", "EA337P2", 3333, "氣壓升降(標準)+傾仰鎖定・扶手含墊", 1, 1, 0], ["7E2", "EA337E2", 3443, "氣壓升降(加長)+傾仰鎖定・扶手含墊", 1, 1, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 68], ["3", "Cat 3", 155], ["4", "Cat 4", 222], ["5", "Cat 5", 280], ["G5", "Cat 5 (Geiger)", 280], ["7", "Cat 7", 298], ["G7", "Cat 7 (Geiger)", 223], ["8", "Cat 8", 437], ["9", "Cat 9", 768], ["G10", "Cat 10 (Geiger)", 869], ["10M", "Cat 10M", 1040], ["11", "Cat 11", 950], ["B", "Cat B", 61], ["C", "Cat C", 84], ["D", "Cat D", 106], ["DWR4", "Cat 4 (DWR)", 185], ["E", "Cat E", 128], ["F", "Cat F", 166], ["G", "Cat G", 215], ["H", "Cat H", 262], ["J", "Cat J", 353], ["R", "Cat R", 1591]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": false, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "AGM": {"name_en": "Eames Aluminum Group Management Chair", "name_zh": "鋁製群組 中階椅(低背)", "family": "EA33", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_aluminum_group_chairs/ig_prd_ovw_eames_aluminum_group_chairs_06.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-aluminum-group-chairs/", "desc_zh": "低背、輕量鋁框＋懸吊式網布;可選滑輪或腳墊,有/無扶手或扶手含墊;五星腳、傾仰旋轉、手動或氣壓升降。", "variants": [["5", "EA335", 2705, "滑輪・手動升降・扶手", 1, 0, 0], ["4", "EA334", 2705, "腳墊・手動升降・扶手", 1, 0, 1], ["5P", "EA335P", 2972, "滑輪・氣壓(標準)+傾仰鎖定・扶手", 1, 0, 0], ["5E", "EA335E", 3080, "滑輪・氣壓(加長)+傾仰鎖定・扶手", 1, 0, 0], ["52", "EA3352", 2821, "滑輪・手動・扶手含墊", 1, 1, 0], ["42", "EA3342", 2821, "腳墊・手動・扶手含墊", 1, 1, 1], ["5P2", "EA335P2", 3086, "滑輪・氣壓(標準)+鎖定・扶手含墊", 1, 1, 0], ["5E2", "EA335E2", 3195, "滑輪・氣壓(加長)+鎖定・扶手含墊", 1, 1, 0], ["5N", "EA335N", 2022, "滑輪・手動・無扶手", 0, 0, 0], ["5PN", "EA335PN", 2285, "滑輪・氣壓(標準)・無扶手", 0, 0, 0], ["5EN", "EA335EN", 2394, "滑輪・氣壓(加長)・無扶手", 0, 0, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 60], ["3", "Cat 3", 112], ["4", "Cat 4", 172], ["5", "Cat 5", 211], ["G5", "Cat 5 (Geiger)", 211], ["7", "Cat 7", 223], ["G7", "Cat 7 (Geiger)", 223], ["8", "Cat 8", 437], ["9", "Cat 9", 731], ["G10", "Cat 10 (Geiger)", 827], ["10M", "Cat 10M", 1040], ["11", "Cat 11", 950], ["B", "Cat B", 47], ["C", "Cat C", 68], ["D", "Cat D", 94], ["DWR4", "Cat 4 (DWR)", 143], ["E", "Cat E", 113], ["F", "Cat F", 146], ["G", "Cat G", 191], ["H", "Cat H", 232], ["J", "Cat J", 313], ["R", "Cat R", 1544]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": true, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "SPE": {"name_en": "Eames Soft Pad Group Executive Chair", "name_zh": "軟墊群組 主管椅(高背)", "family": "EA43", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_soft_pad_chairs/ig_prd_ovw_eames_soft_pad_chairs_07.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-soft-pad-chairs/", "desc_zh": "高背、鋁框＋2吋厚泡棉軟墊;五星腳附滑輪、傾仰旋轉、手動或氣壓升降。", "variants": [["7", "EA437", 5099, "手動升降・扶手", 1, 0, 0], ["7P", "EA437P", 5359, "氣壓升降(標準行程)+傾仰鎖定・扶手", 1, 0, 0], ["7E", "EA437E", 5469, "氣壓升降(加長行程)+傾仰鎖定・扶手", 1, 0, 0], ["72", "EA4372", 5214, "手動升降・扶手含扶手墊", 1, 1, 0], ["7P2", "EA437P2", 5474, "氣壓升降(標準)+傾仰鎖定・扶手含墊", 1, 1, 0], ["7E2", "EA437E2", 5583, "氣壓升降(加長)+傾仰鎖定・扶手含墊", 1, 1, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 88], ["3", "Cat 3", 203], ["4", "Cat 4", 324], ["5", "Cat 5", 407], ["G5", "Cat 5 (Geiger)", 407], ["7", "Cat 7", 432], ["G7", "Cat 7 (Geiger)", 432], ["8", "Cat 8", 546], ["9", "Cat 9", 752], ["10", "Cat 10", 841], ["G10", "Cat 10 (Geiger)", 841], ["10M", "Cat 10M", 1352], ["11", "Cat 11", 1158], ["B", "Cat B", 119], ["D", "Cat D", 211], ["DWR4", "Cat 4 (DWR)", 270], ["E", "Cat E", 256], ["F", "Cat F", 330], ["G", "Cat G", 430], ["H", "Cat H", 522], ["I", "Cat I", 613], ["J", "Cat J", 706], ["L", "Cat L", 888], ["P", "Cat P", 1255], ["R", "Cat R", 2518]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": false, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "SPM": {"name_en": "Eames Soft Pad Group Management Chair", "name_zh": "軟墊群組 中階椅(低背)", "family": "EA43", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_soft_pad_chairs/ig_prd_ovw_eames_soft_pad_chairs_06.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-soft-pad-chairs/", "desc_zh": "低背、鋁框＋2吋厚泡棉軟墊;可選滑輪或腳墊,有/無扶手或扶手含墊;五星腳、傾仰旋轉、手動或氣壓升降。", "variants": [["5", "EA435", 4259, "滑輪・手動升降・扶手", 1, 0, 0], ["4", "EA434", 4259, "腳墊・手動升降・扶手", 1, 0, 1], ["5P", "EA435P", 4536, "滑輪・氣壓(標準)+傾仰鎖定・扶手", 1, 0, 0], ["5E", "EA435E", 4648, "滑輪・氣壓(加長)+傾仰鎖定・扶手", 1, 0, 0], ["52", "EA4352", 4373, "滑輪・手動・扶手含墊", 1, 1, 0], ["42", "EA4342", 4373, "腳墊・手動・扶手含墊", 1, 1, 1], ["5P2", "EA435P2", 4652, "滑輪・氣壓(標準)+鎖定・扶手含墊", 1, 1, 0], ["5E2", "EA435E2", 4763, "滑輪・氣壓(加長)+鎖定・扶手含墊", 1, 1, 0], ["5N", "EA435N", 3575, "滑輪・手動・無扶手", 0, 0, 0], ["5PN", "EA435PN", 3857, "滑輪・氣壓(標準)・無扶手", 0, 0, 0], ["5EN", "EA435EN", 3965, "滑輪・氣壓(加長)・無扶手", 0, 0, 0]], "finishes": [["G1", "石墨灰 Graphite (CP)", 0], ["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 135], ["91", "白 White (CP)", 135]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["MD", "軟雙輪 硬地/地毯 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [["GD", "1/2吋 腳墊 硬地/地毯 (GD)", 0]], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 88], ["3", "Cat 3", 188], ["4", "Cat 4", 290], ["5", "Cat 5", 349], ["G5", "Cat 5 (Geiger)", 349], ["7", "Cat 7", 356], ["G7", "Cat 7 (Geiger)", 356], ["8", "Cat 8", 437], ["9", "Cat 9", 710], ["10", "Cat 10", 706], ["G10", "Cat 10 (Geiger)", 803], ["10M", "Cat 10M", 1087], ["11", "Cat 11", 950], ["B", "Cat B", 77], ["C", "Cat C", 96], ["D", "Cat D", 180], ["DWR4", "Cat 4 (DWR)", 242], ["E", "Cat E", 210], ["F", "Cat F", 294], ["G", "Cat G", 377], ["H", "Cat H", 502], ["I", "Cat I", 628], ["J", "Cat J", 745], ["L", "Cat L", 955], ["P", "Cat P", 1199], ["R", "Cat R", 1584]], "armpad": [["11", "Cat 11 皮革 Leather", 0], ["R", "Cat R 皮革 Leather", 10]], "hasGlide": true, "finishNote": "底座+骨架同色;黑/白為粉體烤漆 +$135"}, "EXE": {"name_en": "Eames Executive Chair", "name_zh": "主管椅 (Time-Life)", "family": "ES204", "img": "https://www.hermanmiller.com/content/dam/hmicom/page_assets/products/eames_executive_chairs/uw_prd_dtl_eames_executive_chairs_01.jpg.rendition.480.480.jpg", "store": "https://www.hermanmiller.com/products/seating/office-chairs/eames-executive-chairs/", "desc_zh": "絨厚軟墊主管椅;座面4.5吋泡棉、椅背2片3吋泡棉、軟墊扶手;五星腳、傾仰旋轉、升降;可選滑輪或腳墊。", "variants": [["", "ES204", 6573, "標準・升降/傾仰/五星腳・含軟墊扶手", 1, 0, 0]], "finishes": [["L", "拋光鋁 Polished Aluminum", 0], ["BK", "黑 Black", 83], ["91", "白 White (CP)", 104]], "casters": [["BSC", "軟雙輪 硬地/地毯 黑 (BSC)", 0], ["GD", "1/2吋 腳墊 (GD)", 0], ["MD", "軟雙輪 鍍鉻 (MD)", 0], ["UD", "硬雙輪 地毯 黑 (UD)", 0], ["VD", "硬雙輪 地毯 鍍鉻 (VD)", 0]], "glide": [], "fabric": [["1", "Cat 1", 0], ["2", "Cat 2", 90], ["3", "Cat 3", 203], ["4", "Cat 4", 324], ["5", "Cat 5", 407], ["G5", "Cat 5 (Geiger)", 407], ["7", "Cat 7", 432], ["G7", "Cat 7 (Geiger)", 432], ["G8", "Cat 8 (Geiger)", 622], ["9", "Cat 9", 779], ["10", "Cat 10", 847], ["G10", "Cat 10 (Geiger)", 847], ["10M", "Cat 10M", 1463], ["11", "Cat 11", 1052], ["G11", "Cat 11 (Geiger)", 1052], ["B", "Cat B", 119], ["C", "Cat C", 166], ["D", "Cat D", 211], ["E", "Cat E", 256], ["F", "Cat F", 330], ["G", "Cat G", 430], ["H", "Cat H", 522], ["I", "Cat I", 613], ["J", "Cat J", 706], ["L", "Cat L", 888], ["O", "Cat O", 1524], ["P", "Cat P", 1255], ["Q", "Cat Q", 1351], ["R", "Cat R", 2518], ["T", "Cat T", 2851], ["V", "Cat V", 2921]], "armpad": [], "hasGlide": true, "finishNote": "底座+骨架同色;黑 +$83、白 +$104(拋光鋁 $0)"}};
+const CHAIR_ORDER = ["AGE", "AGM", "SPE", "SPM", "EXE"];
+const CHAIR_SHORT = {"AGE": "鋁製主管", "AGM": "鋁製中階", "SPE": "軟墊主管", "SPM": "軟墊中階", "EXE": "Executive"};
+
+let curChair = "AGE";
+function chF(n){ return "$" + n.toLocaleString("en-US"); }
+function chVal(id){ var e=document.getElementById(id); return e? e.value : ""; }
+
+function renderChairChips(){
+  var h="";
+  CHAIR_ORDER.forEach(function(k){
+    h += '<button class="chair-chip'+(k===curChair?' active':'')+'" onclick="selectChair(\''+k+'\')">'+CHAIR_SHORT[k]+'</button>';
+  });
+  document.getElementById("chairChips").innerHTML = h;
+}
+
+function chairBreakdown(c){
+  var glideTxt = c.hasGlide
+    ? '滑輪(硬地/地毯)或腳墊 GD 二選一,均 +$0;選 4／42 系列即為腳墊版。<small> Casters or 1/2" glides, both +$0.</small>'
+    : '軟/硬雙輪滑輪,硬地或地毯適用,均 +$0。<small> Double-wheel casters, hard floor or carpet, +$0.</small>';
+  var apRow = (c.armpad && c.armpad.length)
+    ? '<div class="bk-row"><div class="bk-part">扶手墊布<small>Arm Pad Fabric</small></div><div class="bk-desc">僅「扶手含墊」版需選,皮革材質。Cat 11 +$0、Cat R +$10。<small> Leather only; not COM/COL.</small></div></div>'
+    : '';
+  return ''
+   + '<details class="feature-details" style="margin-bottom:14px;"><summary>部位拆解與選配說明 Part-by-Part Guide</summary>'
+   + '<div class="bk-body">'
+   + '<div class="bk-row"><div class="bk-part">基碼／型號<small>'+c.family+'</small></div><div class="bk-desc">產品家族碼,系統自動帶入,業務不需手動輸入。<small> Base model family code.</small></div></div>'
+   + '<div class="bk-row"><div class="bk-part">升降＋扶手<small>Seat-Height / Arms</small></div><div class="bk-desc"><b>價格主軸,決定基價。</b>手動 vs 氣壓升降(標準/加長行程＋傾仰鎖定);扶手:無／一般／含扶手墊。<small> Manual vs pneumatic (std/extended) + tilt lock; arms / arms+pads / no arms — sets base price.</small></div></div>'
+   + '<div class="bk-row"><div class="bk-part">滑輪／腳墊<small>Casters / Glides</small></div><div class="bk-desc">'+glideTxt+'</div></div>'
+   + '<div class="bk-row"><div class="bk-part">底座＋骨架飾面<small>Base + Frame Finish</small></div><div class="bk-desc">'+c.finishNote+'。<small> Polished aluminum / graphite $0; black / white powder-coat surcharge.</small></div></div>'
+   + '<div class="bk-row"><div class="bk-part">椅面布料分級<small>Seat Fabric Category</small></div><div class="bk-desc"><b>第二大加價來源。</b>依布料所屬 Price Category 加價,業務需先從 textiles 清單查出布號對應的分級再選。<small> Look up the textile category from the fabric list, then pick it here.</small></div></div>'
+   + apRow
+   + '</div></details>';
+}
+
+function selectChair(k){
+  curChair = k; renderChairChips();
+  var c = CHAIRS[k];
+  function opt(arr, fn){ return arr.map(function(x,i){ return '<option value="'+i+'">'+fn(x,i)+'</option>'; }).join(""); }
+  var varOpts = opt(c.variants, function(v){ return v[3]+"  ·  "+(v[1])+"  ·  "+chF(v[2]); });
+  var finOpts = opt(c.finishes, function(f){ return f[1]+"  ("+(f[2]?"+"+chF(f[2]):"+$0")+")"; });
+  var castOpts = opt(c.casters, function(x){ return x[1]+"  (+$0)"; });
+  var fabOpts = opt(c.fabric, function(x){ return x[1]+"  ("+(x[2]?"+"+chF(x[2]):"+$0")+")"; });
+  var apOpts = (c.armpad&&c.armpad.length)? opt(c.armpad, function(x){ return x[1]+"  ("+(x[2]?"+"+chF(x[2]):"+$0")+")"; }) : "";
+
+  var photo = '<img class="chair-photo" src="'+c.img+'" alt="'+c.name_en+'" loading="lazy" '
+    + 'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">'
+    + '<div class="chair-photo-fallback">圖片需連網載入<br>點下方官網連結</div>';
+
+  var head = '<div class="chair-head">'+photo
+    + '<div class="chair-meta"><h2>'+c.name_zh+'</h2><div class="ch-en">'+c.name_en+'</div>'
+    + '<span class="ch-fam">'+c.family+'</span>'
+    + '<div class="ch-desc">'+c.desc_zh+'</div>'
+    + '<div style="margin-top:6px;"><a class="ch-link" href="'+c.store+'" target="_blank">官網產品頁(外觀／實境圖)</a></div>'
+    + '</div></div>';
+
+  var apItem = apOpts
+    ? '<div class="eames-config-item" id="chAPRow"><div class="config-item-label">扶手墊布 Arm Pad <span class="config-item-step">Step 7</span></div><select class="eames-select" id="chAP" onchange="chairRecalc()">'+apOpts+'</select></div>'
+    : '<div id="chAPRow" style="display:none;"></div>';
+
+  var controls = '<div class="config-wrapper">'
+    + '<div class="section-title">選擇配置 Configuration</div>'
+    + '<div class="eames-config-grid">'
+    + '<div class="eames-config-item" style="grid-column:1 / -1;"><div class="config-item-label">升降＋扶手 Seat-Height / Arms <span class="config-item-step">Step 2</span></div><select class="eames-select" id="chV" onchange="chairOnVariant()">'+varOpts+'</select></div>'
+    + '<div class="eames-config-item"><div class="config-item-label">底座＋骨架飾面 Finish <span class="config-item-step">Step 4-5</span></div><select class="eames-select" id="chF" onchange="chairRecalc()">'+finOpts+'</select></div>'
+    + '<div class="eames-config-item"><div class="config-item-label">滑輪／腳墊 Casters <span class="config-item-step">Step 3</span></div><select class="eames-select" id="chC" data-kind="cast" onchange="chairRecalc()">'+castOpts+'</select></div>'
+    + '<div class="eames-config-item" style="grid-column:1 / -1;"><div class="config-item-label">椅面布料分級 Fabric Category <span class="config-item-step">Step 6</span></div><select class="eames-select" id="chFab" onchange="chairRecalc()">'+fabOpts+'</select></div>'
+    + apItem
+    + '</div>'
+    + ''
+    + '</div>';
+
+  var result = '<div class="result-block show" id="chResult">'
+    + '<div class="line-badges"><div class="line-badge us active"><div class="line-name">美國線</div><div class="line-price" id="chUsPrice">—</div><div class="line-method">累加法(基價＋各 Step 加價)</div></div>'
+    + '<div class="line-badge asia pending"><div class="line-name">亞洲線</div><div class="line-price na">需走美國線進口</div><div class="line-method">Ancillary 不在 80-day Asia 手冊</div></div></div>'
+    + '<div class="model-badge"><span class="model-badge-label">配置碼</span><span id="chModel">—</span></div>'
+    + '<div class="parse-card"><div class="parse-header us-h"><span>美國線解析</span></div>'
+    + '<table class="steps-table"><thead><tr><th style="width:80px">Step</th><th style="width:90px">代碼</th><th>說明</th><th style="width:120px">加價 (USD)</th></tr></thead><tbody id="chSteps"></tbody></table></div>'
+    + '<div class="total-bar"><div><div class="total-label">美國線單張定價(USD)</div><div class="total-sub" id="chSub">含椅身＋所選配置</div></div><div class="total-price"><span class="total-currency">USD</span><span id="chTotal">—</span></div></div>'
+    + '<div style="background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:12px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-muted);font-weight:600;white-space:nowrap;">完整配置</span><span id="chFull" style="font-family:\'Consolas\',monospace;font-size:13px;font-weight:700;color:var(--accent);text-align:right;word-break:break-all;">—</span></div>'
+    + '<div class="twd-bar"><div><div class="twd-label">台幣換算</div><div class="twd-rate">匯率:1 USD ＝ <span id="chRateDisp">40</span> TWD(500 進位)</div></div>'
+    + '<div style="text-align:right;"><div class="twd-price">NT$ <span id="chTwd">—</span></div><div class="twd-input-row" style="justify-content:flex-end;margin-top:6px;"><span style="font-size:11px;color:var(--text-muted);">匯率</span><input type="number" class="twd-input" id="chRate" value="40" step="0.5" min="1" onchange="chairRecalc()"><span style="font-size:11px;color:var(--text-muted);">TWD</span></div></div></div>'
+    + '</div>';
+
+  var footer = '<details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">'
+    + '※ 來源:2026 Herman Miller Ancillary Price Book（5/26,美國線合約列價 USD）。<br>'
+    + '※ 基價為價格書「Prices for Steps 1-2」;飾面為 Step 4 底座＋Step 5 骨架合併(同色);布料 Step 6 依 Price Category 加價,需先查 textiles 清單確認布號分級;扶手墊布 Step 7 僅扶手含墊版適用。<br>'
+    + '※ 滑輪/腳墊與底座飾面 G1/L 均 +$0;黑(BK)、白(91)為粉體烤漆加價。<br>'
+    + '※ 亞洲線 80-day Asia Seating 為辦公椅手冊,不含 Ancillary,客戶需求走美國線進口(交期較長、需報關)。<br>'
+    + '※ 定價為美金 USD,不含稅、運費及其他費用;台幣換算僅供參考(500 進位)。'
+    + '</div></details>';
+
+  document.getElementById("chairBody").innerHTML = head + chairBreakdown(c) + controls + result + footer;
+  chairOnVariant();
+}
+
+function chairOnVariant(){
+  var c = CHAIRS[curChair];
+  var v = c.variants[+chVal("chV")];
+  // arm pad row visibility
+  var apRow = document.getElementById("chAPRow");
+  if (apRow){ apRow.style.display = (v[5]==1 && c.armpad && c.armpad.length) ? "" : "none"; }
+  // caster vs glide
+  var castSel = document.getElementById("chC");
+  if (castSel){
+    if (v[6]==1 && c.glide && c.glide.length){
+      castSel.innerHTML = c.glide.map(function(x,i){ return '<option value="'+i+'">'+x[1]+'  (+$0)</option>'; }).join("");
+      castSel.dataset.kind = "glide";
+    } else if (castSel.dataset.kind === "glide"){
+      castSel.innerHTML = c.casters.map(function(x,i){ return '<option value="'+i+'">'+x[1]+'  (+$0)</option>'; }).join("");
+      castSel.dataset.kind = "cast";
+    }
+  }
+  chairRecalc();
+}
+
+function chairRecalc(){
+  var c = CHAIRS[curChair];
+  var v = c.variants[+chVal("chV")];
+  var f = c.finishes[+chVal("chF")];
+  var castSel = document.getElementById("chC");
+  var castArr = (castSel && castSel.dataset.kind === "glide") ? c.glide : c.casters;
+  var ca = castArr[+chVal("chC")] || ["","",0];
+  var fb = c.fabric[+chVal("chFab")];
+  var apAdd = 0, ap = null;
+  var showAP = (v[5]==1 && c.armpad && c.armpad.length);
+  if (showAP){ ap = c.armpad[+chVal("chAP")] || c.armpad[0]; apAdd = ap[2]; }
+  var qty = 1;
+  var total = v[2] + f[2] + ca[2] + fb[2] + apAdd;
+
+  var rows = "";
+  rows += '<tr class="base-row"><td class="step-num">Step 1-2</td><td><span class="step-code">'+v[1]+'</span></td><td class="step-desc">'+v[3]+'<small>基價 base</small></td><td class="step-price price-base">'+chF(v[2])+'</td></tr>';
+  rows += '<tr><td class="step-num">Step 3</td><td><span class="step-code">'+(ca[0]||"—")+'</span></td><td class="step-desc">'+(ca[1]||"滑輪/腳墊")+'</td><td class="step-price price-zero">+$0</td></tr>';
+  rows += '<tr><td class="step-num">Step 4-5</td><td><span class="step-code">'+f[0]+'</span></td><td class="step-desc">'+f[1]+'<small>底座＋骨架同色</small></td><td class="step-price '+(f[2]?'price-add':'price-zero')+'">'+(f[2]?'+'+chF(f[2]):'+$0')+'</td></tr>';
+  rows += '<tr><td class="step-num">Step 6</td><td><span class="step-code">'+fb[0]+'</span></td><td class="step-desc">椅面布料 '+fb[1]+'<small>依 textiles 清單查布號分級</small></td><td class="step-price '+(fb[2]?'price-add':'price-zero')+'">'+(fb[2]?'+'+chF(fb[2]):'+$0')+'</td></tr>';
+  if (showAP){
+    rows += '<tr><td class="step-num">Step 7</td><td><span class="step-code">'+ap[0]+'</span></td><td class="step-desc">扶手墊布 '+ap[1]+'</td><td class="step-price '+(apAdd?'price-add':'price-zero')+'">'+(apAdd?'+'+chF(apAdd):'+$0')+'</td></tr>';
+  }
+  document.getElementById("chSteps").innerHTML = rows;
+
+  var modelCode = v[1] + " " + f[0] + " " + ca[0];
+  document.getElementById("chModel").textContent = modelCode.trim();
+  document.getElementById("chFull").textContent = (v[1]+" · 飾面 "+f[0]+" · 滑輪 "+(ca[0]||"-")+" · 布階 "+fb[1]+(showAP?(" · 墊 "+ap[0]):"")).trim();
+  document.getElementById("chUsPrice").textContent = chF(total);
+  document.getElementById("chTotal").textContent = chF(total);
+
+  var rate = parseFloat(chVal("chRate"))||40;
+  document.getElementById("chRateDisp").textContent = rate;
+  var twd = Math.ceil(total*qty*rate/500)*500;
+  document.getElementById("chTwd").textContent = twd.toLocaleString("en-US");
+}
+
+selectChair("AGE");
+</script>
+
+
+<script>
+function chairParse(){
+  var inp=document.getElementById("chPasteInput");
+  var err=document.getElementById("chPasteErr"), em=document.getElementById("chPasteErrMsg");
+  if(err) err.classList.remove("show");
+  var raw=(inp.value||"").toUpperCase().replace(/[,\/]/g," ").trim();
+  if(!raw) return;
+  var tokens=raw.split(/\s+/);
+  var joined=raw.replace(/\s+/g,"");
+  var found=null;
+  for(var ci=0; ci<CHAIR_ORDER.length && !found; ci++){
+    var k=CHAIR_ORDER[ci]; var vs=CHAIRS[k].variants;
+    var idx=vs.map(function(v,i){return i;}).sort(function(a,b){return vs[b][1].length-vs[a][1].length;});
+    for(var j=0;j<idx.length;j++){
+      var m=vs[idx[j]][1];
+      if(tokens.indexOf(m)>=0 || joined.indexOf(m)===0){ found={k:k, vi:idx[j]}; break; }
+    }
+  }
+  if(!found){ if(em){em.innerHTML="無法辨識型號。請確認含變體碼，例如 <b>EA337P</b>、<b>EA435N</b>、<b>EA437E2</b> 或 <b>ES204</b>。"; err.classList.add("show");} return; }
+  selectChair(found.k);
+  var vsel=document.getElementById("chV"); vsel.value=found.vi; chairOnVariant();
+  var c=CHAIRS[found.k];
+  var fcodes=c.finishes.map(function(f){return f[0];});
+  for(var t=0;t<tokens.length;t++){ var fi=fcodes.indexOf(tokens[t]); if(fi>=0){ document.getElementById("chF").value=fi; break; } }
+  var fabCode=null;
+  for(var t2=0;t2<tokens.length;t2++){ var mm=tokens[t2].match(/^CAT(.+)$/); if(mm){ fabCode=mm[1]; break; } }
+  if(fabCode){ var fbi=c.fabric.findIndex(function(x){return x[0]===fabCode;}); if(fbi>=0) document.getElementById("chFab").value=fbi; }
+  chairRecalc();
+  var rb=document.getElementById("chResult"); if(rb&&rb.scrollIntoView) rb.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function chairPasteEx(x){ var e=document.getElementById("chPasteInput"); e.value=x; chairParse(); }
+</script>
+<style>
+@media (max-width: 640px){
+  body{ padding:14px 10px 30px; font-size:13px; }
+  .container{ max-width:100%; }
+  .parse-card{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .steps-table{ font-size:11px; }
+  .steps-table th, .steps-table td{ padding:5px 7px; }
+  .product-tabs{ overflow-x:auto; flex-wrap:nowrap; }
+  .product-tab-btn{ padding:9px 11px; font-size:12px; white-space:nowrap; }
+  .total-price{ font-size:21px; }
+  .total-bar, .twd-bar{ padding:12px 14px; }
+  .model-input{ min-width:0; flex:1 1 100%; }
+  .input-row{ gap:8px; }
+  .line-badges .line-badge{ flex:1 1 100%; min-width:0; }
+  #product-eamesChairs .chair-head{ flex-direction:column; }
+  #product-eamesChairs .chair-photo,
+  #product-eamesChairs .chair-photo-fallback{ width:100%; height:200px; }
+  #product-eamesChairs .bk-row{ grid-template-columns:92px 1fr; }
+}
+@media (max-width: 380px){
+  .total-price{ font-size:18px; }
+  .steps-table th, .steps-table td{ padding:4px 5px; }
+}
+</style>
 
 </body>
 </html>
