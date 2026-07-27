@@ -71,17 +71,16 @@
   /* game area */
   #stage{position:relative;background:#0a0d1a;border:2px solid var(--line);border-radius:14px;overflow:hidden}
   canvas{display:block;width:100%;height:auto}
-  .qbar{position:absolute;top:0;left:0;right:0;padding:12px 14px;background:linear-gradient(180deg,rgba(6,9,20,.92),rgba(6,9,20,0))}
+  .qbar{background:#111631;border:2px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:10px}
   .qunit{font-size:12px;font-weight:800;color:var(--neon);letter-spacing:1px}
-  .qtext{font-size:18px;font-weight:900;margin-top:4px;line-height:1.4;text-shadow:0 2px 6px #000}
-  .lanechips{position:absolute;left:0;right:0;bottom:64px;display:flex;justify-content:center;gap:8px;padding:0 10px}
-  .lc{padding:6px 10px;border-radius:10px;font-weight:900;font-size:14px;border:2px solid #fff;background:rgba(0,0,0,.35)}
-  .steer{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:space-between;padding:0 12px;pointer-events:none}
-  .steer .btn{pointer-events:auto;width:76px;font-size:22px;padding:12px 0}
-  .feed{position:absolute;top:64px;left:0;right:0;text-align:center;font-size:20px;font-weight:900;pointer-events:none;text-shadow:0 2px 8px #000}
+  .qtext{font-size:19px;font-weight:900;margin-top:4px;line-height:1.45}
+  .lanechips{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .lc{padding:11px 12px;border-radius:12px;font-weight:900;font-size:16px;border:2px solid #fff;background:#0e1740;flex:1;min-width:90px;text-align:center}
+  .steer{display:flex;justify-content:center;gap:14px;margin-top:10px}
+  .steer .btn{width:44%;max-width:180px;font-size:20px;font-weight:900;padding:14px 0}
+  .feed{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:20px;font-weight:900;pointer-events:none;text-shadow:0 2px 8px #000}
   .feed.good{color:var(--good)}.feed.bad{color:var(--bad)}
-  .hintbox{position:absolute;left:12px;right:12px;bottom:64px;background:#2b2606;border:2px solid #6b5a1e;
-    border-radius:10px;padding:10px 12px;font-size:14px;font-weight:700;display:none}
+  .hintbox{background:#2b2606;border:2px solid #6b5a1e;border-radius:10px;padding:10px 12px;font-size:15px;font-weight:700;display:none;margin-top:10px}
   .hintbox.show{display:block}.hintbox b{color:var(--neon)}
 
   /* flip */
@@ -136,6 +135,7 @@
         <div class="row">
           <div class="chip coin"><span class="dot"></span>金幣 <b id="hCoins" style="color:var(--gold)">0</b></div>
           <div class="chip">夥伴 <b id="hPals">0</b></div>
+          <button class="btn btn-ghost btn-sm" id="soundBtn" onclick="toggleSound()">聲音開</button>
         </div>
       </div>
       <div id="baseStage" style="position:relative;border:2px solid var(--line);border-radius:14px;overflow:hidden">
@@ -283,18 +283,18 @@
         <button class="btn btn-ghost btn-sm" onclick="quitLevel()">離開</button>
       </div>
     </div>
+    <div class="qbar"><div class="qunit" id="qUnit"></div><div class="qtext" id="qText"></div></div>
     <div id="stage">
       <canvas id="cv" width="760" height="440"></canvas>
-      <div class="qbar"><div class="qunit" id="qUnit"></div><div class="qtext" id="qText"></div></div>
       <div class="feed" id="feed"></div>
-      <div class="lanechips" id="laneChips"></div>
-      <div class="hintbox" id="hintBox"></div>
-      <div class="steer" id="steer">
-        <button class="btn btn-ghost" onclick="steer(-1)">◀</button>
-        <button class="btn btn-ghost" onclick="steer(1)">▶</button>
-      </div>
     </div>
-    <p class="mini center" style="margin-top:8px">駕駛：用 ◀ ▶ 或鍵盤左右鍵，把車開進正確答案的車道，撐到方格旗通過。答錯會給提示，再開一次。</p>
+    <div class="lanechips" id="laneChips"></div>
+    <div class="hintbox" id="hintBox"></div>
+    <div class="steer" id="steer">
+      <button class="btn btn-ghost" onclick="steer(-1)">◀ 左</button>
+      <button class="btn btn-ghost" onclick="steer(1)">右 ▶</button>
+    </div>
+    <p class="mini center" style="margin-top:8px">把車開進正確答案的車道，或直接點下方答案作答。答錯會給提示，再試一次。</p>
   </section>
 
   <!-- 翻翻樂 -->
@@ -572,19 +572,50 @@ function freshSave(){return {name:"",car:0,carName:"",coins:0,coinsEarned:0,unlo
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(SAVE));}catch(e){}}
 
 /* ================= 音效 ================= */
-let AC=null,engineOsc=null,engineGain=null;
+let AC=null,engineOsc=null,engineGain=null,soundOn=true;
 function initAudio(){if(AC)return;try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
-function startEngine(){if(!AC)return;stopEngine();engineOsc=AC.createOscillator();engineGain=AC.createGain();
- engineOsc.type="sawtooth";engineOsc.frequency.value=70;engineGain.gain.value=0.05;
+function startEngine(){if(!AC||!soundOn)return;stopEngine();engineOsc=AC.createOscillator();engineGain=AC.createGain();
+ engineOsc.type="triangle";engineOsc.frequency.value=120;engineGain.gain.value=0.028;
  engineOsc.connect(engineGain);engineGain.connect(AC.destination);engineOsc.start();}
-function setEngine(f){if(engineOsc)engineOsc.frequency.setTargetAtTime(f,AC.currentTime,0.1);}
+function setEngine(f){if(engineOsc)engineOsc.frequency.setTargetAtTime(f,AC.currentTime,0.08);}
 function stopEngine(){if(engineOsc){try{engineOsc.stop();}catch(e){}engineOsc=null;}}
-function beep(f,d,type){if(!AC)return;const o=AC.createOscillator(),g=AC.createGain();o.type=type||"square";
- o.frequency.setValueAtTime(f,AC.currentTime);g.gain.setValueAtTime(0.12,AC.currentTime);
+function beep(f,d,type,vol){if(!AC||!soundOn)return;const o=AC.createOscillator(),g=AC.createGain();o.type=type||"square";
+ o.frequency.setValueAtTime(f,AC.currentTime);g.gain.setValueAtTime(vol||0.12,AC.currentTime);
  g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d);}
-function sndGood(){beep(660,0.12);setTimeout(()=>beep(990,0.14),90);}
-function sndBad(){beep(160,0.25,"sawtooth");}
-function sndCoin(){beep(880,0.08);setTimeout(()=>beep(1180,0.09),70);}
+function sndGood(){beep(660,0.12,"sine");setTimeout(()=>beep(990,0.14,"sine"),90);}
+function sndBad(){beep(180,0.22,"triangle",0.09);}
+function sndCoin(){beep(880,0.08,"sine");setTimeout(()=>beep(1180,0.09,"sine"),70);}
+// 撿到金幣的特殊叮噹（清亮上升）
+function sndCoinGrab(){[1318,1760,2349].forEach((f,i)=>setTimeout(()=>beep(f,0.1,"sine",0.13),i*55));}
+
+/* ===== 輕快背景音樂（五聲音階，每 3 分鐘變奏） ===== */
+const MU_SCALE=[0,2,4,7,9,12,14];
+const MU_PATTERNS=[
+ [0,2,4,2,4,5,4,2,3,4,5,7,4,2,0,-1],
+ [4,3,2,0,2,4,5,4,2,3,4,2,0,-1,2,-1],
+ [0,4,7,4,5,4,2,0,3,5,4,2,0,2,-1,-1],
+ [2,4,5,7,5,4,2,4,0,2,4,2,-1,0,-1,-1]
+];
+const MU_KEYS=[0,3,5,-2,7];
+let music={on:true,timer:null,step:0,startAt:0,tempo:340,variant:-1};
+function muTone(freq,dur,vol){if(!AC||!soundOn||!music.on)return;const o=AC.createOscillator(),g=AC.createGain();o.type="triangle";
+ o.frequency.value=freq;g.gain.setValueAtTime(0.0001,AC.currentTime);g.gain.linearRampToValueAtTime(vol,AC.currentTime+0.03);
+ g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+dur);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+dur+0.03);}
+function muNote(idx,transpose){const s=MU_SCALE,len=s.length;const semis=s[((idx%len)+len)%len]+Math.floor(idx/len)*12+transpose;return 261.63*Math.pow(2,semis/12);}
+function startMusic(){if(!AC||!soundOn||!music.on||music.timer)return;music.startAt=Date.now();music.step=0;music.variant=-1;
+ music.timer=setInterval(musicTick,music.tempo);}
+function musicTick(){
+ const variant=Math.floor((Date.now()-music.startAt)/180000); // 每 3 分鐘換一種
+ if(variant!==music.variant){music.variant=variant;music.pat=MU_PATTERNS[variant%MU_PATTERNS.length];music.key=MU_KEYS[variant%MU_KEYS.length];}
+ const pat=music.pat||MU_PATTERNS[0];const key=music.key||0;const n=pat[music.step%pat.length];
+ if(n!==-1)muTone(muNote(n,key),0.5,0.045);
+ if(music.step%4===0)muTone(muNote(0,key-12),0.7,0.035); // 輕低音
+ if(music.step%8===4)muTone(muNote(4,key-12),0.6,0.03);
+ music.step++;
+}
+function stopMusic(){if(music.timer){clearInterval(music.timer);music.timer=null;}}
+function toggleSound(){soundOn=!soundOn;if(!soundOn){stopMusic();stopEngine();}else{startMusic();}updateSoundBtn();}
+function updateSoundBtn(){const b=document.getElementById("soundBtn");if(b)b.textContent=soundOn?"聲音開":"聲音關";}
 
 /* ================= 開始畫面 ================= */
 document.getElementById("carPicks").innerHTML=CAR_COLORS.map((c,i)=>
@@ -617,7 +648,7 @@ function goHome(){
  document.getElementById("hTotal").textContent=LEVELS.length;
  document.getElementById("hPals").textContent=SAVE.pals.length;
  document.getElementById("rateIn").value=SAVE.rate||100;
- petDecayAll();renderMap();renderParent();closeShop();closePets();closeRps();closePlay();closeGarage();startBase();checkDaily();
+ petDecayAll();renderMap();renderParent();closeShop();closePets();closeRps();closePlay();closeGarage();startBase();checkDaily();startMusic();updateSoundBtn();
 }
 function iconFor(t){return t==="drive"?"賽車":t==="shoot"?"氣球":t==="sling"?"彈弓":"翻翻樂";}
 function renderMap(){
@@ -747,7 +778,7 @@ function startDrive(lv){
  document.getElementById("gTitle").textContent=`第 ${curLevel+1} 關・${SUBJ_NAME[lv.subject]}賽道`;
  document.getElementById("steer").style.display="flex";
  document.getElementById("gScore").textContent=0;document.getElementById("gCoins").textContent=0;
- startEngine();
+ stopMusic();startEngine();
  addKeys(e=>{if(e.key==="ArrowLeft")steer(-1);else if(e.key==="ArrowRight")steer(1);});
  loadDriveQ();lastT=performance.now();raf=requestAnimationFrame(driveLoop);
 }
@@ -774,14 +805,14 @@ function driveLoop(t){
  const dt=Math.min(40,t-lastT)/16.7;lastT=t;
  dr.travel+=dr.speed*dt*(1+dr.boost);
  if(dr.boost>0)dr.boost=Math.max(0,dr.boost-0.03*dt);
- setEngine(70+dr.speed*4+dr.boost*120);
+ setEngine(140+dr.speed*8+dr.boost*160);
  dr.laneF+=((dr.targetLane)-dr.laneF)*Math.min(1,0.16*dt);
  const canMove=t>=dr.gateReady;
  if(dr.gateOn&&!dr.resolved&&canMove){dr.gateY+=0.48*dt;if(dr.gateY>=CARY-26){resolveGate();}}
  if(dr.shake>0)dr.shake=Math.max(0,dr.shake-0.06*dt);
  // 賽道金幣：只在「第一次作答」時出現，答錯進入重試就不再掉，避免故意出錯刷金幣
  dr.coinTimer-=dt;if(dr.firstTry&&!dr.resolved&&dr.coinTimer<=0){dr.coinTimer=50+Math.random()*70;dr.roadCoins.push({lane:Math.floor(Math.random()*dr.n),y:HORIZON+6,taken:false});}
- dr.roadCoins.forEach(c=>{c.y+=1.5*dt;if(!c.taken&&c.y>=CARY-16&&Math.round(dr.laneF)===c.lane){c.taken=true;dr.coins+=1;document.getElementById("gCoins").textContent=dr.coins;sndCoin();}});
+ dr.roadCoins.forEach(c=>{c.y+=1.5*dt;if(!c.taken&&c.y>=CARY-16&&Math.round(dr.laneF)===c.lane){c.taken=true;dr.coins+=1;document.getElementById("gCoins").textContent=dr.coins;sndCoinGrab();}});
  dr.roadCoins=dr.roadCoins.filter(c=>!c.taken&&c.y<H+20);
  drawRoad(dr.travel,dr.shake);
  drawRoadCoins();
