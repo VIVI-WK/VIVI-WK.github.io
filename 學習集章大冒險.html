@@ -551,7 +551,7 @@ const LEVELS=[
  {type:"flip",set:0,nm:"翻翻樂"},
  {type:"drive",subject:"social",slice:0,nm:"社會一"},
  {type:"drive",subject:"science",slice:0,nm:"自然一"},
- {type:"shoot",nm:"氣球樂"},
+ {type:"shoot",nm:"金幣氣球"},
  {type:"drive",subject:"math",slice:1,nm:"數學二"},
  {type:"drive",subject:"chinese",slice:1,nm:"國語二"},
  {type:"drive",subject:"english",slice:1,nm:"英語二"},
@@ -571,9 +571,12 @@ const LEVELS=[
 /* ================= 存檔 ================= */
 const KEY="xinheRacerSave_v1";
 let SAVE=load();
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&typeof s==="object"){if(!s.pals)s.pals=[];if(!s.lastDaily)s.lastDaily="";if(!s.usedQ)s.usedQ={};if(!s.stats)s.stats=blankStats();if(s.pin===undefined)s.pin="";if(s.coinsEarned===undefined)s.coinsEarned=s.coins||0;if(!s.petData)s.petData={};if(s.carName===undefined)s.carName="";return s;}}catch(e){}return null;}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&typeof s==="object"){if(!s.pals)s.pals=[];if(!s.lastDaily)s.lastDaily="";if(!s.usedQ)s.usedQ={};if(!s.stats)s.stats=blankStats();if(s.pin===undefined)s.pin="";if(s.coinsEarned===undefined)s.coinsEarned=s.coins||0;if(!s.petData)s.petData={};if(s.carName===undefined)s.carName="";if(!s.arcade)s.arcade={date:"",used:0};return s;}}catch(e){}return null;}
 function blankStats(){return {subjects:{},units:{},wrongQ:{},plays:0};}
-function freshSave(){return {name:"",car:0,carName:"",coins:0,coinsEarned:0,unlocked:1,cleared:[],redeemed:0,rate:100,pals:[],lastDaily:"",usedQ:{},stats:blankStats(),pin:"",petData:{}};}
+function freshSave(){return {name:"",car:0,carName:"",coins:0,coinsEarned:0,unlocked:1,cleared:[],redeemed:0,rate:100,pals:[],lastDaily:"",usedQ:{},stats:blankStats(),pin:"",petData:{},arcade:{date:"",used:0}};}
+const ARCADE_MAX=3;
+function arcadeRemaining(){if(!SAVE.arcade)SAVE.arcade={date:"",used:0};if(SAVE.arcade.date!==todayStr())return ARCADE_MAX;return Math.max(0,ARCADE_MAX-SAVE.arcade.used);}
+function arcadeUse(){if(!SAVE.arcade)SAVE.arcade={date:"",used:0};const t=todayStr();if(SAVE.arcade.date!==t){SAVE.arcade.date=t;SAVE.arcade.used=0;}SAVE.arcade.used++;persist();}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(SAVE));}catch(e){}}
 
 /* ================= 音效 ================= */
@@ -608,10 +611,12 @@ const MU_PATTERNS=[
  [0,2,4,2,4,5,4,2,3,4,5,7,4,2,0,-1],
  [4,3,2,0,2,4,5,4,2,3,4,2,0,-1,2,-1],
  [0,4,7,4,5,4,2,0,3,5,4,2,0,2,-1,-1],
- [2,4,5,7,5,4,2,4,0,2,4,2,-1,0,-1,-1]
+ [2,4,5,7,5,4,2,4,0,2,4,2,-1,0,-1,-1],
+ [7,7,4,4,5,5,4,2,0,0,2,4,7,4,2,-1],
+ [4,7,9,7,4,7,9,11,9,7,4,2,4,0,2,-1]
 ];
 const MU_KEYS=[0,3,5,-2,7];
-const MU_SCENE={menu:{tempo:360,pats:[0,1]},race:{tempo:230,pats:[2,3]},balloon:{tempo:290,pats:[1,2]},sling:{tempo:320,pats:[3,0]},flip:{tempo:430,pats:[0,2]},play:{tempo:300,pats:[1,3]}};
+const MU_SCENE={menu:{tempo:360,pats:[0,1]},race:{tempo:215,pats:[4,5]},balloon:{tempo:210,pats:[5,4]},sling:{tempo:300,pats:[3,0]},flip:{tempo:430,pats:[0,2]},play:{tempo:300,pats:[1,3]}};
 let music={on:true,timer:null,step:0,startAt:0,tempo:360,variant:-1,pats:[0,1],scene:"menu"};
 function setMusicScene(name){const cfg=MU_SCENE[name]||MU_SCENE.menu;music.tempo=cfg.tempo;music.pats=cfg.pats;music.scene=name;stopMusic();startMusic();}
 function muTone(freq,dur,vol){if(!AC||!soundOn||!music.on)return;const o=AC.createOscillator(),g=AC.createGain();o.type="triangle";
@@ -739,7 +744,9 @@ function renderStats(){
 /* ================= 通用：開關卡 ================= */
 let curLevel=-1;
 function openLevel(i){
- curLevel=i;const lv=LEVELS[i];
+ const lv=LEVELS[i];
+ if(lv.type==="shoot"){if(arcadeRemaining()<=0){alert("金幣氣球一天只能玩 3 次，今天的次數用完囉，明天再來！");return;}arcadeUse();}
+ curLevel=i;
  if(!SAVE.stats)SAVE.stats=blankStats();SAVE.stats.plays++;persist();
  if(AC&&AC.state==="suspended")AC.resume();
  stopBase();
@@ -918,61 +925,57 @@ function drawCar(laneF,color,shake,crash){
 function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function getFont(){return '"Microsoft JhengHei","PingFang TC",sans-serif';}
 
-/* ---------- 點破氣球 ---------- */
+/* ---------- 金幣氣球（限時 30 秒街機） ---------- */
 let sh={};
-const BALLOON_COL=["#ff4d6d","#4dd2ff","#ffd23f","#8cff66","#c77dff","#ff9e00"];
+const BAL_WEIGHTED=[1,1,1,1,1,5,5,10,-1,-1,-3,-6];
+function balColor(v){return v>=10?"#ff8a00":v>=5?"#ffd23f":v>=1?"#5bff3c":v>=-1?"#ffb3c1":v>=-3?"#ff5d6c":"#c8102e";}
+function newArcadeBalloon(){const v=BAL_WEIGHTED[Math.floor(Math.random()*BAL_WEIGHTED.length)];
+ return {v,col:balColor(v),label:(v>0?"+"+v:""+v),bx:46+Math.random()*(W-92),y:H+30+Math.random()*280,cx:0,cy:0,r:30+Math.random()*9,vy:-(1.5+Math.random()*1.3),ph:Math.random()*6};}
 function startShoot(lv){
  mode="shoot";clearCanvasHandlers();
- const pool=pickUnused("shoot",SHOOT_POOL.length,7).map(i=>SHOOT_POOL[i]);
- sh={qs:pool,qi:0,balloons:[],score:0,coins:0,resolved:false,pops:[]};
+ sh={score:0,balloons:[],pops:[],endAt:performance.now()+30000,ended:false};
+ for(let i=0;i<12;i++)sh.balloons.push(newArcadeBalloon());
  document.getElementById("s-game").classList.remove("hide");
- document.getElementById("gTitle").textContent=`第 ${curLevel+1} 關・${lv.nm}`;
+ document.getElementById("gTitle").textContent=`金幣氣球（今日剩 ${arcadeRemaining()} 次）`;
  document.getElementById("steer").style.display="none";
- document.getElementById("laneChips").innerHTML="";
- document.getElementById("hintBox").classList.remove("show");
+ document.getElementById("laneChips").innerHTML="";document.getElementById("hintBox").classList.remove("show");
+ document.getElementById("qUnit").textContent="限時 30 秒！快點破加分氣球（綠/金/橘），避開扣分氣球（紅）";
+ document.getElementById("qText").textContent="剩 30 秒　　分數 0";
  document.getElementById("gScore").textContent=0;document.getElementById("gCoins").textContent=0;
- setMusicScene("balloon");loadShootQ();
+ setMusicScene("balloon");
  cv.onclick=e=>balloonClick(cvPt(e));
  cv.ontouchstart=e=>{e.preventDefault();balloonClick(cvPt(e.touches[0]));};
  lastT=performance.now();raf=requestAnimationFrame(shootLoop);
 }
-function loadShootQ(){
- const it=sh.qs[sh.qi];sh.resolved=false;
- document.getElementById("qUnit").textContent=`點破氣球　（第 ${sh.qi+1}/${sh.qs.length} 題）　點破正確答案的氣球`;
- document.getElementById("qText").textContent=it.q;
- const order=shuffle(it.o.map((o,i)=>({o,correct:i===it.a})));
- const cols=shuffle(BALLOON_COL.slice());const n=order.length;
- sh.balloons=order.map((t,i)=>({o:t.o,correct:t.correct,col:cols[i%cols.length],
-   bx:(W/(n+1))*(i+1),y:H+60+i*80,cx:0,cy:0,r:38,vy:-(1.15+Math.random()*0.6),ph:Math.random()*6,popped:false}));
- setFeed("點破正確答案的氣球","");
-}
 function cvPt(e){const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*(W/r.width),y:(e.clientY-r.top)*(H/r.height)};}
 function balloonClick(pt){
- if(sh.resolved)return;
- for(const b of sh.balloons){if(!b.popped&&Math.hypot(pt.x-b.cx,pt.y-b.cy)<=b.r+6){
-   spawnPop(b.cx,b.cy,b.col);
-   if(b.correct){sh.resolved=true;b.popped=true;const g=6;sh.coins+=g;sh.score+=100;
-     recordStat("點氣球","快問快答",sh.qs[sh.qi].q,true);
-     document.getElementById("gScore").textContent=sh.score;document.getElementById("gCoins").textContent=sh.coins;
-     sndGood();cheer();setFeed("答對！戳破氣球 +"+g+" 金幣","good");
-     setTimeout(()=>{sh.qi++;if(sh.qi>=sh.qs.length)finishShoot();else loadShootQ();},1000);
-   }else{sndBad();b.y=H+70;recordStat("點氣球","快問快答",sh.qs[sh.qi].q,false);setFeed("這不是正確答案，再找找看","bad");}
+ if(sh.ended)return;
+ for(const b of sh.balloons){if(Math.hypot(pt.x-b.cx,pt.y-b.cy)<=b.r+8){
+   spawnPop(b.cx,b.cy,b.col);sh.score+=b.v;
+   document.getElementById("gScore").textContent=sh.score;
+   if(b.v>0){sndCoinGrab();if(b.v>=10)cheer("太棒了！");}else{sndBad();}
+   Object.assign(b,newArcadeBalloon());
    return;
  }}
 }
 function spawnPop(x,y,col){for(let i=0;i<12;i++)sh.pops.push({x,y,vx:(Math.random()-0.5)*7,vy:(Math.random()-0.5)*7,life:1,col});}
-function finishShoot(){completeLevel(sh.coins+15,sh.score,`點破 ${sh.qs.length} 顆氣球。`);}
+function finishShoot(){if(sh.ended)return;sh.ended=true;const coins=Math.max(0,sh.score);
+ completeLevel(coins,sh.score,`限時氣球得分 ${sh.score}，`);}
 function shootLoop(t){
  const dt=Math.min(40,t-lastT)/16.7;lastT=t;const time=t*0.001;
+ const left=Math.max(0,(sh.endAt-t)/1000);
  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#8ed0ff");g.addColorStop(1,"#e6f6ff");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
- ctx.fillStyle="rgba(255,255,255,.75)";for(let i=0;i<3;i++){const cxp=((i*280+time*16)%(W+140))-70;ctx.beginPath();ctx.ellipse(cxp,60+i*34,50,22,0,0,7);ctx.fill();}
- for(const b of sh.balloons){if(b.popped)continue;
-   b.y+=b.vy*dt;if(b.y<-70)b.y=H+70;
-   b.cx=b.bx+Math.sin(time*1.1+b.ph)*20;b.cy=b.y;
-   drawBalloon(b.cx,b.cy,b.r,b.col,b.o);
- }
+ ctx.fillStyle="rgba(255,255,255,.7)";for(let i=0;i<3;i++){const cxp=((i*280+time*16)%(W+140))-70;ctx.beginPath();ctx.ellipse(cxp,60+i*34,50,22,0,0,7);ctx.fill();}
+ while(sh.balloons.length<12)sh.balloons.push(newArcadeBalloon());
+ for(const b of sh.balloons){b.y+=b.vy*dt;if(b.y<-70)Object.assign(b,newArcadeBalloon());
+   b.cx=b.bx+Math.sin(time*1.1+b.ph)*16;b.cy=b.y;drawBalloon(b.cx,b.cy,b.r,b.col,b.label);}
  sh.pops=sh.pops.filter(p=>p.life>0);
  for(const p of sh.pops){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=0.035*dt;ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.col;ctx.fillRect(p.x,p.y,6,6);ctx.globalAlpha=1;}
+ document.getElementById("qText").textContent=`剩 ${Math.ceil(left)} 秒　　分數 ${sh.score}`;
+ ctx.fillStyle="rgba(255,255,255,.85)";ctx.fillRect(8,8,150,34);ctx.fillRect(W-92,8,84,34);
+ ctx.fillStyle="#0a3a6a";ctx.font=`900 22px ${getFont()}`;ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("分數 "+sh.score,16,26);
+ ctx.fillStyle=left<=5?"#e11":"#0a3a6a";ctx.textAlign="right";ctx.fillText(Math.ceil(left)+" 秒",W-16,26);
+ if(left<=0&&!sh.ended){finishShoot();return;}
  if(mode==="shoot")raf=requestAnimationFrame(shootLoop);
 }
 function drawBalloon(x,y,r,col,label){
