@@ -303,7 +303,7 @@
   <main id="view-treats" class="panel hide">
     <div style="margin-bottom:10px">
       <h3>🎁 生活特權兌換</h3>
-      <p style="font-size:12px;color:var(--muted);margin-top:2px">用 ⭐ 點數向家長兌換特權。定價以「幾組題」統一換算：每做完 1 組 10 題約 150 點，所以每項特權都標了大概要做幾組題。（金幣是拿來換零用錢的，不在這裡花）</p>
+      <p style="font-size:12px;color:var(--muted);margin-top:2px">用 ⭐ 點數向家長兌換特權。定價以「幾組題」統一換算：每做完 1 組 10 題約 150 點。這裡也能把點數換成金幣（200 點=1 金幣），金幣再跟家長換零用錢。</p>
     </div>
     <div id="treatList"></div>
   </main>
@@ -997,9 +997,10 @@ function confirmChar(){const nm=document.getElementById("charNameInput").value.t
 
 /* 特權兌換 */
 /* 特權統一尺規：1 組 10 題 ≈ 150 點；特權以「幾組題」計價 */
-const SET_UNIT=150;
+const SET_UNIT=150;const PT2GOLD=200;
+function exchangeGold(n){var cost=n*PT2GOLD;if(SAVE.coins<cost){toast("點數不足！換 "+n+" 金幣要 "+cost+" 點（你只有 "+SAVE.coins+" 點）。");return;}SAVE.coins-=cost;SAVE.gold+=n;persist();updateTop();renderTreats();cheer("🪙 +"+n);toast("用 "+cost+" 點換到 "+n+" 金幣！");}
 const TREATS=[{t:"🧺 少摺衣服 1 次",cost:300},{t:"☀️ 少曬衣服 1 次",cost:300},{t:"📺 看電視 15 分鐘",cost:900},{t:"📱 玩手機 20 分鐘",cost:1200},{t:"🧋 自選點心/飲料 1 份",cost:750}];
-function renderTreats(){document.getElementById("treatList").innerHTML=TREATS.map((x,i)=>'<div class="quiz-card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>'+x.t+'</b><br><small style="color:var(--gold)">需要 '+x.cost+' 點（約 '+Math.round(x.cost/SET_UNIT)+' 組題）</small></div><button class="btn btn-gold btn-sm" onclick="redeemTreat('+i+')">兌換</button></div>').join("");}
+function renderTreats(){document.getElementById("treatList").innerHTML='<div class="quiz-card" style="margin-bottom:12px;border:1.5px solid var(--green)"><b style="color:var(--green)">🪙 點數換金幣</b> <small style="color:var(--muted)">200 點 = 1 金幣（金幣再跟家長換零用錢）</small><div class="row" style="gap:8px;margin-top:8px"><button class="btn btn-primary btn-sm" style="flex:1" onclick="exchangeGold(1)">換 1 金幣（200點）</button><button class="btn btn-primary btn-sm" style="flex:1" onclick="exchangeGold(5)">換 5 金幣（1000點）</button></div></div>'+TREATS.map((x,i)=>'<div class="quiz-card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>'+x.t+'</b><br><small style="color:var(--gold)">需要 '+x.cost+' 點（約 '+Math.round(x.cost/SET_UNIT)+' 組題）</small></div><button class="btn btn-gold btn-sm" onclick="redeemTreat('+i+')">兌換</button></div>').join("");}
 function redeemTreat(i){const x=TREATS[i];if(SAVE.coins<x.cost){toast("點數不足！");return;}if(!confirm("確定兌換「"+x.t+"」嗎？"))return;SAVE.coins-=x.cost;persist();updateTop();renderTreats();toast("兌換成功！請向家長領取："+x.t);}
 
 /* 家長區 */
