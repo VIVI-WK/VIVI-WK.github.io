@@ -825,13 +825,12 @@ function shuffleArray(array){let arr=array.slice();for(let i=arr.length-1;i>0;i-
 const ECON={qCorrect:10,qHard:15,setBonus:50,staminaDaily:5,staminaCap:8,
   ticket:{race:20,rps:15,ttt:15,mem:15}};
 const PETDEF={
-  cat:{name:"閃電貓",cost:0,desc:"電氣系・預設夥伴"},
-  seahorse:{name:"夢幻海馬",cost:500,desc:"超夢款・紫尾漂浮"},
-  burger:{name:"漢堡方塊",cost:800,desc:"比奇堡居民風・呆萌"},
+  seahorse:{name:"夢幻海馬",cost:500,desc:"浮游系・紫貝捲尾"},
+  burger:{name:"漢堡方塊",cost:800,desc:"疊層系・呆萌"},
   dog:{name:"賽車狗阿酷",cost:1000,desc:"賽車系・活潑好動"}
 };
 const FOODS=[
-  {id:"crab",t:"蟹堡",emoji:"🍔",cost:5,hunger:25,fat:0.12,desc:"美味經典，吃多會變胖"},
+  {id:"crab",t:"起司漢堡",emoji:"🍔",cost:5,hunger:25,fat:0.12,desc:"美味經典，吃多會變胖"},
   {id:"daifuku",t:"草莓大福",emoji:"🍡",cost:5,hunger:20,fat:0.10,mood:5,desc:"甜滋滋，心情+5、微胖"},
   {id:"boba",t:"珍珠奶茶",emoji:"🧋",cost:8,hunger:30,fat:0.15,mood:10,desc:"大杯滿足，心情+10、會胖"},
   {id:"pizza",t:"義式披薩",emoji:"🍕",cost:10,hunger:40,fat:0.18,desc:"大份量主食，最容易變胖"},
@@ -841,7 +840,7 @@ const FOODS=[
   {id:"tonic",t:"活力特調",emoji:"🧪",cost:15,hunger:10,fat:0,exp:50,desc:"經驗能量，EXP+50"}
 ];
 const COSTUMES=[{id:"goggles",t:"賽車護目鏡",emoji:"🥽",cost:150},{id:"cape",t:"魔法披風",emoji:"🦸",cost:250},{id:"crown",t:"閃耀皇冠",emoji:"👑",cost:400}];
-const FURNI=[{id:"chair",t:"皮卡丘電競椅",emoji:"⚡",cost:200},{id:"rug",t:"精靈球地毯",emoji:"🔴",cost:250},{id:"table",t:"精靈球茶几",emoji:"🟣",cost:200}];
+const FURNI=[{id:"chair",t:"賽車電競椅",emoji:"🪑",cost:200},{id:"rug",t:"跑道地毯",emoji:"⬛",cost:250},{id:"table",t:"星砂茶几",emoji:"🟡",cost:200}];
 
 /* ================= 存檔 ================= */
 const KEY="studyAdventure_v8";
@@ -855,8 +854,10 @@ function norm(s){
   s.usedQ=s.usedQ||[];s.car=s.car||{engine:1,tire:1};s.stats=s.stats||{correct:0,wrong:0};
   s.goldRate=s.goldRate==null?1:s.goldRate;s.log=s.log||[];
   if(!s.pets){const old=s.pet||{};s.pets={cat:{owned:true,name:old.name||"咕嚕",exp:old.exp||0,hunger:old.hunger==null?80:old.hunger,clean:old.clean==null?75:old.clean,mood:old.mood==null?90:old.mood,weight:old.weight||1}};}
-  ["cat","seahorse","burger","dog"].forEach(id=>{if(!s.pets[id])s.pets[id]=newPet(id);if(!s.pets[id].face)s.pets[id].face={eyes:"auto",mouth:"auto"};});
-  s.activePet=(s.activePet&&s.pets[s.activePet]&&s.pets[s.activePet].owned)?s.activePet:"cat";
+  ["seahorse","burger","dog"].forEach(id=>{if(!s.pets[id])s.pets[id]=newPet(id);if(!s.pets[id].face)s.pets[id].face={eyes:"auto",mouth:"auto"};});
+  if(s.pets.cat){if(s.activePet==="cat")s.activePet="burger";if(s.companion==="cat")s.companion=null;delete s.pets.cat;}
+  if(s.pets.burger)s.pets.burger.owned=true;
+  s.activePet=(s.activePet&&s.pets[s.activePet]&&s.pets[s.activePet].owned)?s.activePet:"burger";
   if(s.companion&&(!s.pets[s.companion]||!s.pets[s.companion].owned||s.companion===s.activePet))s.companion=null;
   s.room=s.room||{house:(s.pet&&s.pet.house)||"木造小屋",bed:false,chair:false};
   if(s.room.bed==null)s.room.bed=false;if(s.room.chair==null)s.room.chair=false;if(s.room.rug==null)s.room.rug=false;if(s.room.table==null)s.room.table=false;s.ownedFurni=s.ownedFurni||{};["chair","rug","table"].forEach(function(id){if(s.ownedFurni[id]==null)s.ownedFurni[id]=!!s.room[id];});
@@ -1153,16 +1154,16 @@ function drawFace(d){var p=activePet();var f=p.face||{eyes:"auto",mouth:"auto"};
 function setFace(kind,val){var p=activePet();if(!p.face)p.face={eyes:"auto",mouth:"auto"};p.face[kind]=val;persist();renderPetScreen();drawFace(document.getElementById("petDrawer"));petReact("main","happy");}
 function drawPets(d){
   let html='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">切換主寵物，或讓兩隻同框（共享房間家具）。用 ⭐ 點數解鎖新寵物。</div><div class="shop-grid">';
-  ["cat","seahorse","burger","dog"].forEach(id=>{const p=SAVE.pets[id];const owned=p.owned;const isActive=SAVE.activePet===id;
+  ["seahorse","burger","dog"].forEach(id=>{const p=SAVE.pets[id];const owned=p.owned;const isActive=SAVE.activePet===id;
     html+='<div class="shop-item '+(isActive?"equipped":owned?"owned":"")+'" onclick="pickPet(\''+id+'\')"><span class="ic">'+petEmoji(id)+'</span>'+PETDEF[id].name+'<small>'+(owned?(isActive?"✅主寵":"設為主寵"):PETDEF[id].cost+" 點解鎖")+'</small></div>';});
   html+='</div>';
   // 同框選擇
-  const others=["cat","seahorse","burger","dog"].filter(id=>SAVE.pets[id].owned&&id!==SAVE.activePet);
+  const others=["seahorse","burger","dog"].filter(id=>SAVE.pets[id].owned&&id!==SAVE.activePet);
   if(others.length){html+='<div style="font-size:12px;color:var(--gold);margin:10px 0 6px">🐾 同框夥伴</div><div class="shop-grid"><div class="shop-item '+(!SAVE.companion?"equipped":"")+'" onclick="setCompanion(null)"><span class="ic">🚫</span>只顯示主寵<small>單獨</small></div>'+
     others.map(id=>'<div class="shop-item '+(SAVE.companion===id?"equipped":"")+'" onclick="setCompanion(\''+id+'\')"><span class="ic">'+petEmoji(id)+'</span>'+PETDEF[id].name+'<small>'+(SAVE.companion===id?"✅同框":"一起出來")+'</small></div>').join("")+'</div>';}
   d.innerHTML=html;
 }
-function petEmoji(id){return {cat:"⚡",seahorse:"🐚",burger:"🧽",dog:"🐶"}[id];}
+function petEmoji(id){return {seahorse:"🐚",burger:"🍔",dog:"🐶"}[id];}
 function pickPetGo(id){SAVE.activePet=id;if(SAVE.companion===id)SAVE.companion=null;persist();updateTop();renderPetScreen();drawPets(document.getElementById("petDrawer"));petSpeak("換我上場囉！");}
 function pickPet(id){const p=SAVE.pets[id];
   if(!p.owned){if(SAVE.coins<PETDEF[id].cost){toast("點數不足（解鎖 "+PETDEF[id].name+" 需 "+PETDEF[id].cost+" 點）！");return;}
@@ -1192,7 +1193,7 @@ function drawChat(d){
 }
 function listenMind(){const p=activePet();initAudio();beep(880,0.08,"sine",0.1);setTimeout(()=>beep(1174,0.12,"sine",0.1),90);petReact("main","happy");
   let m=[];
-  if(p.hunger<40){m.push("（肚皮咕嚕叫）主人…我肚子好餓，可以餵我吃義式披薩或蟹堡嗎？");m.push("肚子空空沒力氣了啦，快去答題賺點數幫我買好吃的！");}
+  if(p.hunger<40){m.push("（肚皮咕嚕叫）主人…我肚子好餓，可以餵我吃義式披薩或起司漢堡嗎？");m.push("肚子空空沒力氣了啦，快去答題賺點數幫我買好吃的！");}
   else if(p.clean<40){m.push("（毛髒兮兮）身上癢癢的…想洗個舒服的熱水澡～");}
   else if(p.mood<40){m.push("（有點落寞）心情有一點悶呢…可以陪我聊聊天或帶我去玩小遊戲嗎？");}
   else{const td=SAVE.todayData||{correct:0,wrong:0};
@@ -2040,5 +2041,993 @@ window.petroom = {
 };
 })();
 </script>
+
+<style>
+/* =========================================================
+   v11 寵物動畫與互動加強包（樣式）
+   全部走 .pr-mv 這個新的位移層與 [data-mv] 屬性，
+   不覆寫任何原有的 #petroom 規則。要還原就把這個 style 和下面的 script 整段刪掉。
+   ========================================================= */
+#petroom .pr-pet{--pr-tempo:1}
+#petroom .pr-mv{display:block; transform-origin:50% 92%;
+  animation:mvIdle calc(3.4s * var(--pr-tempo)) ease-in-out infinite}
+#petroom .pr-pet:nth-of-type(2) .pr-mv{animation-delay:.5s}
+#petroom .pr-pet:nth-of-type(3) .pr-mv{animation-delay:1s}
+@keyframes mvIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* 沒精神的待機：壓低慢晃。寫在動作之前，所以動作會蓋過它 */
+#petroom .pr-pet[data-low="1"] .pr-mv{animation:mvDroop calc(5s * var(--pr-tempo)) ease-in-out infinite}
+@keyframes mvDroop{0%,100%{transform:translateY(4px) rotate(-2deg)}50%{transform:translateY(7px) rotate(2deg)}}
+
+/* 亢奮：阿酷精力滿的時候原地躁動 */
+#petroom .pr-pet[data-hyper="1"] .pr-mv{animation:mvHyper .34s ease-in-out infinite}
+@keyframes mvHyper{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-4px) rotate(1.5deg)}}
+
+#petroom .pr-mv[data-mv="hop"]{animation:mvHop .56s cubic-bezier(.3,1.6,.5,1) 2}
+#petroom .pr-mv[data-mv="run"]{animation:mvRun 1.3s cubic-bezier(.25,.9,.35,1)}
+#petroom .pr-mv[data-mv="grow"]{animation:mvGrow 1.25s cubic-bezier(.2,1.7,.4,1)}
+#petroom .pr-mv[data-mv="sway"]{animation:mvSway 1.6s ease-in-out 2}
+#petroom .pr-mv[data-mv="spin"]{animation:mvSpin .85s linear}
+#petroom .pr-mv[data-mv="dance"]{animation:mvDance 1.6s ease-in-out}
+#petroom .pr-mv[data-mv="wiggle"]{animation:mvWiggle .4s ease-in-out 3}
+#petroom .pr-mv[data-mv="shrink"]{animation:mvShrink .9s ease-in-out}
+#petroom .pr-mv[data-mv="tumble"]{animation:mvTumble 1.1s ease-in-out}
+
+@keyframes mvHop{0%{transform:translateY(0)}40%{transform:translateY(-30px)}70%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+@keyframes mvRun{0%{transform:translateX(0)}22%{transform:translateX(30px) rotate(5deg)}34%{transform:translateX(34px) rotate(-3deg)}64%{transform:translateX(-24px) rotate(-5deg)}100%{transform:translateX(0)}}
+@keyframes mvGrow{0%{transform:scale(1)}45%{transform:scale(1.32)}75%{transform:scale(.95)}100%{transform:scale(1)}}
+@keyframes mvSway{0%,100%{transform:rotate(0)}30%{transform:rotate(-12deg) translateX(-5px)}70%{transform:rotate(12deg) translateX(5px)}}
+@keyframes mvSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+@keyframes mvDance{0%,100%{transform:translateY(0) rotate(0)}18%{transform:translateY(-18px) rotate(-9deg)}42%{transform:translateY(-3px) rotate(8deg)}68%{transform:translateY(-16px) rotate(-6deg)}}
+@keyframes mvWiggle{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px) rotate(-3deg)}75%{transform:translateX(6px) rotate(3deg)}}
+@keyframes mvShrink{0%{transform:scale(1)}40%{transform:scale(.66) translateY(10px)}100%{transform:scale(1)}}
+@keyframes mvTumble{0%{transform:rotate(0) translateY(0)}35%{transform:rotate(-22deg) translateY(-14px)}65%{transform:rotate(18deg) translateY(4px)}100%{transform:rotate(0) translateY(0)}}
+
+/* 對話列：放在舞台上方，不會被舞台的 overflow 裁掉，也不會壓到寵物或名字 */
+#petroom #prSayBar{position:relative; display:flex; align-items:flex-end;
+  min-height:28px; margin:0 0 7px; padding:0 2px}
+#petroom #prSayBar .ps-txt{display:inline-block; max-width:96%;
+  background:#F3F7FC; color:#1B2432; font-size:12px; line-height:1.5;
+  padding:5px 11px; border-radius:11px; box-shadow:0 4px 11px rgba(0,0,0,.38);
+  opacity:0; transform:translateY(5px); transition:opacity .22s ease, transform .22s ease}
+#petroom #prSayBar.on .ps-txt{opacity:1; transform:translateY(0)}
+#petroom #prSayBar::after{content:""; position:absolute; bottom:-6px; left:50%; margin-left:-6px;
+  border:6px solid transparent; border-top-color:#F3F7FC; border-bottom:0;
+  opacity:0; transition:opacity .22s ease, left .3s ease}
+#petroom #prSayBar.on::after{opacity:1}
+#petroom #prSayBar[data-who="sea"]{justify-content:flex-start}
+#petroom #prSayBar[data-who="sea"]::after{left:16%}
+#petroom #prSayBar[data-who="bur"]{justify-content:center}
+#petroom #prSayBar[data-who="bur"]::after{left:50%}
+#petroom #prSayBar[data-who="dog"]{justify-content:flex-end}
+#petroom #prSayBar[data-who="dog"]::after{left:84%}
+
+/* 自發小動作的粒子 */
+#petroom .amb{position:absolute; z-index:4; pointer-events:none}
+#petroom .amb-bub{width:10px;height:10px;border-radius:50%;
+  background:rgba(220,238,248,.2); border:1px solid rgba(220,238,248,.62);
+  animation:ambUp 2.6s ease-out forwards}
+#petroom .amb-ses{width:7px;height:5px;border-radius:50%;background:#FFF6E0;
+  animation:ambRound 2.1s ease-in-out forwards}
+#petroom .amb-dust{width:9px;height:9px;border-radius:50%;background:rgba(168,156,138,.5);
+  animation:ambPuff 1.4s ease-out forwards}
+#petroom .amb-heart{width:9px;height:9px;background:#FF8FA3;
+  clip-path:polygon(50% 100%,0 38%,20% 0,50% 22%,80% 0,100% 38%);
+  animation:ambUp 1.8s ease-out forwards}
+@keyframes ambUp{0%{transform:translate(0,0) scale(.5);opacity:0}16%{opacity:.95}100%{transform:translate(-14px,-82px) scale(1.2);opacity:0}}
+@keyframes ambRound{0%{transform:translate(0,0) rotate(0);opacity:0}20%{opacity:1}100%{transform:translate(28px,-18px) rotate(180deg);opacity:0}}
+@keyframes ambPuff{0%{transform:translate(0,0) scale(.4);opacity:0}25%{opacity:.8}100%{transform:translate(-42px,-6px) scale(1.6);opacity:0}}
+
+/* 答題畫面角落的小主寵 */
+#studyQuiz{position:relative}
+#quizPet{position:absolute; right:6px; bottom:4px; width:78px; z-index:6;
+  pointer-events:none; filter:drop-shadow(0 6px 10px rgba(0,0,0,.45));
+  transform-origin:50% 92%; animation:mvIdle 3.4s ease-in-out infinite}
+#quizPet svg{width:100%; height:auto; display:block; overflow:visible}
+#quizPet[data-mv="hop"]{animation:mvHop .56s cubic-bezier(.3,1.6,.5,1) 2}
+#quizPet[data-mv="wiggle"]{animation:mvWiggle .4s ease-in-out 3}
+#quizPet[data-mv="dance"]{animation:mvDance 1.6s ease-in-out}
+#quizPet[data-mv="grow"]{animation:mvGrow 1.25s cubic-bezier(.2,1.7,.4,1)}
+#quizPet .qp-say{position:absolute; right:2px; bottom:calc(100% - 2px); max-width:132px;
+  background:#F3F7FC; color:#1B2432; font-size:11px; line-height:1.45; padding:4px 8px;
+  border-radius:9px; box-shadow:0 3px 9px rgba(0,0,0,.4); text-align:right;
+  opacity:0; transition:opacity .2s ease}
+#quizPet .qp-say.on{opacity:1}
+@media (max-width:420px){#quizPet{width:62px}}
+
+@media (prefers-reduced-motion:reduce){
+  #petroom .pr-mv,#petroom .amb,#quizPet{animation:none !important; transition:none !important}
+}
+</style>
+
+<script>
+/* =========================================================
+   v11 寵物動畫與互動加強包（程式）
+   完全是附加的，不改任何原有函式的內容。只做四件事：
+   1. 幫每隻寵物包一層位移層，讓整隻的動作可以跟身體部位的動畫疊加
+   2. 帶優先級的動作佇列，避免兩個動作互相蓋掉
+   3. 自發小動作、部位點擊反應、對話泡泡
+   4. 答題畫面角落放一隻小主寵，答對答錯會反應
+   要還原就把這個 script 和上面那個 style 整段刪掉。
+   ========================================================= */
+(function(){
+  var ROOT=document.getElementById("petroom");
+  if(!ROOT||!window.petroom)return;
+
+  var KEYS=["sea","bur","dog"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷"};
+
+  /* ---------- 位移層 ---------- */
+  function wrap(){
+    KEYS.forEach(function(k){
+      var pet=ROOT.querySelector("#pr-p-"+k);
+      if(!pet||pet.querySelector(".pr-mv"))return;
+      var svg=pet.querySelector("svg");
+      if(!svg)return;
+      var mv=document.createElement("div");
+      mv.className="pr-mv";
+      svg.parentNode.insertBefore(mv,svg);
+      mv.appendChild(svg);
+    });
+  }
+  function mvOf(k){var p=ROOT.querySelector("#pr-p-"+k);return p?p.querySelector(".pr-mv"):null;}
+  function petOf(k){return ROOT.querySelector("#pr-p-"+k);}
+
+  /* ---------- 動作佇列（數字越大越不能被打斷）---------- */
+  var PRI={wiggle:1,sway:1,spin:1,hop:2,run:2,shrink:2,chew:3,tumble:3,grow:4,dance:5};
+  var DUR={wiggle:1250,sway:3300,spin:880,hop:1150,run:1330,shrink:930,chew:820,tumble:1130,grow:1270,dance:1620};
+  var ST={};
+  function move(k,act){
+    var mv=mvOf(k);if(!mv)return;
+    var cur=ST[k];
+    if(cur&&Date.now()<cur.until){
+      if((PRI[act]||0)<(PRI[cur.act]||0)){cur.next=act;return;}
+      clearTimeout(cur.timer);
+    }
+    mv.removeAttribute("data-mv");
+    void mv.getBoundingClientRect().width;
+    mv.setAttribute("data-mv",act);
+    var d=DUR[act]||1000;
+    var rec={act:act,until:Date.now()+d,next:null};
+    rec.timer=setTimeout(function(){
+      if(mv.getAttribute("data-mv")===act)mv.removeAttribute("data-mv");
+      var nx=rec.next;ST[k]=null;
+      if(nx)move(k,nx);
+    },d);
+    ST[k]=rec;
+  }
+
+  /* ---------- 對話列 ----------
+     原本泡泡畫在寵物上方，但舞台是 overflow:hidden 且上方留白很窄，
+     泡泡會被裁掉。改成固定放在舞台上方一列，小尾巴指向說話的那一隻。 */
+  var SHORT={sea:"海馬",bur:"漢堡",dog:"阿酷"};
+  function sayBar(){
+    var bar=ROOT.querySelector("#prSayBar");
+    if(!bar){
+      bar=document.createElement("div");
+      bar.id="prSayBar";
+      bar.innerHTML='<span class="ps-txt"></span>';
+      var stage=ROOT.querySelector(".pr-stage");
+      if(stage&&stage.parentNode)stage.parentNode.insertBefore(bar,stage);
+      else ROOT.appendChild(bar);
+    }
+    return bar;
+  }
+  function say(k,text,ms){
+    if(!text)return;
+    var bar=sayBar();
+    var t=bar.querySelector(".ps-txt");
+    t.textContent=(SHORT[k]?SHORT[k]+"：":"")+text;
+    bar.setAttribute("data-who",k);
+    bar.classList.add("on");
+    clearTimeout(bar._t);
+    bar._t=setTimeout(function(){bar.classList.remove("on");},ms||2600);
+  }
+
+  /* ---------- 讀狀態決定節奏與待機 ---------- */
+  function stats(){try{return window.petroom.get()||{};}catch(e){return {};}}
+  function tune(){
+    var S=stats();
+    KEYS.forEach(function(k){
+      var pet=petOf(k);if(!pet)return;
+      var low=false,hyper=false,tempo=1;
+      if(k==="sea"&&S.sea){
+        low=S.sea.trust<30;
+        tempo=S.sea.trust>=75?.8:S.sea.trust>=45?1:1.5;
+      }else if(k==="bur"&&S.bur){
+        low=(S.bur.full<25)||(S.bur.tidy<15);
+        tempo=S.bur.full>=70?.85:S.bur.full>=40?1:1.45;
+      }else if(k==="dog"&&S.dog){
+        low=S.dog.mess>70;
+        hyper=S.dog.energy>=100;
+        tempo=S.dog.energy>=60?.78:1.05;
+      }
+      if(low)pet.setAttribute("data-low","1");else pet.removeAttribute("data-low");
+      if(hyper)pet.setAttribute("data-hyper","1");else pet.removeAttribute("data-hyper");
+      pet.style.setProperty("--pr-tempo",tempo.toFixed(2));
+    });
+  }
+
+  /* ---------- 自發小動作 ---------- */
+  function amb(k,cls,n,gap,ms){
+    var pet=petOf(k);var stage=ROOT.querySelector(".pr-stage");
+    if(!pet||!stage)return;
+    var pr=pet.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+    if(!pr.width)return;
+    var cx=(pr.left+pr.width/2-sr.left)/sr.width*100;
+    var by=(sr.bottom-pr.bottom)/sr.height*100;
+    for(var i=0;i<n;i++)(function(j){
+      setTimeout(function(){
+        var d=document.createElement("div");
+        d.className="amb "+cls;
+        d.style.left=(cx-4+Math.random()*8).toFixed(1)+"%";
+        d.style.bottom=(by+18+Math.random()*16).toFixed(1)+"%";
+        stage.appendChild(d);
+        setTimeout(function(){d.remove();},ms);
+      },j*gap);
+    })(i);
+  }
+
+  var LINES={
+    sea:["泡泡飄起來了…","你今天有來，我就安心了。","慢慢來就好。","星星在我眼睛裡轉圈圈。"],
+    bur:["芝麻要排整齊才舒服。","有點餓…有一點點。","我又疊高一層了嗎？","起司快滑下去了！"],
+    dog:["再跑一次！再一次！","我沒有在拆東西喔。","墨鏡歪了不要說出來。","衝啊！"]
+  };
+  var ambNext=0;
+  function ambient(){
+    var v=document.getElementById("view-pet");
+    if(!v||v.classList.contains("hide"))return;
+    var now=Date.now();
+    if(now<ambNext)return;
+    ambNext=now+6000+Math.random()*7000;
+    var S=stats();
+    var k=S.main||"bur";
+    var pet=petOf(k);
+    if(!pet||pet.getAttribute("data-low")==="1")return;
+    if(k==="sea"){
+      amb(k,"amb-bub",3,280,2700);
+      if(Math.random()<.5)move(k,"sway");
+    }else if(k==="bur"){
+      amb(k,"amb-ses",4,160,2200);
+      if(Math.random()<.45)move(k,"grow");
+    }else{
+      amb(k,"amb-dust",3,130,1500);
+      move(k,Math.random()<.6?"run":"hop");
+    }
+    if(Math.random()<.4){
+      var L=LINES[k]||[];
+      if(L.length)say(k,L[Math.floor(Math.random()*L.length)]);
+    }
+  }
+
+  /* ---------- 部位點擊：摸不同地方反應不同 ---------- */
+  var PARTS=[
+    {sel:".tail",  act:"wiggle", sea:"尾巴不要拉～",       bur:null,               dog:"尾巴不是玩具！"},
+    {sel:".ear",   act:"hop",    sea:null,                bur:null,               dog:"耳朵是尾翼，很帥的。"},
+    {sel:".goggle",act:"shrink", sea:null,                bur:null,               dog:"別碰墨鏡！我沒戴很醜。"},
+    {sel:".lTop",  act:"grow",   sea:null,                bur:"頭上的芝麻亂了！", dog:null},
+    {sel:".ses",   act:"wiggle", sea:null,                bur:"我剛剛才排好…",   dog:null},
+    {sel:".swp",   act:"sway",   sea:"殼上的光很漂亮吧。", bur:null,              dog:null},
+    {sel:".eye-open",act:"shrink",sea:"別戳眼睛！",        bur:"眼睛是芝麻做的。", dog:"看得到看得到。"}
+  ];
+  function bindTouch(){
+    KEYS.forEach(function(k){
+      var pet=petOf(k);
+      if(!pet||pet._bound)return;
+      pet._bound=true;
+      pet.addEventListener("click",function(ev){
+        var hit=null;
+        for(var i=0;i<PARTS.length;i++){
+          var p=PARTS[i];
+          if(ev.target.closest&&ev.target.closest(p.sel)&&p[k]){hit=p;break;}
+        }
+        if(hit){move(k,hit.act);say(k,hit[k]);}
+        else{
+          move(k,"hop");
+          amb(k,"amb-heart",2,180,1800);
+          var L=LINES[k]||[];
+          if(L.length)say(k,L[Math.floor(Math.random()*L.length)]);
+        }
+      },true);
+    });
+  }
+
+  /* ---------- 主寵切換時打個招呼 ---------- */
+  var lastMain=null;
+  function watchMain(){
+    var m=(stats().main)||null;
+    if(m&&lastMain&&m!==lastMain){
+      move(m,"dance");
+      say(m,"換我上場囉！");
+      syncQuizPet(true);
+    }
+    if(m)lastMain=m;
+  }
+
+  /* ---------- 答題畫面角落的小主寵 ---------- */
+  function quizHost(){
+    var q=document.getElementById("studyQuiz");
+    if(!q)return null;
+    var host=document.getElementById("quizPet");
+    if(!host){
+      host=document.createElement("div");
+      host.id="quizPet";
+      host.innerHTML='<div class="qp-say"></div>';
+      q.appendChild(host);
+    }
+    return host;
+  }
+  var quizSig=null;
+  function syncQuizPet(force){
+    var host=quizHost();if(!host)return;
+    var m=(stats().main)||"bur";
+    if(!force&&quizSig===m)return;
+    quizSig=m;
+    var src=ROOT.querySelector("#pr-p-"+m+" svg");
+    if(!src)return;
+    var old=host.querySelector("svg");
+    if(old)old.remove();
+    var cl=src.cloneNode(true);
+    cl.removeAttribute("width");cl.removeAttribute("height");
+    cl.setAttribute("data-s","idle");
+    host.appendChild(cl);
+  }
+  function quizSay(text,ms){
+    var host=quizHost();if(!host)return;
+    var b=host.querySelector(".qp-say");if(!b)return;
+    b.textContent=text;b.classList.add("on");
+    clearTimeout(b._t);
+    b._t=setTimeout(function(){b.classList.remove("on");},ms||1800);
+  }
+  function quizMove(act){
+    var host=quizHost();if(!host)return;
+    host.removeAttribute("data-mv");
+    void host.getBoundingClientRect().width;
+    host.setAttribute("data-mv",act);
+    setTimeout(function(){
+      if(host.getAttribute("data-mv")===act)host.removeAttribute("data-mv");
+    },DUR[act]||1200);
+  }
+
+  /* 包住原本的 checkAnswer，只在前後加寵物反應，判題邏輯完全不動 */
+  var streak=0;
+  if(typeof window.checkAnswer==="function"&&!window.checkAnswer._petWrapped){
+    var orig=window.checkAnswer;
+    var wrapped=function(btnEl){
+      var before=(typeof SAVE!=="undefined"&&SAVE.stats)?SAVE.stats.correct:0;
+      var r=orig.apply(this,arguments);
+      try{
+        var after=(typeof SAVE!=="undefined"&&SAVE.stats)?SAVE.stats.correct:0;
+        var m=(stats().main)||"bur";
+        syncQuizPet();
+        if(after>before){
+          streak++;
+          if(streak>=3){quizMove("dance");quizSay("連三題！太強了！");streak=0;move(m,"dance");}
+          else{quizMove("hop");quizSay(["答對了！","就是這個！","繼續繼續！"][streak%3]);move(m,"hop");}
+        }else{
+          streak=0;quizMove("wiggle");quizSay("下一題再來！");
+        }
+      }catch(e){}
+      return r;
+    };
+    wrapped._petWrapped=true;
+    window.checkAnswer=wrapped;
+  }
+
+  /* ---------- 啟動 ---------- */
+  function tick(){
+    wrap();bindTouch();tune();watchMain();ambient();
+    var q=document.getElementById("studyQuiz");
+    if(q&&!q.classList.contains("hide"))syncQuizPet();
+  }
+  sayBar();wrap();bindTouch();tune();
+  lastMain=(stats().main)||null;
+  setInterval(tick,1200);
+
+  /* 給外部用：petroomFX.move("dog","run") / petroomFX.say("bur","嗨") */
+  window.petroomFX={move:move,say:say,quizMove:quizMove,quizSay:quizSay,refresh:tick};
+})();
+</script>
+
+
+<style>
+/* =========================================================
+   v12 偏好食物 / 成長 / 每日循環（樣式）
+   同樣是純附加。要還原就把這個 style 和下面的 script 整段刪掉。
+   ========================================================= */
+#petroom .pr-pet svg{transform:scale(var(--pr-grow,1)); transform-origin:50% 92%; transition:transform .8s ease}
+/* 等級小牌排在名字下面一行，不用絕對定位，避免壓到寵物名字 */
+#petroom .pr-lv{display:inline-block; margin-top:1px;
+  background:#0C1620; border:1px solid var(--pr-line); color:var(--pr-gold);
+  font-size:9.5px; line-height:1.6; padding:0 6px; border-radius:8px; white-space:nowrap}
+#petroom .pr-pet.pr-main .pr-lv{border-color:var(--pr-gold)}
+
+#petxWrap{margin-top:12px}
+#petxWrap .px-card{background:var(--pr-card); border:1px solid var(--pr-line);
+  border-radius:14px; padding:13px 15px; margin-bottom:10px}
+#petxWrap .px-h{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:9px}
+#petxWrap .px-h b{font-size:14px; font-weight:500; color:var(--pr-txt)}
+#petxWrap .px-h span{font-size:11.5px; color:var(--pr-txt3)}
+#petxWrap .px-streak{margin-left:auto; font-size:11.5px; color:var(--pr-gold);
+  border:1px solid #4A3A10; background:#241D08; padding:2px 9px; border-radius:9px}
+
+#petxWrap .px-task{display:flex; align-items:center; gap:9px; margin-bottom:7px; font-size:12.5px}
+#petxWrap .px-task .px-t{flex:1; min-width:0; color:var(--pr-txt2)}
+#petxWrap .px-task .px-n{color:var(--pr-txt3); font-size:11.5px; white-space:nowrap}
+#petxWrap .px-task.done .px-t{color:var(--pr-green)}
+#petxWrap .px-task.done .px-n{color:var(--pr-green)}
+#petxWrap .px-dot{width:8px; height:8px; border-radius:50%; background:#22303F; flex:0 0 auto}
+#petxWrap .px-task.done .px-dot{background:var(--pr-green)}
+#petxWrap .px-claim{width:100%; margin-top:8px; background:#241D08; border:1px solid var(--pr-gold);
+  color:var(--pr-gold); border-radius:10px; padding:8px; font-size:13px; cursor:pointer; font-family:inherit}
+#petxWrap .px-claim:disabled{opacity:.42; cursor:not-allowed; border-color:var(--pr-line); color:var(--pr-txt3)}
+
+#petxWrap .px-foods{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:7px}
+#petxWrap .px-food{display:flex; align-items:center; gap:9px;
+  background:var(--pr-card2); border:1px solid var(--pr-line); border-radius:10px;
+  padding:7px 9px; cursor:pointer; text-align:left; font-family:inherit; transition:.15s}
+#petxWrap .px-food .px-ic{flex:0 0 auto; width:28px; height:28px; display:block}
+#petxWrap .px-food .px-ic svg{width:28px; height:28px; display:block}
+#petxWrap .px-food .px-txt{min-width:0; flex:1}
+#petxWrap .px-food:hover:not(:disabled){border-color:#3A5266}
+#petxWrap .px-food:disabled{opacity:.42; cursor:not-allowed}
+#petxWrap .px-food .px-fn{font-size:12.5px; color:var(--pr-txt); display:block}
+#petxWrap .px-food .px-fp{font-size:11px; color:var(--pr-gold)}
+#petxWrap .px-food .px-fk{font-size:10.5px; margin-left:5px; padding:0 5px; border-radius:7px}
+#petxWrap .px-food .px-love{color:#FF8FA3; border:1px solid #5C2B36}
+#petxWrap .px-food .px-hate{color:#8FA2B5; border:1px solid #2C3947}
+#petxWrap .px-food.px-special{border-color:var(--pr-gold); background:#1E1A0C}
+#petxWrap .px-note{font-size:11.5px; color:var(--pr-txt3); line-height:1.7; margin:9px 0 0;
+  border-left:2px solid var(--pr-line); padding-left:10px}
+
+/* 咀嚼：快速壓扁彈回三次，跟 SVG 裡的部位動畫疊加 */
+#petroom .pr-mv[data-mv="chew"]{animation:mvChew .27s ease-in-out 3}
+@keyframes mvChew{0%,100%{transform:scale(1,1)}50%{transform:scale(1.09,.9) translateY(3px)}}
+
+/* 食物飛向寵物 */
+#petroom .pr-fly{position:absolute; z-index:8; width:30px; height:30px; pointer-events:none;
+  transition:transform .62s cubic-bezier(.35,.1,.6,1), left .62s cubic-bezier(.35,.1,.6,1),
+             top .62s cubic-bezier(.35,.1,.6,1), opacity .18s ease}
+#petroom .pr-fly svg{width:30px; height:30px; display:block}
+#petroom .amb-crumb{width:5px; height:5px; border-radius:1px; background:#C98A3C;
+  animation:crumbOut .7s ease-out forwards}
+@keyframes crumbOut{0%{transform:translate(0,0);opacity:0}
+  20%{opacity:.95}100%{transform:translate(var(--cx,14px),18px);opacity:0}}
+
+/* 連續答對的視覺獎勵 */
+#studyQuiz .quiz-card.px-glow{box-shadow:0 0 0 2px rgba(255,210,100,.75), 0 0 26px rgba(255,210,100,.4);
+  transition:box-shadow .3s ease}
+#studyQuiz .px-conf{position:absolute; top:-6px; width:7px; height:11px; border-radius:2px;
+  z-index:9; pointer-events:none; animation:pxFall 1.5s cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes pxFall{0%{transform:translateY(0) rotate(0);opacity:0}
+  12%{opacity:1}100%{transform:translateY(210px) rotate(540deg);opacity:0}}
+#studyQuiz .px-streakbig{position:absolute; left:50%; top:34%; transform:translate(-50%,-50%) scale(.7);
+  z-index:10; pointer-events:none; font-size:22px; font-weight:bold; color:#FFD264;
+  text-shadow:0 3px 12px rgba(0,0,0,.7); opacity:0; transition:opacity .25s ease, transform .35s cubic-bezier(.2,1.7,.4,1)}
+#studyQuiz .px-streakbig.on{opacity:1; transform:translate(-50%,-50%) scale(1)}
+
+@media (prefers-reduced-motion:reduce){
+  #studyQuiz .px-conf,#petroom .pr-pet svg{animation:none !important; transition:none !important}
+}
+</style>
+
+<script>
+/* =========================================================
+   v12 偏好食物 / 成長外型 / 連續答對獎勵 / 每日循環
+   狀態全部存在 SAVE.petx（跟答題同一份存檔），沒有第二份存檔。
+   點數一律走 petroom.addPoints，不直接改 SAVE.coins。
+   畫面元素都放在自己的容器與自己的 SVG group 裡，
+   不會被寵物房間每秒一次的 render() 蓋掉。
+   ========================================================= */
+(function(){
+  var ROOT=document.getElementById("petroom");
+  if(!ROOT||!window.petroom||!window.petroomFX)return;
+  var NS="http://www.w3.org/2000/svg";
+  var KEYS=["sea","bur","dog"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷"};
+  var EXP_PER_LV=40, LV_CAP=10;
+
+  /* ---------- 食物與偏好 ---------- */
+  var FOODS=[
+    {id:"boba",  t:"珍珠奶茶", cost:8,  exp:9},
+    {id:"mochi", t:"草莓大福", cost:5,  exp:6},
+    {id:"pizza", t:"義式披薩", cost:10, exp:12},
+    {id:"cburg", t:"起司漢堡", cost:5,  exp:7},
+    {id:"apple", t:"新鮮蘋果", cost:3,  exp:4},
+    {id:"yam",   t:"烤地瓜",   cost:4,  exp:5},
+    {id:"nori",  t:"海藻餅",   cost:4,  exp:5},
+    {id:"bone",  t:"骨頭餅乾", cost:6,  exp:7}
+  ];
+  var ICON={
+    boba:'<svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="14" rx="2.5" fill="#E8D3B8"/>'+
+      '<rect x="6" y="5" width="12" height="3" rx="1.5" fill="#C9A98A"/>'+
+      '<rect x="14" y="1.5" width="2" height="6" rx="1" fill="#8FA2B5"/>'+
+      '<g fill="#3A2A20"><circle cx="10" cy="18" r="1.6"/><circle cx="14" cy="18.4" r="1.6"/><circle cx="12" cy="15.4" r="1.6"/></g></svg>',
+    mochi:'<svg viewBox="0 0 24 24"><circle cx="12" cy="14.5" r="7.5" fill="#FDF3F6" stroke="#E4C9D3" stroke-width="1"/>'+
+      '<path d="M12 3.5c2 1 3 2.6 3 4.2h-6c0-1.6 1-3.2 3-4.2z" fill="#E24B4A"/>'+
+      '<path d="M9 7.7h6l-.8 1.8H9.8z" fill="#3FA85A"/></svg>',
+    pizza:'<svg viewBox="0 0 24 24"><path d="M12 3l8.5 17H3.5z" fill="#E8B860" stroke="#C98A3C" stroke-width="1"/>'+
+      '<path d="M12 6.6l6.2 12.2H5.8z" fill="#FFC24A"/>'+
+      '<circle cx="12" cy="12.4" r="1.7" fill="#D93A3A"/><circle cx="9" cy="16" r="1.5" fill="#D93A3A"/>'+
+      '<circle cx="15" cy="16.2" r="1.5" fill="#D93A3A"/></svg>',
+    cburg:'<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="5.5" rx="2.7" fill="#E8B860"/>'+
+      '<g fill="#FFF6E0"><circle cx="8" cy="7.4" r="1"/><circle cx="12" cy="6.8" r="1"/><circle cx="16" cy="7.4" r="1"/></g>'+
+      '<path d="M3.5 11h17l-1 2.4-2-1.2-2 1.8-2-1.4-2 1.6-2-1.4-2 1.2z" fill="#FFC24A"/>'+
+      '<rect x="3.5" y="13.6" width="17" height="4.2" rx="2" fill="#8B5A3C"/>'+
+      '<rect x="4.2" y="17.8" width="15.6" height="3.4" rx="1.7" fill="#C98A3C"/></svg>',
+    apple:'<svg viewBox="0 0 24 24"><path d="M12 6.5c4.2 0 6.4 3.2 6.4 7.2S15.4 21 12 21s-6.4-3.3-6.4-7.3S7.8 6.5 12 6.5z" fill="#E24B4A"/>'+
+      '<path d="M12 7V3.4" stroke="#7A5230" stroke-width="1.7" stroke-linecap="round"/>'+
+      '<path d="M12.6 4.6c2.2-1.7 4.4-1.1 4.4.6-1.7 1.7-3.4 1.6-4.4-.6z" fill="#3FA85A"/>'+
+      '<path d="M9.6 10c-.9.9-1.3 2-1.3 3.2" stroke="#FFF0E0" stroke-width="1.4" stroke-linecap="round" opacity=".6"/></svg>',
+    yam:'<svg viewBox="0 0 24 24"><g transform="rotate(-22 12 13)">'+
+      '<ellipse cx="12" cy="13" rx="8.6" ry="5.4" fill="#A05C86"/>'+
+      '<ellipse cx="12" cy="13" rx="5.2" ry="2.9" fill="#F2B453"/>'+
+      '<ellipse cx="12" cy="13" rx="2.6" ry="1.4" fill="#FFD9A0"/></g></svg>',
+    nori:'<svg viewBox="0 0 24 24"><rect x="4.5" y="5.5" width="15" height="15" rx="2.5" fill="#3D6B4A" stroke="#2A4E35" stroke-width="1"/>'+
+      '<g fill="#1F3A28"><circle cx="9" cy="10" r="1.2"/><circle cx="15" cy="11" r="1.2"/>'+
+      '<circle cx="11" cy="15.5" r="1.2"/><circle cx="16.2" cy="16.4" r="1.2"/></g>'+
+      '<path d="M6.5 8h11" stroke="#5C8C68" stroke-width="1" opacity=".6"/></svg>',
+    bone:'<svg viewBox="0 0 24 24"><g fill="#EBDCBE" stroke="#C9B58C" stroke-width="1">'+
+      '<rect x="7" y="10.3" width="10" height="3.6" rx="1.8"/>'+
+      '<circle cx="6.6" cy="9.6" r="2.5"/><circle cx="6.6" cy="14.4" r="2.5"/>'+
+      '<circle cx="17.4" cy="9.6" r="2.5"/><circle cx="17.4" cy="14.4" r="2.5"/></g></svg>'
+  };
+  var LOVE={sea:["nori","mochi"], bur:["cburg","pizza"], dog:["bone","yam"]};
+  var HATE={sea:["bone"],         bur:["apple"],         dog:["nori"]};
+  var LOVELINE={
+    sea:{nori:"海藻餅…這個我可以吃三片。",mochi:"甜甜的，泡泡都變星形了！"},
+    bur:{cburg:"同類？不管了，好吃！",pizza:"起司配起司，完美。"},
+    dog:{bone:"骨頭餅乾！給我給我給我！",yam:"熱的地瓜最讚了！"}
+  };
+  var HATELINE={sea:{bone:"這個太硬了，我沒有牙齒啊。"},
+                bur:{apple:"太健康了，我不想變瘦。"},
+                dog:{nori:"這是紙嗎？我不要。"}};
+
+  /* ---------- 狀態 ---------- */
+  function today(){
+    if(typeof getTodayStr==="function")return getTodayStr();
+    var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  }
+  function ymd(off){
+    var d=new Date();d.setDate(d.getDate()+(off||0));
+    return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  }
+  function px(){
+    if(typeof SAVE==="undefined"||!SAVE)return null;
+    var d=SAVE.petx;
+    if(!d||d.v!==1){d={v:1};SAVE.petx=d;}
+    d.exp=d.exp||{};
+    KEYS.forEach(function(k){if(typeof d.exp[k]!=="number")d.exp[k]=0;});
+    d.streak=d.streak||{days:0,last:""};
+    d.daily=d.daily||{date:"",fed:0,correct:0,pats:0,claimed:false};
+    var t=today();
+    if(d.daily.date!==t){
+      /* 隔天沒領就斷連續。斷了從 0 重新算 */
+      if(d.streak.last&&d.streak.last!==ymd(-1)&&d.streak.last!==t)d.streak.days=0;
+      d.daily={date:t,fed:0,correct:0,pats:0,claimed:false};
+    }
+    return d;
+  }
+  function keep(){try{if(typeof persist==="function")persist();}catch(e){}}
+  function lv(k){var d=px();if(!d)return 1;
+    return Math.min(LV_CAP,Math.floor(d.exp[k]/EXP_PER_LV)+1);}
+  function lvProg(k){var d=px();if(!d)return 0;
+    var e=d.exp[k]%EXP_PER_LV;return lv(k)>=LV_CAP?EXP_PER_LV:e;}
+  function mainKey(){try{return (window.petroom.get().main)||"bur";}catch(e){return "bur";}}
+  function coins(){return (typeof SAVE!=="undefined"&&SAVE)?(SAVE.coins||0):0;}
+
+  /* 今日特餐：由日期決定，每天不一樣。半價且經驗兩倍 */
+  function specialId(){
+    var t=today().split("-");
+    var n=(parseInt(t[0],10)*372+parseInt(t[1],10)*31+parseInt(t[2],10));
+    return FOODS[n%FOODS.length].id;
+  }
+
+  /* ---------- 成長外型 ---------- */
+  function growth(){
+    var d=px();if(!d)return;
+    KEYS.forEach(function(k){
+      var pet=ROOT.querySelector("#pr-p-"+k);
+      var svg=pet&&pet.querySelector("svg");
+      if(!svg)return;
+      var L=lv(k);
+      pet.style.setProperty("--pr-grow",(1+(L-1)*0.022).toFixed(3));
+
+      var chip=pet.querySelector(".pr-lv");
+      if(!chip){
+        chip=document.createElement("div");chip.className="pr-lv";
+        var tag=pet.querySelector(".pr-tag");
+        if(tag&&tag.parentNode)tag.parentNode.insertBefore(chip,tag.nextSibling);
+        else pet.appendChild(chip);
+      }
+      var want="Lv."+L+(L>=LV_CAP?" 滿":"");
+      if(chip.textContent!==want)chip.textContent=want;
+
+      var g=svg.querySelector(".growx");
+      if(!g){g=document.createElementNS(NS,"g");g.setAttribute("class","growx");svg.appendChild(g);}
+      if(g.getAttribute("data-lv")===String(L))return;
+      g.setAttribute("data-lv",String(L));
+      g.innerHTML=growArt(k,L);
+
+      /* 阿酷的號碼牌數字直接寫成等級。這個 text 原本的程式不會動到 */
+      if(k==="dog"){
+        var texts=svg.querySelectorAll("text");
+        for(var i=0;i<texts.length;i++){
+          var tx=texts[i];
+          if(tx.closest&&tx.closest(".ac-flag"))continue;
+          if(/^\d+$/.test((tx.textContent||"").trim())){tx.textContent=String(L);break;}
+        }
+      }
+    });
+  }
+  function growArt(k,L){
+    var rings=Math.floor((L-1)/2);
+    if(k==="sea"){
+      /* 殼上的螺紋每兩級多一圈 */
+      var out="";
+      for(var i=0;i<rings&&i<5;i++){
+        var r=36-i*7;
+        out+='<path d="M 80 '+(72-r)+' A '+r+' '+r+' 0 0 1 '+(80+r)+' 72" fill="none" '+
+             'stroke="#F0E4FA" stroke-width="1.8" opacity="'+(0.75-i*0.09).toFixed(2)+'"/>';
+      }
+      return out;
+    }
+    if(k==="bur"){
+      /* 自己的等級旗，插在左側，不碰原本的竹籤旗 */
+      return '<g><rect x="32" y="10" width="3" height="30" rx="1.5" fill="#C98A3C"/>'+
+             '<path d="M35 12l19 6-19 6z" fill="#D93A3A"/>'+
+             '<text x="40" y="21" font-size="9" fill="#FDF6EE" font-family="inherit">'+L+'</text></g>';
+    }
+    /* 阿酷：耳翼上每兩級多一道白線 */
+    var o="";
+    for(var j=0;j<rings&&j<4;j++){
+      o+='<path d="M'+(40+j*3)+' '+(38-j*4)+'l7-9" stroke="#FFFFFF" stroke-width="2" '+
+         'stroke-linecap="round" opacity=".85"/>';
+    }
+    return o;
+  }
+
+  /* ---------- 餵食 ---------- */
+  /* 食物從左邊飛到主寵嘴邊，到位才算真的吃到 */
+  function flyFood(k,fid,onEat){
+    var stage=ROOT.querySelector(".pr-stage");
+    if(!stage){onEat();return;}
+    var pet=ROOT.querySelector("#pr-p-"+k);
+    var fly=document.createElement("div");
+    fly.className="pr-fly";
+    fly.innerHTML=ICON[fid]||"";
+    fly.style.left="8%";
+    fly.style.top="42%";
+    stage.appendChild(fly);
+    /* 量得到實際尺寸就精準飛到嘴邊，量不到就用百分比飛到畫面中間，不會沒有動畫 */
+    var sr=stage.getBoundingClientRect();
+    var pr=pet?pet.getBoundingClientRect():null;
+    var exact=(sr.width>0&&pr&&pr.width>0);
+    requestAnimationFrame(function(){
+      if(exact){
+        var x0=sr.width*0.08, y0=sr.height*0.42;
+        var tx=(pr.left+pr.width*0.5-sr.left)-x0-15;
+        var ty=(pr.top+pr.height*0.46-sr.top)-y0-15;
+        fly.style.transform="translate("+tx.toFixed(0)+"px,"+ty.toFixed(0)+"px) scale(.7)";
+      }else{
+        fly.style.left="47%";
+        fly.style.top="46%";
+        fly.style.transform="scale(.7)";
+      }
+    });
+    setTimeout(function(){
+      fly.style.opacity="0";
+      setTimeout(function(){fly.remove();},200);
+      crumbs(k);
+      onEat();
+    },640);
+  }
+  function crumbs(k){
+    var pet=ROOT.querySelector("#pr-p-"+k),stage=ROOT.querySelector(".pr-stage");
+    if(!stage)return;
+    var pr=pet?pet.getBoundingClientRect():null,sr=stage.getBoundingClientRect();
+    var cx=50,by=26;
+    if(pr&&pr.width>0&&sr.width>0){
+      cx=(pr.left+pr.width/2-sr.left)/sr.width*100;
+      by=(sr.bottom-pr.bottom)/sr.height*100+26;
+    }
+    for(var i=0;i<5;i++){
+      var e=document.createElement("div");
+      e.className="amb amb-crumb";
+      e.style.left=(cx-3+Math.random()*6).toFixed(1)+"%";
+      e.style.bottom=(by+Math.random()*8).toFixed(1)+"%";
+      e.style.setProperty("--cx",((Math.random()*30-15).toFixed(0))+"px");
+      stage.appendChild(e);
+      (function(el){setTimeout(function(){el.remove();},800);})(e);
+    }
+  }
+  /* 每隻在 SVG 內部也有自己的吃相，跟外層的咀嚼疊加 */
+  var INNER={sea:"happy",bur:"eat",dog:"poke"};
+
+  function feedx(fid){
+    var d=px();if(!d)return;
+    var f=null;for(var i=0;i<FOODS.length;i++)if(FOODS[i].id===fid)f=FOODS[i];
+    if(!f)return;
+    var k=mainKey();
+    var sp=(specialId()===fid);
+    var cost=sp?Math.ceil(f.cost/2):f.cost;
+    if(coins()<cost){
+      try{toast("點數不足（"+f.t+" 需 "+cost+" 點）！去答題賺點數。");}catch(e){}
+      return;
+    }
+    try{window.petroom.addPoints(-cost);}catch(e){return;}
+
+    var gain=f.exp, mode="ok";
+    if((LOVE[k]||[]).indexOf(fid)>=0){gain=Math.round(f.exp*2);mode="love";}
+    else if((HATE[k]||[]).indexOf(fid)>=0){gain=Math.max(1,Math.round(f.exp*0.4));mode="hate";}
+    if(sp)gain=Math.round(gain*2);
+
+    var before=lv(k);
+    d.exp[k]+=gain;
+    d.daily.fed++;
+    keep();
+
+    var after=lv(k);
+
+    /* 先讓食物飛過去，到嘴邊才咀嚼，咀嚼完才給反應 */
+    flyFood(k,fid,function(){
+      window.petroomFX.move(k,"chew");
+      try{window.petroom.setState(k,INNER[k]||"poke");}catch(e){}
+      try{initAudio();beep(300,0.08,"triangle",0.1);}catch(e){}
+      setTimeout(function(){
+        if(mode==="love"){
+          window.petroomFX.move(k,"dance");
+          window.petroomFX.say(k,(LOVELINE[k]&&LOVELINE[k][fid])||"這個我最愛！");
+          burst(k,"amb-heart",4);
+        }else if(mode==="hate"){
+          window.petroomFX.move(k,"wiggle");
+          window.petroomFX.say(k,(HATELINE[k]&&HATELINE[k][fid])||"這個…我不太喜歡。");
+        }else{
+          window.petroomFX.move(k,"hop");
+          window.petroomFX.say(k,"謝謝你，好吃！");
+        }
+        if(after>before){
+          setTimeout(function(){
+            window.petroomFX.move(k,"grow");
+            window.petroomFX.say(k,"我升到 Lv."+after+" 了！",3200);
+            try{cheer(NAME[k]+" 升級到 Lv."+after+"！");}catch(e){}
+          },1000);
+        }
+      },840);
+    });
+
+    growth();paintx(true);
+    try{updateTop();}catch(e){}
+  }
+  function burst(k,cls,n){
+    var pet=ROOT.querySelector("#pr-p-"+k),stage=ROOT.querySelector(".pr-stage");
+    if(!pet||!stage)return;
+    var pr=pet.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+    if(!pr.width)return;
+    var cx=(pr.left+pr.width/2-sr.left)/sr.width*100;
+    var by=(sr.bottom-pr.bottom)/sr.height*100;
+    for(var i=0;i<n;i++)(function(j){setTimeout(function(){
+      var e=document.createElement("div");e.className="amb "+cls;
+      e.style.left=(cx-5+Math.random()*10).toFixed(1)+"%";
+      e.style.bottom=(by+22+Math.random()*14).toFixed(1)+"%";
+      stage.appendChild(e);setTimeout(function(){e.remove();},1900);
+    },j*140);})(i);
+  }
+
+  /* ---------- 每日任務 ---------- */
+  var GOAL={fed:2,correct:8,pats:5};
+  function allDone(){
+    var d=px();if(!d)return false;
+    return d.daily.fed>=GOAL.fed&&d.daily.correct>=GOAL.correct&&d.daily.pats>=GOAL.pats;
+  }
+  function claim(){
+    var d=px();if(!d||d.daily.claimed||!allDone())return;
+    var y=ymd(-1);
+    if(d.streak.last===y)d.streak.days+=1;
+    else d.streak.days=1;
+    d.streak.last=today();
+    if(d.streak.days>(d.best||0))d.best=d.streak.days;
+    d.daily.claimed=true;
+    var bonus=Math.min(150,30+(d.streak.days-1)*10);
+    var k=mainKey();
+    d.exp[k]+=12;
+    keep();
+    try{window.petroom.addPoints(bonus);}catch(e){}
+    window.petroomFX.move(k,"dance");
+    window.petroomFX.say(k,"今天照顧我辛苦了！",3000);
+    burst(k,"amb-heart",6);
+    try{cheer("每日照顧完成！+"+bonus+" 點（連續 "+d.streak.days+" 天）");}catch(e){}
+    growth();paintx(true);
+    try{updateTop();}catch(e){}
+  }
+
+  /* ---------- 每日一句 ---------- */
+  var GREET=[
+    "早安！今天想先答哪一科？",
+    "你來了，我等你很久。",
+    "今天目標，答對八題！",
+    "我昨天有乖乖待在房間喔。",
+    "今天的特餐好像是我愛吃的。",
+    "答完題再來陪我玩嘛。",
+    "又見面了，開心。"
+  ];
+  var greeted=false;
+  function greet(){
+    if(greeted)return;
+    var v=document.getElementById("view-pet");
+    if(!v||v.classList.contains("hide"))return;
+    greeted=true;
+    var t=today().split("-");
+    var idx=(parseInt(t[1],10)*31+parseInt(t[2],10))%GREET.length;
+    var k=mainKey();
+    setTimeout(function(){window.petroomFX.say(k,GREET[idx],3600);},600);
+  }
+
+  /* ---------- 介面 ---------- */
+  function host(){
+    var wrap=document.getElementById("petxWrap");
+    if(!wrap){
+      wrap=document.createElement("div");
+      wrap.id="petxWrap";
+      var anchor=ROOT.querySelector("#pr-panels");
+      if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(wrap,anchor.nextSibling);
+      else ROOT.appendChild(wrap);
+    }
+    return wrap;
+  }
+  var lastSig=null;
+  function paintx(force){
+    var d=px();if(!d)return;
+    var k=mainKey();
+    var sig=[k,d.exp.sea,d.exp.bur,d.exp.dog,d.daily.fed,d.daily.correct,d.daily.pats,
+             d.daily.claimed?1:0,d.streak.days,coins(),today()].join("|");
+    if(!force&&sig===lastSig)return;
+    lastSig=sig;
+    var w=host();
+    var sp=specialId();
+    var spName="";
+    for(var i=0;i<FOODS.length;i++)if(FOODS[i].id===sp)spName=FOODS[i].t;
+
+    var tasks=[
+      {t:"餵主寵吃東西",n:d.daily.fed,g:GOAL.fed},
+      {t:"答對題目",     n:d.daily.correct,g:GOAL.correct},
+      {t:"摸摸寵物",     n:d.daily.pats,g:GOAL.pats}
+    ];
+    var th="";
+    tasks.forEach(function(x){
+      var done=x.n>=x.g;
+      th+='<div class="px-task'+(done?" done":"")+'"><span class="px-dot"></span>'+
+          '<span class="px-t">'+x.t+'</span><span class="px-n">'+Math.min(x.n,x.g)+" / "+x.g+'</span></div>';
+    });
+    var bonus=Math.min(150,30+Math.max(0,d.streak.days)*10);
+    var btn=d.daily.claimed
+      ? '<button class="px-claim" disabled>今天已領取，明天再來</button>'
+      : '<button class="px-claim" id="pxClaim"'+(allDone()?"":" disabled")+'>'+
+        (allDone()?("領取獎勵 +"+bonus+" 點"):"三項都完成才能領取")+'</button>';
+
+    var fh="";
+    FOODS.forEach(function(f){
+      var isSp=(f.id===sp);
+      var cost=isSp?Math.ceil(f.cost/2):f.cost;
+      var tag="";
+      if((LOVE[k]||[]).indexOf(f.id)>=0)tag='<span class="px-fk px-love">愛吃</span>';
+      else if((HATE[k]||[]).indexOf(f.id)>=0)tag='<span class="px-fk px-hate">不愛</span>';
+      fh+='<button class="px-food'+(isSp?" px-special":"")+'" data-food="'+f.id+'"'+
+          (coins()<cost?" disabled":"")+'>'+
+          '<span class="px-ic">'+(ICON[f.id]||"")+'</span>'+
+          '<span class="px-txt"><span class="px-fn">'+f.t+tag+'</span>'+
+          '<span class="px-fp">'+cost+" 點"+(isSp?"　今日特餐 經驗兩倍":"")+'</span></span></button>';
+    });
+
+    w.innerHTML=
+      '<div class="px-card"><div class="px-h"><b>今日照顧</b>'+
+        '<span>三項都完成可以領獎勵</span>'+
+        '<span class="px-streak">連續 '+d.streak.days+' 天'+
+        (d.best>d.streak.days?("　最佳 "+d.best):"")+'</span></div>'+
+        th+btn+
+        '<p class="px-note">連續天數每多一天，獎勵多 10 點，最多 150 點。'+
+        '中斷一天就從第一天重新算。</p></div>'+
+      '<div class="px-card"><div class="px-h"><b>餵食</b>'+
+        '<span>餵給主寵 '+NAME[k]+'　今日特餐：'+spName+'</span></div>'+
+        '<div class="px-foods">'+fh+'</div>'+
+        '<p class="px-note">餵愛吃的經驗兩倍還會跳舞，餵不愛的只有四成經驗還會抱怨。'+
+        '每隻愛吃的東西不一樣，換主寵就換一套。經驗滿 '+EXP_PER_LV+' 點升一級，最高 Lv.'+LV_CAP+'。</p></div>';
+
+    var cb=w.querySelector("#pxClaim");
+    if(cb)cb.onclick=claim;
+    w.querySelectorAll("[data-food]").forEach(function(b){
+      b.onclick=function(){feedx(b.getAttribute("data-food"));};
+    });
+  }
+
+  /* ---------- 摸寵物計數 ---------- */
+  KEYS.forEach(function(k){
+    var pet=ROOT.querySelector("#pr-p-"+k);
+    if(!pet)return;
+    pet.addEventListener("click",function(){
+      var d=px();if(!d)return;
+      d.daily.pats++;keep();paintx();
+    },false);
+  });
+
+  /* ---------- 連續答對的獎勵感 ---------- */
+  var run=0;
+  function conf(n){
+    var q=document.getElementById("studyQuiz");if(!q)return;
+    var cols=["#FFD264","#4DD8E6","#FF8FA3","#3FD67A","#C9A3E8"];
+    for(var i=0;i<n;i++)(function(j){setTimeout(function(){
+      var e=document.createElement("div");
+      e.className="px-conf";
+      e.style.left=(6+Math.random()*88).toFixed(1)+"%";
+      e.style.background=cols[j%cols.length];
+      q.appendChild(e);setTimeout(function(){e.remove();},1600);
+    },j*45);})(i);
+  }
+  function glow(ms){
+    var c=document.querySelector("#studyQuiz .quiz-card");if(!c)return;
+    c.classList.add("px-glow");
+    setTimeout(function(){c.classList.remove("px-glow");},ms||1400);
+  }
+  function bigText(txt){
+    var q=document.getElementById("studyQuiz");if(!q)return;
+    var e=q.querySelector(".px-streakbig");
+    if(!e){e=document.createElement("div");e.className="px-streakbig";q.appendChild(e);}
+    e.textContent=txt;
+    void e.getBoundingClientRect().width;
+    e.classList.add("on");
+    clearTimeout(e._t);
+    e._t=setTimeout(function(){e.classList.remove("on");},1500);
+  }
+
+  if(typeof window.checkAnswer==="function"&&!window.checkAnswer._pxWrapped){
+    var orig=window.checkAnswer;
+    var wrapped=function(){
+      var b4=(typeof SAVE!=="undefined"&&SAVE.stats)?SAVE.stats.correct:0;
+      var r=orig.apply(this,arguments);
+      try{
+        var af=(typeof SAVE!=="undefined"&&SAVE.stats)?SAVE.stats.correct:0;
+        var d=px();
+        var k=mainKey();
+        if(af>b4){
+          run++;
+          if(d){d.daily.correct++;d.exp[k]+=2;keep();}
+          if(run>=8){
+            conf(28);glow(2200);bigText("連續 "+run+" 題！");
+            window.petroomFX.quizMove("dance");
+            window.petroomFX.move(k,"dance");
+            if(d){d.exp[k]+=12;keep();}
+          }else if(run>=5){
+            conf(16);glow(1600);bigText("連續 "+run+" 題！");
+            window.petroomFX.quizMove("grow");
+            window.petroomFX.move(k,"dance");
+            if(d){d.exp[k]+=6;keep();}
+          }
+          growth();paintx();
+        }else{
+          run=0;
+        }
+      }catch(e){}
+      return r;
+    };
+    wrapped._pxWrapped=true;
+    wrapped._petWrapped=true;
+    window.checkAnswer=wrapped;
+  }
+
+  /* ---------- 啟動 ---------- */
+  function tick(){growth();paintx();greet();}
+  px();growth();paintx(true);
+  setInterval(tick,1400);
+
+  window.petx={
+    get:function(){return px();},
+    lv:lv,
+    feed:feedx,
+    claim:claim,
+    refresh:function(){growth();paintx(true);}
+  };
+})();
+</script>
+
 </body>
 </html>
