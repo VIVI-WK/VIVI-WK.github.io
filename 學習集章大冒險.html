@@ -4652,7 +4652,7 @@ window.petroom = {
 (function(){
   var ROOT=document.getElementById("petroom"); if(!ROOT) return;
   var stage=ROOT.querySelector("#pr-stage"); if(!stage) return;
-  var TABS=[{key:"care",label:"💗 照顧"},{key:"feed",label:"🍽️ 餵食"},{key:"style",label:"🎀 造型"},{key:"daily",label:"📋 每日"},{key:"shop",label:"🛍️ 商店"}];
+  var TABS=[{key:"care",label:"💗 照顧"},{key:"unlock",label:"🔓 解鎖"},{key:"feed",label:"🍽️ 餵食"},{key:"style",label:"🎀 造型"},{key:"daily",label:"📋 每日"},{key:"shop",label:"🛍️ 商店"}];
   var cur="care";
 
   var tabbar=document.createElement("div"); tabbar.className="pr-tabs";
@@ -4668,6 +4668,7 @@ window.petroom = {
       feed: cards.filter(function(c){ return /餵食/.test(c.textContent) && !/今日照顧/.test(c.textContent); }),
       daily: cards.filter(function(c){ return /今日照顧/.test(c.textContent); }),
       style: [ROOT.querySelector(".pr-style")].filter(Boolean),
+      unlock: [ROOT.querySelector(".pr-unlock")].filter(Boolean),
       shop: Array.from(ROOT.querySelectorAll(".pr-fold"))
     };
   }
@@ -4679,6 +4680,12 @@ window.petroom = {
     var styleBtn=tabbar.querySelector('button[data-tab="style"]');
     if(styleBtn) styleBtn.classList.toggle("pr-hide", !hasStyle);
     if(cur==="style" && !hasStyle) cur="care";
+    /* 解鎖分頁：只有還有鎖住的寵物時才出現 */
+    var ulPanel=ROOT.querySelector(".pr-unlock");
+    var hasLocked=ulPanel && ulPanel.getAttribute("data-empty")!=="1";
+    var ulBtn=tabbar.querySelector('button[data-tab="unlock"]');
+    if(ulBtn) ulBtn.classList.toggle("pr-hide", !hasLocked);
+    if(cur==="unlock" && !hasLocked) cur="care";
     var S=sections();
     Object.keys(S).forEach(function(key){
       (S[key]||[]).forEach(function(el){ if(el) el.classList.toggle("tab-off", key!==cur); });
@@ -4713,6 +4720,57 @@ window.petroom = {
     badge.textContent=t; badge.style.display=t?"block":"none";
   }
   tick(); setInterval(tick,700);
+})();
+</script>
+
+<style>
+/* === 解鎖寵物面板（2026/07/31）=== */
+#petroom .pr-unlock{padding:10px 12px; background:rgba(20,27,48,.6); border:1px solid var(--pr-line); border-radius:12px; margin:0 0 10px}
+#petroom .pr-unlock .ms-title{font-size:12px; color:var(--pr-gold); font-weight:bold; margin-bottom:8px}
+#petroom .pr-unlock .ul-row{display:flex; align-items:center; gap:8px; padding:7px 2px; border-top:1px solid var(--pr-line)}
+#petroom .pr-unlock .ul-row:first-of-type{border-top:0}
+#petroom .pr-unlock .ul-name{flex:1; font-size:13px; color:var(--pr-txt)}
+#petroom .pr-unlock .ul-cost{font-size:12px; color:var(--pr-gold)}
+#petroom .pr-unlock button{font-family:inherit; font-size:12.5px; cursor:pointer; color:#000; font-weight:bold;
+  background:linear-gradient(135deg,var(--pr-gold),#ff8a00); border:none; border-radius:999px; padding:6px 14px}
+#petroom .pr-unlock button:disabled{background:rgba(255,255,255,.08); color:var(--pr-txt3); cursor:not-allowed}
+</style>
+<script>
+/* 解鎖寵物：選寵鈕標「🔒費用」，並提供「🔓 解鎖」分頁列出可解鎖寵物 */
+(function(){
+  var ROOT=document.getElementById("petroom"); if(!ROOT) return;
+  var stage=ROOT.querySelector("#pr-stage"); if(!stage) return;
+  var COST={sea:500,bur:0,dog:0,man:200,slp:300,mio:900};
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭 阿饅",slp:"拖鞋鯊 阿拖",mio:"音音美代子"};
+  var chips={};
+  ROOT.querySelectorAll(".pr-chip[data-main]").forEach(function(b){ chips[b.dataset.main]=b.textContent.trim(); });
+
+  var panel=document.createElement("div"); panel.className="pr-unlock"; panel.setAttribute("data-empty","1");
+  var styleEl=ROOT.querySelector(".pr-style"); var anchor=styleEl||stage;
+  anchor.parentNode.insertBefore(panel, anchor.nextSibling);
+
+  function state(){ try{ return window.petroom.get()||{}; }catch(e){ return {}; } }
+  function doUnlock(k){ var lb=ROOT.querySelector("#pr-p-"+k+" .pr-lockbox button"); if(lb){ lb.disabled=false; lb.click(); } }
+
+  function refresh(){
+    var S=state(), un=S.unlocked||{}, pts=S.points||0;
+    ROOT.querySelectorAll(".pr-chip[data-main]").forEach(function(b){
+      var k=b.dataset.main; if(!(k in chips)) return;
+      b.textContent = un[k] ? chips[k] : (chips[k]+" 🔒"+COST[k]);
+    });
+    var locked=Object.keys(COST).filter(function(k){ return !un[k]; });
+    if(!locked.length){ panel.innerHTML=""; panel.setAttribute("data-empty","1"); return; }
+    panel.setAttribute("data-empty","0");
+    var html='<div class="ms-title">🔓 可解鎖的寵物（你目前有 '+pts+' 點）</div>';
+    locked.forEach(function(k){
+      var enough=pts>=COST[k];
+      html+='<div class="ul-row"><span class="ul-name">'+NAME[k]+'</span><span class="ul-cost">'+COST[k]+' 點</span>'+
+        '<button data-ul="'+k+'" '+(enough?"":"disabled")+'>'+(enough?"解鎖":"點數不足")+'</button></div>';
+    });
+    panel.innerHTML=html;
+  }
+  panel.addEventListener("click", function(e){ var b=e.target.closest("button[data-ul]"); if(!b) return; doUnlock(b.dataset.ul); setTimeout(refresh,60); });
+  refresh(); setInterval(refresh,900);
 })();
 </script>
 
