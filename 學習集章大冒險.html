@@ -29,6 +29,7 @@
   .chip-pts{border-color:var(--gold);color:var(--gold)}
   .chip-coin{border-color:var(--green);color:var(--green)}
   .chip-stam{border-color:var(--pink);color:var(--pink)}
+  .game-card.gc-out{opacity:.5;filter:saturate(.4)}
   .btn{cursor:pointer;border:none;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:bold;
     font-family:var(--font);transition:all .15s ease;display:inline-flex;align-items:center;justify-content:center;gap:6px}
   .btn:active{transform:scale(.96)}
@@ -434,7 +435,95 @@
 #petroom .slp[data-s="sleep"] .all{animation:prLie 1s ease-out forwards}
 #petroom .slp[data-s="sleep"] .fin{animation:none}
 
+/* ===== 音音美代子 ===== */
+#petroom .mio .tail{transform-origin:186px 130px}
+#petroom .mio .tail-n{animation:prMioTail 3.4s ease-in-out infinite}
+@keyframes prMioTail{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(4deg)}}
+#petroom .mio .brow,#petroom .mio .eye,#petroom .mio .mouth,
+#petroom .mio .sym,#petroom .mio .cheek,#petroom .mio .cheekPink,
+#petroom .mio .handMic,#petroom .mio .mud,#petroom .mio .tail{transition:opacity .14s ease}
+#petroom .mio .hands circle,#petroom .mio .shoes rect{transition:transform .2s ease}
+
+/* ===== 六個表情：平常 / 生氣 / 看到美食 / 安慰別人 / 發表政見 / 髒了想洗澡 =====
+   身體與馬尾路徑共用，每個表情只換眉、眼、嘴、頭頂符號、手位置、色系。 */
+#petroom .mio[data-e] .brow-normal,#petroom .mio[data-e] .eye-normal,
+#petroom .mio[data-e] .mouth-line{opacity:0}
+#petroom .mio[data-e="normal"] .brow-normal,#petroom .mio[data-e="normal"] .eye-normal,
+#petroom .mio[data-e="normal"] .mouth-line{opacity:1}
+
+#petroom .mio[data-e="angry"] .brow-angry,#petroom .mio[data-e="angry"] .eye-angry,
+#petroom .mio[data-e="angry"] .mouth-red,#petroom .mio[data-e="angry"] .sym-anger,
+#petroom .mio[data-e="angry"] .cheek{opacity:1}
+#petroom .mio[data-e="angry"] .tail-n{opacity:0}
+#petroom .mio[data-e="angry"] .tail-a{opacity:1; animation:prMioRage .26s ease-in-out infinite}
+@keyframes prMioRage{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+#petroom .mio[data-e="angry"] .hands circle{transform:translateY(-8px)}
+#petroom .mio[data-e="angry"] .sym-anger{animation:prMioPop .5s ease-in-out infinite}
+@keyframes prMioPop{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+#petroom .mio[data-e="yum"] .brow-flat,#petroom .mio[data-e="yum"] .eye-yum,
+#petroom .mio[data-e="yum"] .mouth-yum,#petroom .mio[data-e="yum"] .sym-star,
+#petroom .mio[data-e="yum"] .cheekPink{opacity:1}
+#petroom .mio[data-e="yum"] .sym-star{animation:prMioTwinkle .9s ease-in-out infinite}
+@keyframes prMioTwinkle{0%,100%{opacity:1}50%{opacity:.35}}
+
+#petroom .mio[data-e="kind"] .brow-kind,#petroom .mio[data-e="kind"] .eye-kind,
+#petroom .mio[data-e="kind"] .mouth-up,#petroom .mio[data-e="kind"] .sym-note{opacity:1}
+#petroom .mio[data-e="kind"] .handR{transform:translate(2px,14px)}
+#petroom .mio[data-e="kind"] .sym-note{animation:prMioFloat 2.4s ease-in-out infinite}
+@keyframes prMioFloat{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-14px);opacity:.2}}
+
+#petroom .mio[data-e="speech"] .brow-speech,#petroom .mio[data-e="speech"] .eye-speech,
+#petroom .mio[data-e="speech"] .mouth-red,#petroom .mio[data-e="speech"] .sym-wave,
+#petroom .mio[data-e="speech"] .handMic{opacity:1}
+#petroom .mio[data-e="speech"] .handR{opacity:0}
+#petroom .mio[data-e="speech"] .sym-wave{animation:prMioSonic 1s ease-out infinite}
+@keyframes prMioSonic{0%{opacity:.15;transform:translateX(4px)}60%{opacity:.9}100%{opacity:.15;transform:translateX(-3px)}}
+
+#petroom .mio[data-e="dirty"] .brow-sad,#petroom .mio[data-e="dirty"] .eye-sad,
+#petroom .mio[data-e="dirty"] .mouth-wave,#petroom .mio[data-e="dirty"] .sym-sweat,
+#petroom .mio[data-e="dirty"] .mud{opacity:1}
+#petroom .mio[data-e="dirty"] .mioFit{filter:saturate(.55) brightness(.92)}
+#petroom .mio[data-e="dirty"] .tail path:first-child{stroke:#B08FC4}
+#petroom .mio[data-e="dirty"] .shoes rect{fill:#D9C48A}
+#petroom .mio[data-e="dirty"] .hands circle{fill:#B08FC4; transform:translateY(8px)}
+#petroom .mio[data-e="dirty"] .ink{opacity:.25}
+#petroom .mio[data-e="dirty"] .sym-sweat{animation:prMioDrip 1.6s ease-in-out infinite}
+@keyframes prMioDrip{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(3px);opacity:.5}}
+
+#petroom .mio[data-s="speak"] .all{animation:prMioSpeak .5s ease-in-out 5}
+#petroom .mio[data-s="run"] .shoeL{animation:prMioStep .18s ease-in-out 9}
+#petroom .mio[data-s="run"] .shoeR{animation:prMioStep .18s ease-in-out 9 reverse}
+#petroom .mio[data-s="comfort"] .all{animation:prMioLean 1.2s ease-in-out 2}
+#petroom .mio[data-s="wash"] .all{animation:prMioShake .22s ease-in-out 8}
+@keyframes prMioShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+#petroom .mio[data-s="sleep"] .all{animation:prLie 1s ease-out forwards}
+#petroom .mio[data-s="sleep"] .tail-n{animation:none; transform:rotate(-16deg)}
+
+/* 她的自發粒子是彩虹音符 */
+#petroom .amb-note{width:11px; height:11px; background:#FF6FD8;
+  clip-path:polygon(38% 0,100% 0,100% 16%,52% 16%,52% 74%,38% 88%,8% 96%,0 78%,20% 62%,38% 66%);
+  animation:ambUp 2.4s ease-out forwards}
+
 @media (prefers-reduced-motion:reduce){#petroom *{animation:none !important; transition:none !important}}
+
+  /* ===== 錯題本 ===== */
+  #wrongBook{text-align:left;margin:14px 0 16px}
+  #wrongBook .wb-title{font-size:14px;color:var(--gold);margin-bottom:8px}
+  #wrongBook .wb-none{font-size:13px;color:var(--green);text-align:center;padding:10px 0 4px}
+  #wrongBook .wb-item{background:rgba(255,255,255,.04);border:1px solid var(--line);
+    border-left:3px solid var(--red);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+  #wrongBook .wb-q{font-size:13.5px;line-height:1.6;color:var(--text);display:flex;gap:8px}
+  #wrongBook .wb-no{flex:0 0 auto;width:19px;height:19px;border-radius:50%;
+    background:var(--red);color:#fff;font-size:11px;display:flex;align-items:center;
+    justify-content:center;margin-top:2px}
+  #wrongBook .wb-cat{font-size:11px;color:var(--muted);margin:4px 0 6px 27px}
+  #wrongBook .wb-a{font-size:13px;color:var(--green);margin-left:27px}
+  #wrongBook .wb-a b{font-size:14px}
+  #wrongBook .wb-w{font-size:12px;color:var(--red);margin:2px 0 0 27px}
+  #wrongBook .wb-h{font-size:12px;color:var(--muted);line-height:1.7;margin:6px 0 0 27px;
+    padding-top:6px;border-top:1px dashed var(--line)}
+  #wrongBook .wb-foot{font-size:11.5px;color:var(--muted);text-align:center;margin-top:10px}
 
 /* ===== 寵物室精簡版面（手機/電腦都更短）===== */
 #petroom{max-width:900px}
@@ -460,12 +549,28 @@
 
 /* ===== 寵物房釘在上方＋再縮小（點下面按鈕也看得到寵物反應）===== */
 #petroom .pr-stage{position:sticky; top:6px; z-index:5; box-shadow:0 8px 18px rgba(0,0,0,.42)}
-#petroom .pr-pets{padding:12px 8px 10px; gap:2px}
-#petroom .pr-pet svg{width:80px}
-#petroom .pr-pet.pr-main svg{width:100px}
+/* 跳躍與升級放大會超出舞台上緣。用 clip-margin 讓它可以外溢，
+   不支援的瀏覽器會退回成裁切，所以上方留白也一起加大。 */
+#petroom .pr-stage{overflow:clip; overflow-clip-margin:36px}
+#petroom .pr-pets{padding:24px 6px 10px; gap:2px}
+#petroom .pr-pet svg{width:68px}
+#petroom .pr-pet.pr-main svg{width:104px}
 #petroom .pr-tag{font-size:10.5px}
 #petroom .pr-grid{grid-template-columns:repeat(auto-fit,minmax(228px,1fr)); gap:9px}
 #petroom .pr-panel{padding:10px 12px}
+
+/* ===== 版面收窄：整個寵物室維持單欄閱讀寬度，不要橫向散開 ===== */
+#petroom{max-width:660px; margin:0 auto}
+
+/* ===== 預設只顯示主寵的照顧面板，其他收起來 =====
+   面板一多，餵食區就會被推到看不見的地方。 */
+#petroom .pr-panel{display:none}
+#petroom .pr-panel.pr-on{display:block}
+#petroom.pr-allpanels .pr-panel{display:block}
+#petroom #prPanelToggle{background:var(--pr-card2); border:1px solid var(--pr-line);
+  color:var(--pr-txt2); border-radius:9px; padding:6px 12px; font-size:12px;
+  cursor:pointer; font-family:inherit; margin:0 0 10px}
+#petroom #prPanelToggle:hover{border-color:#3A5266; color:var(--pr-txt)}
 </style>
 </head>
 <body>
@@ -481,7 +586,7 @@
     <div class="row" style="gap:6px">
       <div class="chip chip-pts">⭐ 點數 <b id="uiCoins">0</b></div>
       <div class="chip chip-coin">🪙 金幣 <b id="uiGold">0</b></div>
-      <div class="chip chip-stam">⚡ 體力 <b id="uiStam">5</b></div>
+      <div class="chip chip-stam">⚡ 今日遊戲 <b id="uiStam">15</b> 次</div>
       <button class="btn btn-ghost btn-sm" onclick="openParent()">🔒</button>
     </div>
   </div>
@@ -515,7 +620,7 @@
   <main id="view-study" class="panel">
     <div id="studyHall">
       <h3 style="margin-bottom:4px">📍 選擇你想挑戰的主題</h3>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:12px">每組 10 題完賽 +50 點。答對：基礎 +10、進階 +15、挑戰 +20 並掉 🪙 金幣。不確定就先玩「我還只是個孩子」穩穩賺！完成一組還能幫寵物恢復 1 點體力。　注意：一組累計答錯超過 3 題會開始倒扣點數、並取消完賽獎勵，先讀清楚再作答。</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px">每組 10 題完賽 +50 點。答對：基礎 +10、進階 +15、挑戰 +20 並掉 🪙 金幣。不確定就先玩「我還只是個孩子」穩穩賺！完成一組還能讓三個小遊戲各多 1 次。　注意：一組累計答錯超過 3 題會開始倒扣點數、並取消完賽獎勵，先讀清楚再作答。</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
         <button class="topic-card" onclick="startTopic('綜合隨機')">🎲 綜合隨機<br><span class="tc-badge">全題庫・完賽 +50</span></button>
         <button class="topic-card" onclick="startTopic('我還只是個孩子')" style="border-color:var(--green)">🧒 我還只是個孩子<br><span class="tc-badge" style="color:var(--green)">基礎題・穩穩賺</span></button>
@@ -550,8 +655,10 @@
       </div>
     </div>
     <div id="studyResult" class="hide" style="text-align:center;padding:24px 16px">
+      <div id="wrongBookMount"></div>
       <h2 style="color:var(--gold)">🎉 單元完成！</h2>
       <div id="resultText" style="margin:16px 0;font-size:16px;line-height:1.8"></div>
+      <div id="wrongBook"></div>
       <button class="btn btn-gold full" style="padding:14px;font-size:16px" onclick="claimAndHall()">領取獎勵並返回大廳</button>
     </div>
   </main>
@@ -575,6 +682,7 @@
   <button class="pr-chip" data-main="dog" aria-pressed="false">賽車狗阿酷</button>
   <button class="pr-chip" data-main="man" aria-pressed="false">阿饅</button>
   <button class="pr-chip" data-main="slp" aria-pressed="false">阿拖</button>
+  <button class="pr-chip" data-main="mio" aria-pressed="false">音音美代子</button>
   <button class="pr-chip pr-hide" id="pr-lamp" aria-pressed="true" style="margin-left:auto">星砂主燈 開</button>
   <button class="pr-chip pr-hide" id="pr-feedall">一鍵餵食</button>
 </div>
@@ -770,6 +878,18 @@
     <ellipse cx="44" cy="116" rx="6.5" ry="3.6" fill="#F0A0A0" opacity=".65"/>
     <ellipse cx="106" cy="116" rx="6.5" ry="3.6" fill="#F0A0A0" opacity=".65"/>
     <path class="mouth" d="M66 120q9 4 18 0" fill="none" stroke="#33302B" stroke-width="2.6" stroke-linecap="round" transform="rotate(180 75 121)"/>
+    <!-- 造型：暖暖圍巾（預設隱藏）-->
+    <g class="gear-scarf" opacity="0">
+      <path d="M34 134 Q75 150 116 134 L116 142 Q75 158 34 142 Z" fill="#E8734D" stroke="#B4502F" stroke-width="1.3"/>
+      <path d="M101 140 l6 19 l9 -3 l-5 -18 z" fill="#E8734D" stroke="#B4502F" stroke-width="1.3"/>
+      <path d="M40 138 h70" stroke="#F6A986" stroke-width="1.6" opacity=".7"/>
+    </g>
+    <!-- 造型：毛球毛帽（預設隱藏）-->
+    <g class="gear-hat" opacity="0">
+      <path d="M40 76 Q40 48 75 46 Q110 48 110 76 Z" fill="#6FA8C8" stroke="#42708C" stroke-width="1.5"/>
+      <rect x="37" y="72" width="76" height="9" rx="4.5" fill="#8FC4DE" stroke="#42708C" stroke-width="1.3"/>
+      <circle cx="75" cy="42" r="6.5" fill="#D6ECF7" stroke="#42708C" stroke-width="1.3"/>
+    </g>
   </g>
 </g>
 </svg>
@@ -804,12 +924,217 @@
       <circle cx="81.5" cy="93" r="3" fill="#1E2A3A"/>
       <circle cx="95.5" cy="93" r="3" fill="#1E2A3A"/>
     </g>
+    <!-- 造型：咬咬環（預設隱藏，在他嘴邊）-->
+    <g class="gear-chew" opacity="0">
+      <circle cx="24" cy="126" r="10" fill="none" stroke="#FF8FB0" stroke-width="5.5"/>
+      <circle cx="24" cy="126" r="10" fill="none" stroke="#FFD24A" stroke-width="2" stroke-dasharray="4 5"/>
+    </g>
+    <!-- 造型：探險頭巾（預設隱藏）-->
+    <g class="gear-bandana" opacity="0">
+      <path d="M58 102 L90 84 L120 102 L117 108 L90 91 L61 108 Z" fill="#2EC27E" stroke="#1E8A58" stroke-width="1.3"/>
+      <circle cx="72" cy="98" r="1.7" fill="#EAFBF3"/><circle cx="90" cy="92" r="1.7" fill="#EAFBF3"/><circle cx="106" cy="98" r="1.7" fill="#EAFBF3"/>
+    </g>
     <g class="growx"></g>
     <text x="102" y="128" font-size="11" fill="#7A8CA0" font-family="sans-serif" opacity=".9">27</text>
   </g>
 </g>
 </svg>
       <div class="pr-tag">拖鞋鯊 阿拖</div>
+    </div>
+
+    <div class="pr-pet" id="pr-p-mio" data-pet="mio">
+      <svg class="mio" data-s="idle" data-e="normal" width="146" height="168" viewBox="0 0 150 170" role="img" aria-label="音音美代子" xmlns="http://www.w3.org/2000/svg">
+      <g class="all">
+      <ellipse cx="75" cy="156" rx="40" ry="7" fill="#000" opacity=".2"/>
+      <g class="mioFit" transform="translate(-57 -22.8) scale(0.7709)">
+      <defs>
+      <linearGradient id="miBody" gradientUnits="userSpaceOnUse" x1="120" y1="212" x2="200" y2="96">
+      <stop offset="0%" stop-color="#6EE7C8"/>
+      <stop offset="45%" stop-color="#C77DFF"/>
+      <stop offset="100%" stop-color="#FFB0E8"/>
+      </linearGradient>
+      </defs>
+      <g class="tail tail-n">
+      <path d="M185 130 C197 100 191 74 203 60 C217 46 237 54 235 72 C233 88 211 94 199 84"
+      fill="none" stroke="#C77DFF" stroke-width="10" stroke-linecap="round"/>
+      <path d="M187 126 C197 102 193 80 203 66"
+      fill="none" stroke="#FFD84D" stroke-width="3.5" stroke-linecap="round" opacity="0.75"/>
+      </g>
+      <g class="tail tail-a" opacity="0">
+      <path d="M185 122 C197 90 191 62 203 48 C217 34 237 42 235 60 C233 76 211 82 199 72"
+      fill="none" stroke="#C77DFF" stroke-width="10" stroke-linecap="round"/>
+      <path d="M187 118 C197 92 193 68 203 54"
+      fill="none" stroke="#FFD84D" stroke-width="3.5" stroke-linecap="round" opacity="0.75"/>
+      </g>
+      <path d="M155 96 C179 96 189 118 187 146 C185 170 194 192 200 202
+      Q181 212 163 202 Q145 212 126 202 C132 192 122 170 120 146 C118 118 131 96 155 96 Z"
+      fill="#C77DFF"/>
+      <path class="bodyPath" d="M155 96 C179 96 189 118 187 146 C185 170 194 192 200 202
+      Q181 212 163 202 Q145 212 126 202 C132 192 122 170 120 146 C118 118 131 96 155 96 Z"
+      fill="url(#miBody)" stroke="#2B1B4D" stroke-width="1.5"/>
+      <ellipse class="ink" cx="140" cy="124" rx="20" ry="13" fill="#FF7AD9" opacity="0.12"/>
+      <ellipse class="ink" cx="168" cy="170" rx="18" ry="14" fill="#6EE7C8" opacity="0.13"/>
+      <g class="mud" opacity="0">
+      <ellipse cx="136" cy="186" rx="11" ry="6" fill="#8B7355" opacity="0.5"/>
+      <ellipse cx="160" cy="194" rx="9" ry="5" fill="#8B7355" opacity="0.5"/>
+      <ellipse cx="177" cy="182" rx="8" ry="4.6" fill="#8B7355" opacity="0.5"/>
+      </g>
+      <g class="bow">
+      <ellipse cx="180" cy="120" rx="8" ry="6" fill="#FFD84D" stroke="#2B1B4D" stroke-width="1.2"/>
+      <ellipse cx="196" cy="114" rx="8" ry="6" fill="#FFD84D" stroke="#2B1B4D" stroke-width="1.2"/>
+      <circle cx="188" cy="118" r="3.5" fill="#FF7AD9" stroke="#2B1B4D" stroke-width="1"/>
+      </g>
+      <g class="brow brow-normal">
+      <path d="M134 124 L150 131" fill="none" stroke="#2B1B4D" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M176 124 L160 131" fill="none" stroke="#2B1B4D" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+      <g class="brow brow-angry" opacity="0">
+      <path d="M132 119 L152 132" fill="none" stroke="#2B1B4D" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M178 119 L158 132" fill="none" stroke="#2B1B4D" stroke-width="5.5" stroke-linecap="round"/>
+      </g>
+      <g class="brow brow-flat" opacity="0">
+      <path d="M134 126 L150 126" fill="none" stroke="#2B1B4D" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M176 126 L160 126" fill="none" stroke="#2B1B4D" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+      <g class="brow brow-kind" opacity="0">
+      <path d="M133 129 Q142 122 151 128" fill="none" stroke="#2B1B4D" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
+      <path d="M177 129 Q168 122 159 128" fill="none" stroke="#2B1B4D" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>
+      </g>
+      <g class="brow brow-speech" opacity="0">
+      <path d="M133 121 L151 130" fill="none" stroke="#2B1B4D" stroke-width="2.8" stroke-linecap="round"/>
+      <path d="M177 121 L159 130" fill="none" stroke="#2B1B4D" stroke-width="2.8" stroke-linecap="round"/>
+      </g>
+      <g class="brow brow-sad" opacity="0">
+      <path d="M133 125 L150 129" fill="none" stroke="#2B1B4D" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>
+      <path d="M177 125 L160 129" fill="none" stroke="#2B1B4D" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>
+      </g>
+      <g class="eye eye-normal">
+      <ellipse cx="143" cy="139" rx="6" ry="7" fill="#2B1B4D"/>
+      <ellipse cx="167" cy="139" rx="6" ry="7" fill="#2B1B4D"/>
+      <circle cx="145" cy="136" r="2" fill="#FFF3B0"/>
+      <circle cx="169" cy="136" r="2" fill="#FFF3B0"/>
+      </g>
+      <g class="eye eye-angry" opacity="0">
+      <ellipse cx="143" cy="139" rx="7.5" ry="3.2" fill="#2B1B4D"/>
+      <ellipse cx="167" cy="139" rx="7.5" ry="3.2" fill="#2B1B4D"/>
+      </g>
+      <g class="eye eye-yum" opacity="0">
+      <path d="M143 130l2.6 5.6 5.6 2.6-5.6 2.6-2.6 5.6-2.6-5.6-5.6-2.6 5.6-2.6z" fill="#FFF3B0"/>
+      <path d="M167 130l2.6 5.6 5.6 2.6-5.6 2.6-2.6 5.6-2.6-5.6-5.6-2.6 5.6-2.6z" fill="#FFF3B0"/>
+      </g>
+      <g class="eye eye-kind" opacity="0">
+      <path d="M136 141q7-9 14 0" fill="none" stroke="#2B1B4D" stroke-width="3.4" stroke-linecap="round"/>
+      <path d="M160 141q7-9 14 0" fill="none" stroke="#2B1B4D" stroke-width="3.4" stroke-linecap="round"/>
+      </g>
+      <g class="eye eye-speech" opacity="0">
+      <path d="M136 139h14" fill="none" stroke="#2B1B4D" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M160 139h14" fill="none" stroke="#2B1B4D" stroke-width="3.2" stroke-linecap="round"/>
+      </g>
+      <g class="eye eye-sad" opacity="0">
+      <path d="M136 136q7 9 14 0" fill="none" stroke="#2B1B4D" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M160 136q7 9 14 0" fill="none" stroke="#2B1B4D" stroke-width="3.2" stroke-linecap="round"/>
+      </g>
+      <g class="cheek" opacity="0">
+      <ellipse cx="131" cy="150" rx="7" ry="4.2" fill="#FF4D5E" opacity=".45"/>
+      <ellipse cx="179" cy="150" rx="7" ry="4.2" fill="#FF4D5E" opacity=".45"/>
+      </g>
+      <g class="cheekPink" opacity="0">
+      <ellipse cx="131" cy="150" rx="7" ry="4.2" fill="#FF8FB0" opacity=".55"/>
+      <ellipse cx="179" cy="150" rx="7" ry="4.2" fill="#FF8FB0" opacity=".55"/>
+      </g>
+      <g class="mouth mouth-line">
+      <path d="M147 156 L163 156" fill="none" stroke="#2B1B4D" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <g class="mouth mouth-red" opacity="0">
+      <ellipse cx="155" cy="158" rx="9" ry="7.5" fill="#FF4D5E" stroke="#2B1B4D" stroke-width="1.4"/>
+      </g>
+      <g class="mouth mouth-yum" opacity="0">
+      <ellipse cx="155" cy="157" rx="10" ry="7" fill="#2B1B4D"/>
+      <path d="M148 159q7 7 14 0q-7 3-14 0z" fill="#FF8FB0"/>
+      <path d="M163 163q3 5 0 8q-3-3 0-8z" fill="#7ED9F0"/>
+      </g>
+      <g class="mouth mouth-up" opacity="0">
+      <path d="M148 155q7 6 14 0" fill="none" stroke="#2B1B4D" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <g class="mouth mouth-wave" opacity="0">
+      <path d="M147 157q4-4 8 0t8 0" fill="none" stroke="#2B1B4D" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <g class="sym sym-anger" opacity="0">
+      <path d="M150 106h12M156 100v12" stroke="#FF4D5E" stroke-width="3.4" stroke-linecap="round"/>
+      <path d="M168 100h9M172.5 95.5v9" stroke="#FF4D5E" stroke-width="2.6" stroke-linecap="round" opacity=".85"/>
+      </g>
+      <g class="sym sym-star" opacity="0">
+      <path d="M132 104l2.4 5 5 2.4-5 2.4-2.4 5-2.4-5-5-2.4 5-2.4z" fill="#FFD84D"/>
+      <path d="M176 98l2 4.2 4.2 2-4.2 2-2 4.2-2-4.2-4.2-2 4.2-2z" fill="#FFD84D" opacity=".9"/>
+      </g>
+      <g class="sym sym-note" opacity="0">
+      <g transform="translate(128,96)">
+      <ellipse cx="0" cy="10" rx="4.4" ry="3.4" fill="#FF7AD9" transform="rotate(-18)"/>
+      <path d="M4 9V0" stroke="#FF7AD9" stroke-width="2"/>
+      </g>
+      <g transform="translate(178,90)">
+      <ellipse cx="0" cy="9" rx="4" ry="3" fill="#6EE7C8" transform="rotate(-18)"/>
+      <path d="M3.6 8V0" stroke="#6EE7C8" stroke-width="1.8"/>
+      </g>
+      </g>
+      <g class="sym sym-wave" opacity="0">
+      <path d="M112 132q-9 12 0 24" fill="none" stroke="#C77DFF" stroke-width="3" stroke-linecap="round" opacity=".85"/>
+      <path d="M109 126q-13 18 0 36" fill="none" stroke="#C77DFF" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>
+      </g>
+      <g class="sym sym-sweat" opacity="0">
+      <path d="M176 112q4 6 0 9q-4-3 0-9z" fill="#7ED9F0"/>
+      <path d="M132 108q3.4 5 0 7.6q-3.4-2.6 0-7.6z" fill="#7ED9F0" opacity=".85"/>
+      </g>
+      <g class="hands">
+      <circle class="handL" cx="112" cy="172" r="9" fill="#C77DFF" stroke="#2B1B4D" stroke-width="1.5"/>
+      <circle class="handR" cx="198" cy="172" r="9" fill="#C77DFF" stroke="#2B1B4D" stroke-width="1.5"/>
+      </g>
+      <g class="handMic" opacity="0">
+      <circle cx="212" cy="104" r="9" fill="#C77DFF" stroke="#2B1B4D" stroke-width="1.5"/>
+      <rect x="208" y="86" width="8" height="16" rx="4" fill="#8FA2B5" stroke="#2B1B4D" stroke-width="1"/>
+      <circle cx="212" cy="82" r="7" fill="#FFD84D" stroke="#2B1B4D" stroke-width="1.2"/>
+      <circle cx="210" cy="80" r="2" fill="#FFFFFF" opacity=".8"/>
+      </g>
+      <g class="shoes">
+      <g class="shoeL">
+      <rect x="128" y="221" width="29" height="5.5" rx="2.7" fill="#FFFFFF" stroke="#2B1B4D" stroke-width="1"/>
+      <path d="M129 214 Q129 210 134 210 L152 210 Q157 210 157 216 L157 221 L129 221 Z" fill="#FFD84D" stroke="#2B1B4D" stroke-width="1.5"/>
+      <path d="M135 214h11M135 217h11" stroke="#FF7AD9" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M150 210 Q156 213 155 220" fill="none" stroke="#6EE7C8" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <g class="shoeR">
+      <rect x="161" y="221" width="29" height="5.5" rx="2.7" fill="#FFFFFF" stroke="#2B1B4D" stroke-width="1"/>
+      <path d="M162 214 Q162 210 167 210 L185 210 Q190 210 190 216 L190 221 L162 221 Z" fill="#FFD84D" stroke="#2B1B4D" stroke-width="1.5"/>
+      <path d="M168 214h11M168 217h11" stroke="#FF7AD9" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M183 210 Q189 213 188 220" fill="none" stroke="#6EE7C8" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      </g>
+      <!-- 造型：高級路跑鞋（螢光粉底＋薄荷綠鞋帶），預設隱藏 -->
+      <g class="shoe-run" opacity="0">
+      <rect x="130" y="212" width="26" height="14" rx="7" fill="#FF7AD9" stroke="#2B1B4D" stroke-width="1.5"/>
+      <rect x="162" y="212" width="26" height="14" rx="7" fill="#FF7AD9" stroke="#2B1B4D" stroke-width="1.5"/>
+      <path d="M134 218h18" stroke="#6EE7C8" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M166 218h18" stroke="#6EE7C8" stroke-width="2.6" stroke-linecap="round"/>
+      </g>
+      <!-- 造型：登山鞋（深棕厚底＋黃色鞋帶），預設隱藏 -->
+      <g class="shoe-hike" opacity="0">
+      <rect x="129" y="221" width="28" height="5" rx="2.5" fill="#4A2E18"/>
+      <rect x="161" y="221" width="28" height="5" rx="2.5" fill="#4A2E18"/>
+      <rect x="130" y="210" width="26" height="12" rx="4" fill="#7A4B2A" stroke="#2B1B4D" stroke-width="1.5"/>
+      <rect x="162" y="210" width="26" height="12" rx="4" fill="#7A4B2A" stroke="#2B1B4D" stroke-width="1.5"/>
+      <path d="M134 215h18" stroke="#FFD84D" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M166 215h18" stroke="#FFD84D" stroke-width="2.2" stroke-linecap="round"/>
+      </g>
+      <!-- 造型：運動汗帶（粉紫帶＋白邊），預設隱藏 -->
+      <g class="gear-band" opacity="0">
+      <path d="M126 120 Q154 111 182 119 L182 113 Q154 104 126 113 Z" fill="#C77DFF" stroke="#2B1B4D" stroke-width="1"/>
+      <path d="M129 115 Q154 108 179 115" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.8"/>
+      </g>
+      <g class="growx"></g>
+      </g>
+      </g>
+      </svg>
+      <div class="pr-tag">音音美代子</div>
     </div>
 
   </div>
@@ -838,12 +1163,12 @@
   <main id="view-games" class="panel hide">
     <div style="margin-bottom:10px">
       <h3>🎮 臨場小遊戲</h3>
-      <p style="font-size:12px;color:var(--muted);margin-top:2px">三個遊戲都要花點數門票＋1 體力（圈叉一張票可玩 3 局）。體力每天 5 點，完成一組 10 題測驗可回 1 點、家長也能補。贏了拿 🪙 金幣，點數只能靠做題賺。猜拳搬到「寵物養成記」免費玩。</p>
+      <p style="font-size:12px;color:var(--muted);margin-top:2px">三個遊戲都不用花點數，改成每個遊戲每天各有 5 次，三個各自算、不共用。完成一組 10 題測驗三個遊戲各多 1 次（各自最多 8 次），家長也能補。圈圈叉叉一次可以連玩 3 局。贏了拿 🪙 金幣，點數還是只能靠做題賺。猜拳搬到「寵物養成記」免費玩，不算次數。</p>
     </div>
     <div id="gamesMenu" class="game-menu">
-      <div class="game-card" onclick="openGame('race')"><span class="ic">🏎️</span><b>極速賽車</b><small>門票 20 點＋1 體力・可改裝升級</small></div>
-      <div class="game-card" onclick="openGame('ttt')"><span class="ic">❌</span><b>圈圈叉叉</b><small>門票 15 點・可玩 3 局・雙倍金幣格</small></div>
-      <div class="game-card" onclick="openGame('mem')"><span class="ic">🃏</span><b>記憶翻翻樂</b><small>門票 15 點＋1 體力・選張數</small></div>
+      <div class="game-card" id="gc-race" onclick="openGame('race')"><span class="ic">🏎️</span><b>極速賽車</b><small>免費・今天還有 5 次・可改裝升級</small></div>
+      <div class="game-card" id="gc-ttt" onclick="openGame('ttt')"><span class="ic">❌</span><b>圈圈叉叉</b><small>免費・今天還有 5 次・可連玩 3 局</small></div>
+      <div class="game-card" id="gc-mem" onclick="openGame('mem')"><span class="ic">🃏</span><b>記憶翻翻樂</b><small>免費・今天還有 5 次・選張數</small></div>
     </div>
     <div id="gameArea" class="quiz-card hide" style="margin-top:12px;position:relative"></div>
   </main>
@@ -889,7 +1214,7 @@
         </div>
         <div class="row" style="gap:6px">
           <button class="btn btn-gold btn-sm" style="flex:1" onclick="parentAddCoins()">➕ 自訂點數</button>
-          <button class="btn btn-primary btn-sm" style="flex:1" onclick="parentAddStamina()">⚡ 補體力</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="parentAddStamina()">⚡ 補遊戲次數</button>
           <button class="btn btn-primary btn-sm" style="flex:1" onclick="testFill()">🧪 一鍵補滿</button>
         </div>
       </div>
@@ -919,7 +1244,60 @@ function shuffleArray(array){let arr=array.slice();for(let i=arr.length-1;i>0;i-
 
 /* ================= 經濟與寵物設定 ================= */
 const ECON={qCorrect:10,qHard:15,setBonus:50,staminaDaily:5,staminaCap:8,
-  ticket:{race:20,rps:15,ttt:15,mem:15}};
+  ticket:{race:0,rps:0,ttt:0,mem:0}};
+
+/* ===== 小遊戲：不用點數門票，改成每個遊戲各自有每日次數 =====
+   三個遊戲各自算，互不共用。每天各 PLAYS_BASE 次，
+   完成一組 10 題測驗三個各 +1，各自最多累積到 PLAYS_CAP。 */
+const PLAYS_BASE=5, PLAYS_CAP=8;
+const PLAY_KINDS=["race","ttt","mem"];
+const PLAY_NAME={race:"極速賽車",ttt:"圈圈叉叉",mem:"記憶翻翻樂"};
+function playsObj(){
+  var t=getTodayStr();
+  if(!SAVE.plays||SAVE.plays.date!==t){
+    SAVE.plays={date:t,race:PLAYS_BASE,ttt:PLAYS_BASE,mem:PLAYS_BASE};
+  }
+  PLAY_KINDS.forEach(function(k){
+    if(typeof SAVE.plays[k]!=="number")SAVE.plays[k]=PLAYS_BASE;
+  });
+  return SAVE.plays;
+}
+function playsLeft(kind){
+  var p=playsObj();
+  if(!kind)return PLAY_KINDS.reduce(function(a,k){return a+p[k];},0);
+  return p[kind]||0;
+}
+function needPlay(kind){
+  if(playsLeft(kind)<=0){
+    toast(PLAY_NAME[kind]+"今天的次數用完了！完成一組 10 題測驗可以多一次。");
+    return false;
+  }
+  return true;
+}
+function usePlay(kind){
+  var p=playsObj();
+  p[kind]=Math.max(0,(p[kind]||0)-1);
+  persist();updateTop();
+}
+function addPlays(n){
+  var p=playsObj();
+  PLAY_KINDS.forEach(function(k){p[k]=Math.min(PLAYS_CAP,(p[k]||0)+n);});
+  persist();updateTop();
+}
+function renderGamesMenu(){
+  var p=playsObj();
+  var note={race:"可改裝升級",ttt:"可連玩 3 局",mem:"選張數"};
+  PLAY_KINDS.forEach(function(k){
+    var el=document.getElementById("gc-"+k);
+    if(!el)return;
+    var left=p[k]||0;
+    var sm=el.querySelector("small");
+    if(sm)sm.innerHTML=(left>0
+      ? '免費・今天還有 <b style="color:var(--gold)">'+left+'</b> 次・'+note[k]
+      : '<span style="color:var(--red)">今天次數用完了</span>・答一組題可以多一次');
+    el.classList.toggle("gc-out",left<=0);
+  });
+}
 const PETDEF={
   seahorse:{name:"夢幻海馬",cost:500,desc:"浮游系・紫貝捲尾"},
   burger:{name:"漢堡方塊",cost:800,desc:"疊層系・呆萌"},
@@ -961,6 +1339,7 @@ function norm(s){
   const today=getTodayStr();
   if(!s.stamina||s.stamina.date!==today)s.stamina={date:today,val:ECON.staminaDaily};
   if(!s.rps||s.rps.date!==today)s.rps={date:today,count:0};
+  if(!s.plays||s.plays.date!==today)s.plays={date:today,race:5,ttt:5,mem:5};
   if(!s.todayData||s.todayData.date!==today){s.todayData={date:today,correct:0,wrong:0,skipped:[],wrongList:[]};}
   delete s.pet;
   return s;}
@@ -980,6 +1359,7 @@ function cheer(t){const d=document.createElement("div");d.style.cssText="positio
 function toast(msg){var t=document.getElementById("toastBox");if(!t){t=document.createElement("div");t.id="toastBox";t.className="toast-card";document.body.appendChild(t);}t.innerHTML=(""+msg).replace(/\n/g,"<br>");t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("show");},2800);}
 
 /* ================= 測驗（三狀態機，保留） ================= */
+let unitWrongList=[];
 let isUnitActive=false,studyState="hall",unitCorrect=0,unitWrong=0,unitBonusOK=true;
 function lockChangeChar(lock){const cb=document.getElementById("changeCharBtn");if(cb){cb.disabled=lock;cb.style.opacity=lock?"0.4":"1";}}
 function showHall(){studyState="hall";isUnitActive=false;
@@ -1006,14 +1386,39 @@ function showResult(){studyState="result";isUnitActive=false;hideNextGate();
   document.getElementById("studyQuiz").classList.add("hide");
   document.getElementById("studyResult").classList.remove("hide");
   var txt="本組答對 <b style='color:var(--green)'>"+unitCorrect+"</b> 題、答錯 <b style='color:var(--red)'>"+unitWrong+"</b> 題。<br>";
-  if(unitBonusOK){txt+="表現不錯！完賽加碼 <b style='color:var(--gold)'>+50 點</b>，寵物體力 <b style='color:var(--pink)'>+1</b>";}
-  else{txt+="<span style='color:var(--red)'>累計答錯超過 3 題，取消完賽 +50 點</span>，但寵物體力仍 <b style='color:var(--pink)'>+1</b>，下次讀仔細一點！";}
+  if(unitBonusOK){txt+="表現不錯！完賽加碼 <b style='color:var(--gold)'>+50 點</b>，三個小遊戲各 <b style='color:var(--pink)'>+1 次</b>";}
+  else{txt+="<span style='color:var(--red)'>累計答錯超過 3 題，取消完賽 +50 點</span>，但三個小遊戲仍各 <b style='color:var(--pink)'>+1 次</b>，下次讀仔細一點！";}
   document.getElementById("resultText").innerHTML=txt;
+  renderWrongBook();
   lockChangeChar(false);initAudio();sndGood();}
-function claimAndHall(){if(unitBonusOK){SAVE.coins+=ECON.setBonus;cheer("+50 點！");}SAVE.stamina.val=Math.min(ECON.staminaCap,SAVE.stamina.val+1);persist();updateTop();showHall();}
+
+/* 錯題本：本組答錯的題目、正確答案、解說。給作答的人自己複習用 */
+function renderWrongBook(){
+  var box=document.getElementById("wrongBook");
+  if(!box)return;
+  if(!unitWrongList.length){
+    box.innerHTML='<div class="wb-none">這一組全部答對，沒有錯題。</div>';
+    return;
+  }
+  var h='<div class="wb-title">本組錯題複習（'+unitWrongList.length+' 題）</div>';
+  unitWrongList.forEach(function(it,i){
+    h+='<div class="wb-item">'+
+       '<div class="wb-q"><span class="wb-no">'+(i+1)+'</span>'+esc(it.q)+'</div>'+
+       '<div class="wb-cat">'+esc(it.category)+'</div>'+
+       '<div class="wb-a">正確答案　<b>'+esc(it.a||"")+'</b></div>'+
+       (it.sel?'<div class="wb-w">你選了　'+esc(it.sel)+'</div>':"")+
+       (it.h?'<div class="wb-h">'+esc(it.h)+'</div>':"")+
+       '</div>';
+  });
+  h+='<div class="wb-foot">今天所有的錯題都留在紀錄裡，家長區可以看完整清單。</div>';
+  box.innerHTML=h;
+}
+function esc(t){return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function claimAndHall(){if(unitBonusOK){SAVE.coins+=ECON.setBonus;cheer("+50 點！");}addPlays(1);persist();updateTop();showHall();}
 function isHard(q){return !!(q.hard||(q.grade&&q.grade>=7));}
 function lockOpts(dis){document.querySelectorAll("#qOptions .opt-btn").forEach(function(b){b.disabled=dis;});}
 function loadUnitQuiz(){
+  if(unitIndex===0)unitWrongList=[];
   if(unitIndex>=currentUnitQ.length){showResult();return;}
   const q=currentUnitQ[unitIndex];
   document.getElementById("qSubject").textContent=q.category+(isHard(q)?" ⭐挑戰":"");
@@ -1039,7 +1444,8 @@ function checkAnswer(btnEl){initAudio();const q=currentUnitQ[unitIndex];const se
     if(!SAVE.usedQ.includes(q.id))SAVE.usedQ.push(q.id);persist();updateTop();
     setTimeout(()=>{unitIndex++;loadUnitQuiz();},700);
   }else{btnEl.classList.add("wrong");sndBad();lockOpts(true);SAVE.stats.wrong++;SAVE.todayData.wrong++;unitWrong++;
-    if(!SAVE.todayData.wrongList.some(it=>it.q===q.q))SAVE.todayData.wrongList.push({category:q.category,q:q.q});
+    if(!SAVE.todayData.wrongList.some(it=>it.q===q.q))SAVE.todayData.wrongList.push({category:q.category,q:q.q,a:q.a,h:q.h});
+    unitWrongList.push({category:q.category,q:q.q,a:q.a,h:q.h,sel:sel});
     document.querySelectorAll("#qOptions .opt-btn").forEach(function(b){if(decodeURIComponent(b.getAttribute("data-opt"))===q.a)b.classList.add("correct");});
     var wmsg="正確答案是「"+q.a+"」";
     if(unitWrong>3){SAVE.coins=Math.max(0,SAVE.coins-5);unitBonusOK=false;wmsg+="（本組已錯 "+unitWrong+" 題，倒扣 5 點）";}
@@ -1331,19 +1737,18 @@ function chatGulu(kind){initAudio();beep(680,0.06,"sine",0.06);petReact("main","
   petSpeak(text);const p=activePet();p.mood=Math.min(100,p.mood+3);persist();renderPetScreen();
 }
 
-/* ================= 臨場小遊戲：門票＋體力 ================= */
+/* ================= 臨場小遊戲：免門票，各自限制每日次數 ================= */
 function renderCarUpgrade(){const el=document.getElementById("carUpgradeInfo");if(!el)return;
   el.innerHTML="🔧 <b>引擎 Lv."+SAVE.car.engine+"</b>：每撿到一顆金幣得 <b>"+SAVE.car.engine+"</b> 分（等級越高、同一顆金幣分數越多，越容易贏過對手）。<br>🛞 <b>輪胎 Lv."+SAVE.car.tire+"</b>：轉彎靈敏度，等級越高換車道越快、越好閃紅色障礙。"+((SAVE.car.engine>=3&&SAVE.car.tire>=3)?"<br><span style='color:var(--green)'>✅ 已全滿級！</span>":"");}
 function upgradeCar(type,cost){if(SAVE.car[type]>=3){toast("已經是最高等級了！");return;}if(SAVE.coins<cost){toast("點數不足以升級！");return;}
   SAVE.coins-=cost;SAVE.car[type]++;persist();updateTop();renderCarUpgrade();toast((type==="engine"?"引擎":"輪胎")+"升級成功，現在是 Lv."+SAVE.car[type]+"！");}
-function closeGame(){stopGame();const ga=document.getElementById("gameArea");ga.classList.add("hide");ga.innerHTML="";document.getElementById("gamesMenu").classList.remove("hide");}
+function closeGame(){stopGame();const ga=document.getElementById("gameArea");ga.classList.add("hide");ga.innerHTML="";document.getElementById("gamesMenu").classList.remove("hide");renderGamesMenu();}
 function openGame(kind){const ga=document.getElementById("gameArea");
   if(kind==="race"){document.getElementById("gamesMenu").classList.add("hide");ga.classList.remove("hide");raceIntro(ga);return;}
   if(kind==="mem"){document.getElementById("gamesMenu").classList.add("hide");ga.classList.remove("hide");memSelect(ga);return;}
   if(kind==="ttt"){
-    if(SAVE.stamina.val<=0){toast("寵物今天沒體力了！完成一組 10 題測驗可以恢復體力。");return;}
-    if(SAVE.coins<ECON.ticket.ttt){toast("點數不足（門票 15 點）！快去做題賺點數。");return;}
-    uiConfirm("消耗 15 點＋1 體力，開始圈圈叉叉（一張票可玩 3 局）？",function(){SAVE.coins-=ECON.ticket.ttt;SAVE.stamina.val--;persist();updateTop();document.getElementById("gamesMenu").classList.add("hide");ga.classList.remove("hide");startTtt(ga);});return;}
+    if(!needPlay("ttt"))return;
+    uiConfirm("開始圈圈叉叉？免費，一次可以連玩 3 局，會用掉圈圈叉叉今天 1 次（剩 "+playsLeft("ttt")+" 次）。",function(){usePlay("ttt");document.getElementById("gamesMenu").classList.add("hide");ga.classList.remove("hide");startTtt(ga);});return;}
 }
 function raceIntro(ga){
   ga.innerHTML='<div class="row" style="margin-bottom:8px"><h4>🏎️ 極速賽車</h4><button class="btn btn-ghost btn-sm" onclick="closeGame()">返回</button></div>'+
@@ -1351,13 +1756,12 @@ function raceIntro(ga){
     '<div id="carUpgradeInfo" style="font-size:12px;color:#dbe7ff;line-height:1.7;margin-bottom:8px"></div>'+
     '<div class="row" style="gap:8px"><button class="btn btn-gold btn-sm" style="flex:1" onclick="upgradeCar(\'engine\',100)">⚡ 升級引擎 100點</button>'+
     '<button class="btn btn-primary btn-sm" style="flex:1" onclick="upgradeCar(\'tire\',80)">🛞 升級輪胎 80點</button></div></div>'+
-    '<button class="btn btn-primary full" style="padding:14px;font-size:16px" onclick="raceStart()">🏁 出發飆車！(門票 20 點＋1 體力)</button>';
+    '<button class="btn btn-primary full" style="padding:14px;font-size:16px" onclick="raceStart()">🏁 出發飆車！（免費，用賽車 1 次）</button>';
   renderCarUpgrade();
 }
 function raceStart(){
-  if(SAVE.stamina.val<=0){toast("寵物今天沒體力了！完成一組 10 題測驗可以恢復體力。");return;}
-  if(SAVE.coins<ECON.ticket.race){toast("點數不足（門票 20 點）！快去做題賺點數。");return;}
-  uiConfirm("消耗 20 點＋1 體力，出發飆車嗎？",function(){SAVE.coins-=ECON.ticket.race;SAVE.stamina.val--;persist();updateTop();startRace(document.getElementById("gameArea"));});
+  if(!needPlay("race"))return;
+  uiConfirm("出發飆車嗎？免費，會用掉極速賽車今天 1 次（剩 "+playsLeft("race")+" 次）。",function(){usePlay("race");startRace(document.getElementById("gameArea"));});
 }
 
 /* ---- 賽車：橡皮筋對手 + 失誤救援加秒 ---- */
@@ -1420,7 +1824,7 @@ function endDrive(){var sc=G.score,gd=G.goldTally;var ptsGain=Math.min(sc,15);SA
     '<div class="quiz-card" style="text-align:center">'+
     '<div style="font-size:17px;margin-bottom:8px">積分 <b style="color:var(--gold)">'+sc+'</b> → 換 <b style="color:var(--gold)">+'+ptsGain+'</b> 點<span style="font-size:12px;color:var(--muted)">（積分換點數上限 15）</span></div>'+
     '<div style="font-size:17px">🪙 金幣 <b style="color:var(--green)">'+gd+'</b> → <b style="color:var(--green)">+'+gd+'</b> 金幣入袋</div>'+
-    '<p style="font-size:12px;color:var(--muted);margin-top:10px">門票 20 點，積分最多換回 15 點——想賺就靠撿金幣。撞障礙會扣分，開得穩分數才高。</p>'+
+    '<p style="font-size:12px;color:var(--muted);margin-top:10px">免費進場，積分最多換回 15 點，想賺就靠撿金幣。撞障礙會扣分，開得穩分數才高。</p>'+
     '<div class="row" style="gap:8px;margin-top:14px"><button class="btn btn-primary" style="flex:1" onclick="openGame(\'race\')">🔁 再玩一次</button><button class="btn btn-gold" style="flex:1" onclick="closeGame()">✅ 完成</button></div>'+
     '</div>';}
 
@@ -1523,13 +1927,12 @@ const MEMBTNS='<div class="row" style="gap:8px;margin-top:12px;justify-content:c
 function memBack(){var ga=document.getElementById("gameArea");if(ga)memSelect(ga);}
 function memSelect(ga){
   ga.innerHTML='<div class="row" style="margin-bottom:8px"><h4>🃏 記憶翻翻樂</h4><button class="btn btn-ghost btn-sm" onclick="closeGame()">返回</button></div>'+
-    '<p style="font-size:12px;color:var(--muted);margin-bottom:10px">選張數，30 秒內翻完全部配對就有獎勵！每次消耗 門票 15 點＋1 體力（目前 ⭐'+SAVE.coins+'／⚡'+SAVE.stamina.val+'）。張數越多越難、獎勵越好。</p>'+
+    '<p style="font-size:12px;color:var(--muted);margin-bottom:10px">選張數，30 秒內翻完全部配對就有獎勵！不用花點數，每玩一次用掉記憶翻翻樂今天 1 次（還剩 '+playsLeft("mem")+' 次）。張數越多越難、獎勵越好。</p>'+
     '<div class="tier-grid">'+MEM_TIERS.map(t=>'<div class="tier-card" onclick="memStart('+t.n+')">'+t.n+' 張<small>30秒內 +'+t.pts+'點'+(t.gold?' 🪙+'+t.gold:'')+'</small></div>').join("")+'</div>';
 }
 function memStart(n){
-  if(SAVE.stamina.val<=0){toast("寵物今天沒體力了！完成一組 10 題測驗可以恢復體力。");return;}
-  if(SAVE.coins<15){toast("點數不足（門票 15 點）！快去做題賺點數。");return;}
-  SAVE.coins-=15;SAVE.stamina.val--;persist();updateTop();
+  if(!needPlay("mem"))return;
+  usePlay("mem");
   const tier=MEM_TIERS.find(t=>t.n===n);const pairs=Math.floor(n/2);const odd=(n%2===1);
   let syms=shuffleArray(MEM_SYMS).slice(0,pairs);let cards=syms.concat(syms);
   if(odd)cards.push("⭐");
@@ -1562,7 +1965,8 @@ function switchTab(tab){initAudio();
   if(tab==="pet"){if(window.petroom&&window.petroom.refresh)window.petroom.refresh();}
   if(tab==="treats")renderTreats();}
 function updateTop(){document.getElementById("uiName").textContent=SAVE.name;document.getElementById("uiCoins").textContent=SAVE.coins;
-  document.getElementById("uiGold").textContent=SAVE.gold;document.getElementById("uiStam").textContent=SAVE.stamina.val;
+  document.getElementById("uiGold").textContent=SAVE.gold;document.getElementById("uiStam").textContent=playsLeft();
+  renderGamesMenu();
   const av=document.getElementById("uiAvatar");if(av)av.textContent=SAVE.avatar||"🐱";}
 
 /* 角色建立 */
@@ -1593,7 +1997,7 @@ function ensureParent(){if(parentOK)return true;
   if(!SAVE.pin){const p=prompt("第一次使用家長區，請設定家長密碼：");if(p===null)return false;const v=(""+p).trim();if(!v){toast("密碼不能空白");return false;}SAVE.pin=v;persist();parentOK=true;return true;}
   const inp=prompt("請輸入家長密碼：");if(inp===null)return false;if((""+inp).trim()===SAVE.pin){parentOK=true;return true;}toast("密碼不正確");return false;}
 function openParent(){if(!ensureParent())return;const td=SAVE.todayData;const total=td.correct+td.wrong;const acc=total>0?Math.round(td.correct/total*100):0;
-  document.getElementById("todayOverview").innerHTML="・今日答對：<b style='color:var(--green)'>"+td.correct+" 題</b>｜答錯：<b style='color:var(--red)'>"+td.wrong+" 題</b>｜答對率 <b style='color:var(--primary)'>"+acc+"%</b><br>・累計答對 <b>"+SAVE.stats.correct+"</b> 題｜⭐ <b style='color:var(--gold)'>"+SAVE.coins+" 點</b>｜🪙 <b style='color:var(--green)'>"+SAVE.gold+" 金幣</b>｜⚡ 體力 "+SAVE.stamina.val+"/"+ECON.staminaCap;
+  document.getElementById("todayOverview").innerHTML="・今日答對：<b style='color:var(--green)'>"+td.correct+" 題</b>｜答錯：<b style='color:var(--red)'>"+td.wrong+" 題</b>｜答對率 <b style='color:var(--primary)'>"+acc+"%</b><br>・累計答對 <b>"+SAVE.stats.correct+"</b> 題｜⭐ <b style='color:var(--gold)'>"+SAVE.coins+" 點</b>｜🪙 <b style='color:var(--green)'>"+SAVE.gold+" 金幣</b>｜⚡ 小遊戲 "+playsLeft("race")+"/"+playsLeft("ttt")+"/"+playsLeft("mem")+" 次（賽車/圈叉/記憶）";
   let html="";td.wrongList.forEach(it=>html+='<div class="log-item"><span class="badge-tag badge-wrong">答錯</span>['+it.category+'] '+it.q+'</div>');
   td.skipped.forEach(it=>html+='<div class="log-item"><span class="badge-tag badge-skip">略過</span>['+it.category+'] '+it.q+'</div>');
   document.getElementById("todayLogBox").innerHTML=html||"<div style='color:var(--muted);text-align:center;padding:8px'>今日無錯題與略過紀錄。</div>";
@@ -1604,9 +2008,9 @@ function nowStr(){var d=new Date();function z(n){return (n<10?"0":"")+n;}return 
 function addLog(m){SAVE.log=SAVE.log||[];SAVE.log.unshift({t:nowStr(),m:m});if(SAVE.log.length>60)SAVE.log=SAVE.log.slice(0,60);persist();}
 function renderRedeemLog(){var el=document.getElementById("redeemLog");if(!el)return;var lg=SAVE.log||[];el.innerHTML=lg.length?lg.map(function(e){return '<div class="log-item"><span style="color:var(--muted)">'+e.t+'</span>　'+e.m+'</div>';}).join(""):"<div style='color:var(--muted);text-align:center;padding:8px'>還沒有兌換紀錄。</div>";}
 function quickCoins(n){SAVE.coins+=n;addLog("家長加點（測試）：+"+n+"點");persist();updateTop();renderRedeemLog();toast("已加 "+n+" 點！目前 "+SAVE.coins+" 點");}
-function testFill(){SAVE.coins=9999;SAVE.gold=99;SAVE.stamina.val=ECON.staminaCap;addLog("一鍵補滿（測試）");persist();updateTop();renderRedeemLog();toast("已補滿：點數9999・金幣99・體力"+ECON.staminaCap);}
+function testFill(){SAVE.coins=9999;SAVE.gold=99;SAVE.plays={date:getTodayStr(),race:PLAYS_CAP,ttt:PLAYS_CAP,mem:PLAYS_CAP};addLog("一鍵補滿（測試）");persist();updateTop();renderRedeemLog();toast("已補滿：點數9999・金幣99・三個遊戲各"+PLAYS_CAP+"次");}
 function parentAddCoins(){const n=parseInt(prompt("要獎勵給孩子多少點數？","100"));if(n>0){SAVE.coins+=n;addLog("家長儲值：+"+n+"點");persist();updateTop();toast("已加給 "+n+" 點！");}}
-function parentAddStamina(){SAVE.stamina.val=Math.min(ECON.staminaCap,SAVE.stamina.val+2);addLog("家長補體力 +2");persist();updateTop();toast("已補充寵物體力 +2（目前 "+SAVE.stamina.val+"）");}
+function parentAddStamina(){addPlays(2);addLog("家長補遊戲次數 三個各 +2");persist();updateTop();toast("三個遊戲的次數各補 +2（目前合計 "+playsLeft()+" 次）");}
 function parentSetRate(){const r=parseFloat(prompt("設定金幣匯率：1 金幣 = NT$ ?（例如 1 或 0.5）",SAVE.goldRate));if(r>0){SAVE.goldRate=r;persist();openParent();toast("已設定 1 金幣 = NT$"+r);}}
 function parentRedeemGold(){const g=parseInt(prompt("目前 "+SAVE.gold+" 枚金幣（1 金幣=NT$"+SAVE.goldRate+"）。要兌換幾枚成零用錢？","1"));
   if(g>0&&SAVE.gold>=g){SAVE.gold-=g;addLog("金幣換零用錢：-"+g+"金幣 = NT$"+(g*SAVE.goldRate));persist();updateTop();openParent();toast("已兌換 "+g+" 枚金幣＝NT$"+(g*SAVE.goldRate)+"，請發給孩子零用錢！");}else toast("金幣不足或數字無效！");}
@@ -1656,12 +2060,25 @@ var LIGHT = {
   bur:{room:"#241E12", glow:"rgba(255,194,74,.16)"},
   dog:{room:"#2A1A14", glow:"rgba(224,138,60,.18)"},
   man:{room:"#241E12", glow:"rgba(255,194,74,.16)"},
-  slp:{room:"#2A1A14", glow:"rgba(224,138,60,.18)"}
+  slp:{room:"#2A1A14", glow:"rgba(224,138,60,.18)"},
+  mio:{room:"#1E1A2E", glow:"rgba(255,111,216,.22)"}
 };
+var SPEECH = [
+  "「我主張！每天知識泡泡的產量應該翻倍！」",
+  "「這條海流速度太慢了，我要求全面檢討！」",
+  "「提醒各位，今天有沒有打電話回家？」",
+  "「我反對在沒吃飯的情況下寫作業！」",
+  "「運動不是選項，是義務！聽到沒有！」",
+  "「誰把我的起司移到第三格去了，站出來！」",
+  "「睡覺前要洗澡，這是基本的自我尊重！」",
+  "「我要提案：答對十題的人應該可以多吃一塊蛋糕！」",
+  "「安靜！我還沒講完！」",
+  "「總之，做自己就對了，但要孝順父母。」"
+];
 var LAYER_COLORS = ["#E24B4A","#8CC63F","#C1543C","#FFE9A0","#FFC24A"];
 var LAYER_NAMES  = ["番茄","酸黃瓜","培根","蛋","起司"];
-var KEYS = ["sea","bur","dog","man","slp"];
-var UNLOCK_COST = {sea:500, bur:0, dog:0, man:200, slp:300};
+var KEYS = ["sea","bur","dog","man","slp","mio"];
+var UNLOCK_COST = {sea:500, bur:0, dog:0, man:200, slp:300, mio:900};
 
 var memFallback = null, storageOK = true;
 function readRaw(){
@@ -1682,7 +2099,8 @@ function fresh(){
     bur:{full:70, tidy:70, layers:3, feeds:0, lastFeed:0, lastTidy:0},
     dog:{energy:20, mess:0, lastRun:0, lastClean:0},
     man:{calm:70, lastPat:0},
-    slp:{bite:20, teeth:80, lastToss:0, lastBrush:0}
+    slp:{bite:20, teeth:80, lastToss:0, lastBrush:0},
+    mio:{heat:40, full:70, speeches:0, dust:0, lastSpeak:0, lastRun:0, lastComfort:0, lastWash:0}
   };
 }
 function today(){ var d = new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
@@ -1698,10 +2116,15 @@ var S;
 (function(){
   if(!S.man) S.man = {calm:70, lastPat:0};
   if(!S.slp) S.slp = {bite:20, teeth:80, lastToss:0, lastBrush:0};
+  if(!S.mio) S.mio = {heat:40, full:70, speeches:0, dust:0, lastSpeak:0, lastRun:0, lastComfort:0, lastWash:0};
+  if(typeof S.mio.dust !== "number") S.mio.dust = 0;
+  if(typeof S.mio.lastWash !== "number") S.mio.lastWash = 0;
   if(S.unlocked.man == null) S.unlocked.man = false;
   if(S.unlocked.slp == null) S.unlocked.slp = false;
+  if(S.unlocked.mio == null) S.unlocked.mio = false;
   if(!S.equipped.man) S.equipped.man = [];
   if(!S.equipped.slp) S.equipped.slp = [];
+  if(!S.equipped.mio) S.equipped.mio = [];
 })();
 
 (function(){
@@ -1775,10 +2198,15 @@ function advance(ms){
   }
   if(hasF("binBox")) S.dog.mess = clamp(S.dog.mess - h * 3, 0, 100);
 
+  if(S.unlocked.mio) S.mio.dust = clamp(S.mio.dust + h * 2, 0, 100);
   if(S.unlocked.man) S.man.calm = clamp(S.man.calm - h * 3, 0, 100);
   if(S.unlocked.slp){
     S.slp.bite = clamp(S.slp.bite + h * 10, 0, 100);
     S.slp.teeth = clamp(S.slp.teeth - h * 2, 0, 100);
+  }
+  if(S.unlocked.mio){
+    S.mio.heat = clamp(S.mio.heat + h * 15, 0, 100);
+    S.mio.full = clamp(S.mio.full - h * 7, 0, 100);
   }
 
   return log;
@@ -1845,16 +2273,20 @@ function bubbles(){
   }
 }
 
-var flashTimer;
+var flashTimer, flashUntil = 0;
 function flash(msg){
   var el = ROOT.querySelector("#pr-cap");
   el.textContent = msg;
   el.style.color = "var(--pr-red)";
+  flashUntil = Date.now() + 2600;
   clearTimeout(flashTimer);
-  flashTimer = setTimeout(function(){ el.style.color = ""; renderCap(); }, 2600);
+  flashTimer = setTimeout(function(){ el.style.color = ""; flashUntil = 0; renderCap(); }, 2600);
 }
 function renderCap(){
   if(S.day !== today()){ S.day = today(); S.earnedToday = 0; }
+  /* 訊息還在顯示期間就不要覆蓋。render() 每秒都會跑一次，
+     沒有這道判斷的話訊息不到一秒就被點數統計蓋掉。 */
+  if(Date.now() < flashUntil) return;
   ROOT.querySelector("#pr-cap").textContent =
     "今日已賺 " + Math.round(S.earnedToday) + " / " + DAILY_CAP + " 點";
 }
@@ -1871,9 +2303,20 @@ var PANEL = {
   bur:{name:"漢堡方塊", desc:"貪吃、樂天、有強迫症"},
   dog:{name:"賽車狗阿酷", desc:"過動、愛面子、其實膽小"},
   man:{name:"生氣饅頭 阿饅", desc:"嘴巴很兇、實際很膽小、非常怕孤單"},
-  slp:{name:"拖鞋鯊 阿拖", desc:"什麼都想咬、沒有惡意、非常好懂"}
+  slp:{name:"拖鞋鯊 阿拖", desc:"什麼都想咬、沒有惡意、非常好懂"},
+  mio:{name:"音音美代子", desc:"暴脾氣、超愛吃、熱血正義、嘴巴壞但心最軟"}
 };
 
+/* 找出目前狀態最差、最需要被安慰的寵物（不含美代子自己） */
+function sadPet(){
+  var worst = null, low = 101;
+  if(S.unlocked.sea && S.sea.trust < low){ low = S.sea.trust; worst = "sea"; }
+  if(S.unlocked.bur && S.bur.full  < low){ low = S.bur.full;  worst = "bur"; }
+  if(S.unlocked.man && S.man.calm  < low){ low = S.man.calm;  worst = "man"; }
+  if(S.unlocked.slp && S.slp.teeth < low){ low = S.slp.teeth; worst = "slp"; }
+  if(S.unlocked.dog && (100 - S.dog.mess) < low){ low = 100 - S.dog.mess; worst = "dog"; }
+  return (low < 60) ? worst : null;
+}
 function cool(last, ms){ return Math.max(0, ms - (Date.now() - last)); }
 function cdLabel(base, left){ return left > 0 ? base+"（"+Math.ceil(left/1000)+"）" : base; }
 
@@ -1955,11 +2398,45 @@ function panels(){
       else h += '<p class="pr-note">咬勁每小時漲 10。牠咬下去的東西會從後面掉出來，牠自己不知道，不要告訴牠。</p>';
     }
 
+    if(k === "mio"){
+      h += bar("熱血", S.mio.heat, 100, "#FF6FD8",
+        S.mio.heat >= 90 ? "憋不住了，快讓她說話" : "");
+      h += bar("飽足度", S.mio.full, 100, "#FDE047");
+      h += bar("演說場次", Math.min(S.mio.speeches, 30), 30, "#A78BFA",
+        S.mio.speeches >= 30 ? "已成名嘴" : "");
+      h += bar("身上灰塵", S.mio.dust, 100, "#B08FC4",
+        S.mio.dust >= 60 ? "她自己也覺得該洗了" : "");
+      var sc2 = cool(S.mio.lastSpeak, 45000), mr = cool(S.mio.lastRun, 30000),
+          cf = cool(S.mio.lastComfort, 60000);
+      var sad = sadPet();
+      h += '<div class="pr-row"><div class="pr-rlabel">照顧</div><div class="pr-mini">'+
+        '<button data-act="speak" '+(sc2>0||S.mio.heat<10?"disabled":"")+'>'+
+        cdLabel(S.mio.heat<10 ? "發表政見（熱血不足）" : "讓她發表政見", sc2)+'</button>'+
+        '<button data-act="mrun" '+(mr>0||S.mio.heat<20?"disabled":"")+'>'+
+        cdLabel(S.mio.heat<20 ? "陪她路跑（熱血不足）" : "陪她去路跑", mr)+'</button>'+
+        '<button data-act="comfort" '+(cf>0||!sad?"disabled":"")+'>'+
+        cdLabel(sad ? "叫她去安慰 "+PANEL[sad].name : "沒有寵物需要安慰", cf)+'</button>'+
+        '<button data-act="wash" '+(cool(S.mio.lastWash,45000)>0||S.mio.dust<10?"disabled":"")+'>'+
+        cdLabel(S.mio.dust<10 ? "幫她洗澡（已經很乾淨）" : "幫她洗澡", cool(S.mio.lastWash,45000))+'</button>'+
+        '<button data-act="rest" '+(cool(S.mio.lastRest,25000)>0?"disabled":"")+'>'+
+        cdLabel("哄睡（回熱血）", cool(S.mio.lastRest,25000))+'</button></div></div>';
+      if(S.mio.dust >= 60) h += '<p class="pr-note pr-warn">跑完山灰塵一身，她嘴上不說但一直在偷看水池。幫她洗澡。</p>';
+      else if(S.mio.heat >= 90) h += '<p class="pr-note pr-warn">熱血滿了，她站在石頭上開始自言自語。讓她說話或帶她去跑。</p>';
+      else if(S.mio.full < 25) h += '<p class="pr-note pr-warn">她餓到罵人了。餵她吃東西，什麼都好，她不挑。</p>';
+      else h += '<p class="pr-note">熱血每小時漲 15，也可以「哄睡」讓她一次回一大截；發表政見或路跑會消耗。她嘴巴壞，但別的寵物一難過她第一個衝過去。</p>';
+    }
+
     h += '<div class="pr-row"><div class="pr-rlabel">配件</div><div class="pr-acc" data-acc="'+k+'"></div></div>';
     d.innerHTML = h;
 
     var accBox = d.querySelector('[data-acc="'+k+'"]');
-    WEAR.filter(function(w){ return w.pet === k || w.pet === "all"; }).forEach(function(w){
+    WEAR.filter(function(w){
+      if(w.pet === k) return true;
+      /* 通用配件(pet:"all")只在該寵物 SVG 真的有對應配件圖時才顯示，
+         避免阿饅/阿拖/美代子這些新寵「已穿但身上沒畫」的空戴 */
+      if(w.pet === "all") return !!ROOT.querySelector("#pr-p-"+k+" .ac-"+w.id);
+      return false;
+    }).forEach(function(w){
       var b = document.createElement("button");
       if(!has(w.id)){
         b.textContent = w.name + " " + w.cost + " 點";
@@ -1973,6 +2450,8 @@ function panels(){
       }
       accBox.appendChild(b);
     });
+    /* 沒有任何可戴配件時（如美代子），整列隱藏，改走上方「造型」面板 */
+    if(accBox && accBox.children.length === 0){ var _ar = accBox.closest(".pr-row"); if(_ar) _ar.style.display = "none"; }
 
     d.querySelectorAll("[data-act]").forEach(function(b){
       b.onclick = function(){ act(k, b.dataset.act); };
@@ -2025,15 +2504,68 @@ function act(k, a){
     }
   }
   if(a === "brush"){ S.slp.teeth = clamp(S.slp.teeth + 35, 0, 100); S.slp.lastBrush = now; }
-  if(a === "rest"){ setState(k, "sleep", 5000); }
+  if(a === "speak"){
+    S.mio.heat = clamp(S.mio.heat - 35, 0, 100);
+    S.mio.speeches++; S.mio.lastSpeak = now;
+    setState("mio","speak",2600);
+    /* 發表政見用專屬的 speech 臉：兩條橫線眼、大張紅嘴、左側音波、右手舉麥克風 */
+    if(window.mioFace) window.mioFace("speech", 4200);
+    flashOk(SPEECH[S.mio.speeches % SPEECH.length]);
+  }
+  if(a === "mrun"){
+    S.mio.heat = clamp(S.mio.heat - 55, 0, 100);
+    S.mio.full = clamp(S.mio.full - 8, 0, 100);
+    S.mio.lastRun = now;
+    setState("mio","run",1800);
+    flashOk("她跑了十公里回來，臉不紅氣不喘，然後說肚子餓了");
+  
+    S.mio.dust = clamp(S.mio.dust + 30, 0, 100);
+  }
+  if(a === "comfort"){
+    var tgt = sadPet();
+    if(tgt){
+      if(tgt === "sea") S.sea.trust = clamp(S.sea.trust + 14, 0, 100);
+      if(tgt === "bur") S.bur.full  = clamp(S.bur.full  + 14, 0, 100);
+      if(tgt === "man") S.man.calm  = clamp(S.man.calm  + 18, 0, 100);
+      if(tgt === "slp") S.slp.teeth = clamp(S.slp.teeth + 14, 0, 100);
+      if(tgt === "dog") S.dog.mess  = clamp(S.dog.mess  - 18, 0, 100);
+      S.mio.lastComfort = now;
+      setState("mio","comfort",2400);
+      if(window.mioFace) window.mioFace("kind", 2600);
+      try{ if(window.petx13 && window.petx13.care) window.petx13.care(tgt); }catch(e){}
+      var CLINE=["「哭什麼哭啦！煩死了！蛋糕拿去。」","「我只是順便跑過來而已。」","「你這樣我很難做人，笑一下。」"];
+      flashOk(CLINE[Math.floor(Math.random()*CLINE.length)]+" 她把最貴的那塊蛋糕推給 "+PANEL[tgt].name);
+    }
+  }
+  if(a === "wash"){
+    S.mio.dust = clamp(S.mio.dust - 60, 0, 100);
+    S.mio.lastWash = now;
+    setState("mio","wash",1900);
+    if(window.mioFace) window.mioFace("normal",2600);
+    flashOk("她一邊抱怨一邊很享受");
+  }
+  if(a === "rest"){
+    setState(k, "sleep", 5000);
+    /* 美代子：哄睡回熱血（她一睡飽又是一尾活龍），25 秒冷卻避免狂點 */
+    if(k === "mio" && S.mio){
+      var lr = S.mio.lastRest || 0;
+      if(now - lr >= 25000){
+        S.mio.heat = clamp(S.mio.heat + 32, 0, 100);
+        S.mio.full = clamp(S.mio.full + 8, 0, 100);
+        S.mio.lastRest = now;
+        flashOk("她瞇了一下，醒來又是一尾活龍。熱血回來了。");
+      }
+    }
+  }
   save(); render();
 }
 
 function flashOk(msg){
   var el = ROOT.querySelector("#pr-cap");
   el.textContent = msg; el.style.color = "var(--pr-green)";
+  flashUntil = Date.now() + 3600;
   clearTimeout(flashTimer);
-  flashTimer = setTimeout(function(){ el.style.color = ""; renderCap(); }, 2600);
+  flashTimer = setTimeout(function(){ el.style.color = ""; flashUntil = 0; renderCap(); }, 3600);
 }
 
 function buy(id, cost){
@@ -2248,12 +2780,12 @@ window.petroom = {
 #petroom .pr-mv[data-mv="shrink"]{animation:mvShrink .9s ease-in-out}
 #petroom .pr-mv[data-mv="tumble"]{animation:mvTumble 1.1s ease-in-out}
 
-@keyframes mvHop{0%{transform:translateY(0)}40%{transform:translateY(-30px)}70%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+@keyframes mvHop{0%{transform:translateY(0)}40%{transform:translateY(-20px)}70%{transform:translateY(-3px)}100%{transform:translateY(0)}}
 @keyframes mvRun{0%{transform:translateX(0)}22%{transform:translateX(30px) rotate(5deg)}34%{transform:translateX(34px) rotate(-3deg)}64%{transform:translateX(-24px) rotate(-5deg)}100%{transform:translateX(0)}}
-@keyframes mvGrow{0%{transform:scale(1)}45%{transform:scale(1.32)}75%{transform:scale(.95)}100%{transform:scale(1)}}
+@keyframes mvGrow{0%{transform:scale(1)}45%{transform:scale(1.2)}75%{transform:scale(.96)}100%{transform:scale(1)}}
 @keyframes mvSway{0%,100%{transform:rotate(0)}30%{transform:rotate(-12deg) translateX(-5px)}70%{transform:rotate(12deg) translateX(5px)}}
 @keyframes mvSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-@keyframes mvDance{0%,100%{transform:translateY(0) rotate(0)}18%{transform:translateY(-18px) rotate(-9deg)}42%{transform:translateY(-3px) rotate(8deg)}68%{transform:translateY(-16px) rotate(-6deg)}}
+@keyframes mvDance{0%,100%{transform:translateY(0) rotate(0)}18%{transform:translateY(-13px) rotate(-9deg)}42%{transform:translateY(-3px) rotate(8deg)}68%{transform:translateY(-11px) rotate(-6deg)}}
 @keyframes mvWiggle{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px) rotate(-3deg)}75%{transform:translateX(6px) rotate(3deg)}}
 @keyframes mvShrink{0%{transform:scale(1)}40%{transform:scale(.66) translateY(10px)}100%{transform:scale(1)}}
 @keyframes mvTumble{0%{transform:rotate(0) translateY(0)}35%{transform:rotate(-22deg) translateY(-14px)}65%{transform:rotate(18deg) translateY(4px)}100%{transform:rotate(0) translateY(0)}}
@@ -2329,8 +2861,8 @@ window.petroom = {
   var ROOT=document.getElementById("petroom");
   if(!ROOT||!window.petroom)return;
 
-  var KEYS=["sea","bur","dog","man","slp"];
-  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖"};
+  var KEYS=["sea","bur","dog","man","slp","mio"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖",mio:"音音美代子"};
 
   /* ---------- 位移層 ---------- */
   function wrap(){
@@ -2375,7 +2907,7 @@ window.petroom = {
   /* ---------- 對話列 ----------
      原本泡泡畫在寵物上方，但舞台是 overflow:hidden 且上方留白很窄，
      泡泡會被裁掉。改成固定放在舞台上方一列，小尾巴指向說話的那一隻。 */
-  var SHORT={sea:"海馬",bur:"漢堡",dog:"阿酷",man:"阿饅",slp:"阿拖"};
+  var SHORT={sea:"海馬",bur:"漢堡",dog:"阿酷",man:"阿饅",slp:"阿拖",mio:"美代子"};
   function sayBar(){
     var bar=ROOT.querySelector("#prSayBar");
     if(!bar){
@@ -2383,7 +2915,7 @@ window.petroom = {
       bar.id="prSayBar";
       bar.innerHTML='<span class="ps-txt"></span>';
       var stage=ROOT.querySelector(".pr-stage");
-      if(stage&&stage.parentNode)stage.parentNode.insertBefore(bar,stage);
+      if(stage)stage.appendChild(bar);       /* 放進舞台，跟著 sticky 一起顯示 */
       else ROOT.appendChild(bar);
     }
     return bar;
@@ -2423,6 +2955,10 @@ window.petroom = {
         hyper=S.slp.bite>=100;
         low=S.slp.teeth<25;
         tempo=S.slp.bite>=60?.85:1.05;
+      }else if(k==="mio"&&S.mio){
+        hyper=S.mio.heat>=90;
+        low=S.mio.full<25;
+        tempo=S.mio.heat>=60?.72:S.mio.full>=50?.95:1.35;
       }
       if(low)pet.setAttribute("data-low","1");else pet.removeAttribute("data-low");
       if(hyper)pet.setAttribute("data-hyper","1");else pet.removeAttribute("data-hyper");
@@ -2442,8 +2978,11 @@ window.petroom = {
       setTimeout(function(){
         var d=document.createElement("div");
         d.className="amb "+cls;
-        d.style.left=(cx-4+Math.random()*8).toFixed(1)+"%";
-        d.style.bottom=(by+18+Math.random()*16).toFixed(1)+"%";
+        var isNote=(cls==="amb-note");   /* 音符拉高、往側邊，才不會卡在腳邊被擋 */
+        var lx=isNote?(cx+6+Math.random()*12):(cx-4+Math.random()*8);
+        var bb=isNote?(by+46+Math.random()*20):(by+18+Math.random()*16);
+        d.style.left=lx.toFixed(1)+"%";
+        d.style.bottom=bb.toFixed(1)+"%";
         stage.appendChild(d);
         setTimeout(function(){d.remove();},ms);
       },j*gap);
@@ -2455,7 +2994,9 @@ window.petroom = {
     bur:["芝麻要排整齊才舒服。","有點餓…有一點點。","我又疊高一層了嗎？","起司快滑下去了！"],
     dog:["再跑一次！再一次！","我沒有在拆東西喔。","墨鏡歪了不要說出來。","衝啊！"],
     man:["我沒有在生氣。","誰把泡泡弄破的！嚇…我才沒有嚇到。","今天也要保持兇兇的。","你來了喔。沒有很開心。真的。"],
-    slp:["有什麼可以咬的嗎？","我是鯊魚，27 號的那種。","啪嗒。啪嗒。","咦，剛剛咬的東西呢？"]
+    slp:["有什麼可以咬的嗎？","我是鯊魚，27 號的那種。","啪嗒。啪嗒。","咦，剛剛咬的東西呢？"],
+    mio:["看什麼看？我只是順便跑過來而已！","吼！誰把我的野餐包翻過了！","今天跑了十二公里，還不夠。",
+         "我沒有在生氣，這是我的正常音量。","有人要聽我講話嗎？沒有也沒關係，我自己講。","好香喔…等等，我剛剛在生氣。"]
   };
   var ambNext=0;
   function ambient(){
@@ -2480,6 +3021,9 @@ window.petroom = {
     }else if(k==="man"){
       amb(k,"amb-ses",3,200,2200);
       if(Math.random()<.5)move(k,"wiggle");
+    }else if(k==="mio"){
+      amb(k,"amb-note",4,170,2400);
+      move(k,Math.random()<.5?"run":"dance");
     }else{
       amb(k,"amb-dust",2,160,1500);
       move(k,Math.random()<.55?"tumble":"hop");
@@ -2502,7 +3046,11 @@ window.petroom = {
     {sel:".dough", act:"hop",    man:"那裡…那裡可以。再摸一下。"},
     {sel:".teeth", act:"shrink", slp:"我咬東西，但我沒有惡意。"},
     {sel:".fin",   act:"sway",   slp:"背鰭是真的。我真的是鯊魚。"},
-    {sel:".eye-open",act:"shrink",sea:"別戳眼睛！",bur:"眼睛是芝麻做的。",dog:"看得到看得到。",man:"幹嘛，我很兇喔。",slp:"眼睛分開一點，看得比較廣。"}
+    {sel:".mic",   act:"dance",  mio:"要我發表意見？那可以。"},
+    {sel:".bag",   act:"wiggle", mio:"那是我的！裡面有大福！"},
+    {sel:".stem",  act:"sway",   mio:"別拉我的馬尾！"},
+    {sel:".shoe",  act:"run",    mio:"想跑了？我等你這句很久。"},
+    {sel:".eye-open",act:"shrink",sea:"別戳眼睛！",bur:"眼睛是芝麻做的。",dog:"看得到看得到。",man:"幹嘛，我很兇喔。",slp:"眼睛分開一點，看得比較廣。",mio:"看什麼看。"}
   ];
   function bindTouch(){
     KEYS.forEach(function(k){
@@ -2637,11 +3185,14 @@ window.petroom = {
 #petroom .pr-pet.pr-main .pr-lv{border-color:var(--pr-gold)}
 
 #petxWrap{margin-top:12px}
-#petxWrap .px-card{background:var(--pr-card); border:1px solid var(--pr-line);
+/* 這組樣式要同時套用到上方的 petxWrap 與下方的 petxTail，
+   否則搬到下方的回憶館與成長故事會變成沒有底色的裸文字 */
+#petxWrap .px-card,#petxTail .px-card{background:var(--pr-card); border:1px solid var(--pr-line);
   border-radius:14px; padding:13px 15px; margin-bottom:10px}
-#petxWrap .px-h{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:9px}
-#petxWrap .px-h b{font-size:14px; font-weight:500; color:var(--pr-txt)}
-#petxWrap .px-h span{font-size:11.5px; color:var(--pr-txt3)}
+#petxWrap .px-h,#petxTail .px-h{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:9px}
+#petxWrap .px-h b,#petxTail .px-h b{font-size:14px; font-weight:500; color:var(--pr-txt)}
+#petxWrap .px-h span,#petxTail .px-h span{font-size:11.5px; color:var(--pr-txt3)}
+#petxTail{margin-top:14px}
 #petxWrap .px-streak{margin-left:auto; font-size:11.5px; color:var(--pr-gold);
   border:1px solid #4A3A10; background:#241D08; padding:2px 9px; border-radius:9px}
 
@@ -2717,8 +3268,8 @@ window.petroom = {
   var ROOT=document.getElementById("petroom");
   if(!ROOT||!window.petroom||!window.petroomFX)return;
   var NS="http://www.w3.org/2000/svg";
-  var KEYS=["sea","bur","dog","man","slp"];
-  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖"};
+  var KEYS=["sea","bur","dog","man","slp","mio"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖",mio:"音音美代子"};
   var EXP_PER_LV=40, LV_CAP=10;
 
   /* ---------- 食物與偏好 ---------- */
@@ -2766,20 +3317,23 @@ window.petroom = {
       '<circle cx="6.6" cy="9.6" r="2.5"/><circle cx="6.6" cy="14.4" r="2.5"/>'+
       '<circle cx="17.4" cy="9.6" r="2.5"/><circle cx="17.4" cy="14.4" r="2.5"/></g></svg>'
   };
-  var LOVE={sea:["nori","mochi"], bur:["cburg","pizza"], dog:["bone","yam"], man:["boba"], slp:["bone","nori"]};
-  var HATE={sea:["bone"], bur:["apple"], dog:["nori"], man:["pizza"], slp:["mochi"]};
+  var LOVE={sea:["nori","mochi"], bur:["cburg","pizza"], dog:["bone","yam"], man:["boba"], slp:["bone","nori"], mio:["cburg","pizza","yam","mochi"]};
+  var HATE={sea:["bone"], bur:["apple"], dog:["nori"], man:["pizza"], slp:["mochi"], mio:["nori"]};
   var LOVELINE={
     sea:{nori:"海藻餅…這個我可以吃三片。",mochi:"甜甜的，泡泡都變星形了！"},
     bur:{cburg:"同類？不管了，好吃！",pizza:"起司配起司，完美。"},
     dog:{bone:"骨頭餅乾！給我給我給我！",yam:"熱的地瓜最讚了！"},
     man:{boba:"珍奶…我、我只是剛好口渴。"},
-    slp:{bone:"咔滋咔滋咔滋！",nori:"薄薄的最好咬！"}
+    slp:{bone:"咔滋咔滋咔滋！",nori:"薄薄的最好咬！"},
+    mio:{cburg:"起司！起司就是正義！我沒有在流口水，那是……口水沒錯。",pizza:"起司配餅皮，完美。等等，我剛剛在生氣。",yam:"跑完山吃烤地瓜！人生就是這樣！",
+         mochi:"草莓大福…軟的我最喜歡了。這件事不要傳出去。"}
   };
   var HATELINE={sea:{bone:"這個太硬了，我沒有牙齒啊。"},
                 bur:{apple:"太健康了，我不想變瘦。"},
                 dog:{nori:"這是紙嗎？我不要。"},
                 man:{pizza:"太多料了，我很單純。"},
-                slp:{mochi:"黏、黏在牙上了！救命！"}};
+                slp:{mochi:"黏、黏在牙上了！救命！"},
+                mio:{nori:"這個沒有味道！我要拿麥克風抗議！"}};
 
   /* ---------- 狀態 ---------- */
   function today(){
@@ -2829,7 +3383,7 @@ window.petroom = {
       var svg=pet&&pet.querySelector("svg");
       if(!svg)return;
       var L=lv(k);
-      pet.style.setProperty("--pr-grow",(1+(L-1)*0.022).toFixed(3));
+      pet.style.setProperty("--pr-grow",(1+(L-1)*0.014).toFixed(3));
 
       var chip=pet.querySelector(".pr-lv");
       if(!chip){
@@ -2882,6 +3436,22 @@ window.petroom = {
       for(var q=0;q<rings&&q<4;q++){
         mo+='<path d="M'+(58+q*12)+' '+(74-(q%2)*4)+'q6 8 0 16" fill="none" '+
             'stroke="#E0D6C2" stroke-width="2" stroke-linecap="round" opacity=".9"/>';
+      }
+      return mo;
+    }
+    if(k==="mio"){
+      /* 美代子成長造型（座標在 mioFit 身體空間 120-200，不跟「造型」面板的汗帶/鞋衝突）
+         Lv4 起：馬尾尾端高光加亮＋星光（規格第二階）；Lv7 起：身旁三顆潑墨顏料點（第三階）*/
+      var mo="";
+      if(L>=4){
+        mo+='<path d="M205 62 C218 50 233 57 231 71" fill="none" stroke="#FFE9A0" stroke-width="2.6" stroke-linecap="round" opacity=".9"/>';
+        mo+='<path d="M226 52l1.8 3.8 3.8 1.8-3.8 1.8L226 65l-1.8-3.8L220.4 59.4l3.8-1.8z" fill="#FFF3B0"/>';
+      }
+      if(L>=7){
+        mo+='<circle cx="107" cy="196" r="5.5" fill="#FF7AD9" opacity=".82"/>';
+        mo+='<circle cx="116" cy="211" r="3.4" fill="#C77DFF" opacity=".82"/>';
+        mo+='<circle cx="201" cy="199" r="5" fill="#6EE7C8" opacity=".82"/>';
+        mo+='<circle cx="197" cy="214" r="3" fill="#FF7AD9" opacity=".78"/>';
       }
       return mo;
     }
@@ -2958,7 +3528,7 @@ window.petroom = {
     }
   }
   /* 每隻在 SVG 內部也有自己的吃相，跟外層的咀嚼疊加 */
-  var INNER={sea:"happy",bur:"eat",dog:"poke",man:"poke",slp:"poke"};
+  var INNER={sea:"happy",bur:"eat",dog:"poke",man:"poke",slp:"poke",mio:"poke"};
 
   function feedx(fid){
     var d=px();if(!d)return;
@@ -2989,6 +3559,7 @@ window.petroom = {
     flyFood(k,fid,function(){
       window.petroomFX.move(k,"chew");
       try{window.petroom.setState(k,INNER[k]||"poke");}catch(e){}
+      if(k==="mio"&&window.mioFace)window.mioFace("yum",2200);
       try{initAudio();beep(300,0.08,"triangle",0.1);}catch(e){}
       setTimeout(function(){
         if(mode==="love"){
@@ -3085,8 +3656,9 @@ window.petroom = {
     if(!wrap){
       wrap=document.createElement("div");
       wrap.id="petxWrap";
+      /* 放在舞台正下方、照顧面板之前。餵食的時候寵物還在畫面上才看得到反應 */
       var anchor=ROOT.querySelector("#pr-panels");
-      if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(wrap,anchor.nextSibling);
+      if(anchor&&anchor.parentNode)anchor.parentNode.insertBefore(wrap,anchor);
       else ROOT.appendChild(wrap);
     }
     return wrap;
@@ -3298,8 +3870,8 @@ window.petroom = {
 (function(){
   var ROOT=document.getElementById("petroom");
   if(!ROOT||!window.petroom||!window.petx||!window.petroomFX)return;
-  var KEYS=["sea","bur","dog","man","slp"];
-  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖"};
+  var KEYS=["sea","bur","dog","man","slp","mio"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖",mio:"音音美代子"};
   var HR=3600000;
   var STAGE_H=[24,72,168,336];   /* 不安 / 虛弱 / 沉睡 / 離開 的門檻小時 */
 
@@ -3310,6 +3882,18 @@ window.petroom = {
   function ymd(off){
     var d=new Date();d.setDate(d.getDate()+(off||0));
     return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  }
+  /* 回憶館與成長故事放在整個寵物室的最下面，不要卡在餵食與寵物之間 */
+  function tailHost(){
+    var t=document.getElementById("petxTail");
+    if(!t){
+      t=document.createElement("div");
+      t.id="petxTail";
+      var foot=ROOT.querySelector(".pr-foot");
+      if(foot&&foot.parentNode)foot.parentNode.insertBefore(t,foot);
+      else ROOT.appendChild(t);
+    }
+    return t;
   }
   function D(){
     var d=(typeof window.petx.get==="function")?null:null;
@@ -3493,8 +4077,7 @@ window.petroom = {
     var card=document.createElement("div");
     card.className="px-card";
     card.innerHTML='<div class="px-h"><b>回憶館</b><span>離開的寵物在這裡，牠的一切都還在</span></div><div id="pxMem"></div>';
-    var wrap=document.getElementById("petxWrap");
-    if(wrap)wrap.appendChild(card);
+    tailHost().appendChild(card);
     card.style.display="none";
     card.id="pxMemCard";
     return document.getElementById("pxMem");
@@ -3574,8 +4157,7 @@ window.petroom = {
     var card=document.createElement("div");
     card.className="px-card";
     card.innerHTML='<div class="px-h"><b>成長故事</b><span>養育牠們會解鎖新的章節</span></div><div id="pxStory"></div>';
-    var wrap=document.getElementById("petxWrap");
-    if(wrap)wrap.appendChild(card);
+    tailHost().appendChild(card);
     return document.getElementById("pxStory");
   }
   var storySig=null;
@@ -3605,11 +4187,32 @@ window.petroom = {
     }).join("");
   }
 
+  /* ---------- 照顧面板的展開收合 ---------- */
+  function panelToggle(){
+    if(document.getElementById("prPanelToggle"))return;
+    var panels=ROOT.querySelector("#pr-panels");
+    if(!panels||!panels.parentNode)return;
+    var b=document.createElement("button");
+    b.id="prPanelToggle";
+    b.type="button";
+    var open=false;
+    function label(){
+      b.textContent=open?"只看主寵的照顧面板":"展開全部六隻的照顧面板";
+    }
+    b.onclick=function(){
+      open=!open;
+      ROOT.classList.toggle("pr-allpanels",open);
+      label();
+    };
+    label();
+    panels.parentNode.insertBefore(b,panels);
+  }
+
   /* ---------- 啟動 ---------- */
   function tick(){
     var v=document.getElementById("view-pet");
     if(!v||v.classList.contains("hide"))return;
-    applyDecay();paintCare();paintMem();paintStory();
+    panelToggle();applyDecay();paintCare();paintMem();paintStory();
   }
   setInterval(tick,2500);
   setTimeout(tick,600);
@@ -3620,6 +4223,508 @@ window.petroom = {
     recall:recall,
     refresh:function(){careSig=null;memSig=null;storySig=null;tick();}
   };
+})();
+</script>
+
+
+<style>
+/* =========================================================
+   v14 家具視覺
+   原本六件家具只有機制效果，房間裡看不到任何東西。
+   這裡把它們畫出來，買了才出現，星砂主燈還會跟著開關。
+   純附加，要還原就把這段 style 與下面的 script 整段刪掉。
+   ========================================================= */
+#petroom .pr-furn{position:absolute; inset:0; z-index:1; pointer-events:none}
+#petroom .pr-fi{position:absolute; display:none}
+#petroom .pr-fi.on{display:block}
+#petroom .pr-fi svg{width:100%; height:auto; display:block}
+
+#petroom .pr-fi-lamp{left:50%; top:-2%; width:74px; transform:translateX(-50%)}
+#petroom .pr-fi-lamp.off svg{filter:saturate(.25) brightness(.55)}
+#petroom .pr-fi-driftMat{left:50%; bottom:3%; width:62%; max-width:250px; transform:translateX(-50%)}
+#petroom .pr-fi-floatTray{left:3%; bottom:30%; width:66px}
+#petroom .pr-fi-scaleTable{right:19%; bottom:4%; width:70px}
+#petroom .pr-fi-barCounter{left:2%; bottom:4%; width:88px}
+#petroom .pr-fi-binBox{right:2%; bottom:5%; width:44px}
+
+/* 手機收窄一點，避免壓到寵物 */
+@media (max-width:430px){
+  #petroom .pr-fi-lamp{width:58px}
+  #petroom .pr-fi-floatTray{width:50px; bottom:34%}
+  #petroom .pr-fi-scaleTable{width:54px; right:17%}
+  #petroom .pr-fi-barCounter{width:66px}
+  #petroom .pr-fi-binBox{width:34px}
+  #petroom .pr-fi-driftMat{width:72%}
+}
+@media (prefers-reduced-motion:reduce){#petroom .pr-furn *{animation:none !important}}
+</style>
+
+<script>
+/* =========================================================
+   v14 家具視覺：依 petroom 存檔的 furn 決定顯示哪幾件
+   ========================================================= */
+(function(){
+  var ROOT=document.getElementById("petroom");
+  if(!ROOT||!window.petroom)return;
+  var stage=ROOT.querySelector("#pr-stage");
+  if(!stage)return;
+
+  var ART={
+    lamp:'<svg viewBox="0 0 90 96" xmlns="http://www.w3.org/2000/svg">  <path d="M45 0v26" stroke="#6B5A3A" stroke-width="2.4"/>  <path d="M20 44q25-22 50 0z" fill="#E8C87A"/>  <path d="M20 44q25-22 50 0z" fill="none" stroke="#C9A24A" stroke-width="1.6"/>  <ellipse cx="45" cy="44" rx="25" ry="4.6" fill="#FFE9B0"/>  <ellipse cx="45" cy="70" rx="30" ry="22" fill="#FFD98A" opacity=".18"/>  <ellipse cx="45" cy="62" rx="18" ry="12" fill="#FFE9B0" opacity=".22"/>  <g fill="#FFF0C0">    <path d="M32 60l1.6 3.4 3.4 1.6-3.4 1.6L32 70l-1.6-3.4L27 65l3.4-1.6z" opacity=".9"/>    <path d="M58 70l1.2 2.6 2.6 1.2-2.6 1.2L58 79l-1.2-2.6L54.2 75l2.6-1.2z" opacity=".75"/>    <path d="M46 82l1 2.2 2.2 1-2.2 1-1 2.2-1-2.2-2.2-1 2.2-1z" opacity=".6"/>  </g></svg>',
+    driftMat:'<svg viewBox="0 0 240 56" xmlns="http://www.w3.org/2000/svg">  <ellipse cx="120" cy="30" rx="116" ry="24" fill="#2E3540"/>  <ellipse cx="120" cy="28" rx="112" ry="22" fill="#3A424E"/>  <g stroke="#E8EEF5" stroke-width="3" stroke-linecap="round" opacity=".8">    <path d="M46 28h22"/><path d="M84 28h22"/><path d="M122 28h22"/><path d="M160 28h22"/>  </g>  <g fill="#D93A3A" opacity=".85">    <rect x="14" y="20" width="9" height="7"/><rect x="23" y="27" width="9" height="7"/>    <rect x="208" y="20" width="9" height="7"/><rect x="217" y="27" width="9" height="7"/>  </g></svg>',
+    floatTray:'<svg viewBox="0 0 84 62" xmlns="http://www.w3.org/2000/svg">  <ellipse cx="42" cy="46" rx="34" ry="11" fill="#2A4A58"/>  <ellipse cx="42" cy="42" rx="34" ry="11" fill="#3E6E80"/>  <ellipse cx="42" cy="40" rx="27" ry="8" fill="#57909F"/>  <g fill="rgba(220,238,248,.28)" stroke="rgba(220,238,248,.7)" stroke-width="1.2">    <circle cx="27" cy="27" r="8"/><circle cx="46" cy="22" r="10"/><circle cx="60" cy="31" r="6"/>  </g>  <circle cx="24" cy="24" r="2.4" fill="#FFFFFF" opacity=".65"/>  <circle cx="43" cy="18" r="3" fill="#FFFFFF" opacity=".6"/></svg>',
+    scaleTable:'<svg viewBox="0 0 88 70" xmlns="http://www.w3.org/2000/svg">  <rect x="8" y="18" width="72" height="9" rx="4" fill="#8FA2B5"/>  <rect x="8" y="18" width="72" height="4" rx="2" fill="#C0CCD8"/>  <rect x="14" y="27" width="60" height="30" rx="6" fill="#5C6B7A"/>  <rect x="14" y="27" width="60" height="8" rx="4" fill="#6E7E8E"/>  <circle cx="44" cy="44" r="11" fill="#F2F6FA"/>  <circle cx="44" cy="44" r="11" fill="none" stroke="#3A4652" stroke-width="1.6"/>  <path d="M44 44l6-5" stroke="#D93A3A" stroke-width="2" stroke-linecap="round"/>  <g stroke="#3A4652" stroke-width="1.2" opacity=".7">    <path d="M44 35v2.4"/><path d="M53 44h-2.4"/><path d="M35 44h2.4"/>  </g>  <rect x="12" y="57" width="10" height="9" rx="2" fill="#47535F"/>  <rect x="66" y="57" width="10" height="9" rx="2" fill="#47535F"/></svg>',
+    barCounter:'<svg viewBox="0 0 108 62" xmlns="http://www.w3.org/2000/svg">  <rect x="4" y="20" width="100" height="10" rx="5" fill="#A8763E"/>  <rect x="4" y="20" width="100" height="4" rx="2" fill="#C99356"/>  <rect x="10" y="30" width="88" height="24" rx="5" fill="#7A5430"/>  <g>    <ellipse cx="27" cy="22" rx="12" ry="5" fill="#E8EEF5"/>    <ellipse cx="27" cy="21" rx="9" ry="3.4" fill="#FFC24A"/>    <ellipse cx="54" cy="22" rx="12" ry="5" fill="#E8EEF5"/>    <ellipse cx="54" cy="21" rx="9" ry="3.4" fill="#8CC63F"/>    <ellipse cx="81" cy="22" rx="12" ry="5" fill="#E8EEF5"/>    <ellipse cx="81" cy="21" rx="9" ry="3.4" fill="#D9788C"/>  </g>  <rect x="14" y="54" width="9" height="8" rx="2" fill="#5E3F22"/>  <rect x="85" y="54" width="9" height="8" rx="2" fill="#5E3F22"/></svg>',
+    binBox:'<svg viewBox="0 0 66 76" xmlns="http://www.w3.org/2000/svg">  <path d="M12 24h42l-4 48H16z" fill="#3FA85A"/>  <path d="M12 24h42l-1 12H13z" fill="#4FBF6C"/>  <g stroke="#2E7F44" stroke-width="1.8" opacity=".8">    <path d="M23 40v26"/><path d="M33 40v26"/><path d="M43 40v26"/>  </g>  <rect x="7" y="14" width="52" height="10" rx="5" fill="#2E7F44" transform="rotate(-6 33 19)"/>  <rect x="26" y="7" width="14" height="6" rx="3" fill="#2E7F44" transform="rotate(-6 33 10)"/>  <path d="M27 50l6-7 6 7h-4v8h-4v-8z" fill="#EAF7EE" opacity=".9"/></svg>'
+  };
+  /* 由後往前疊，地墊要在最底層 */
+  var ORDER=["driftMat","lamp","floatTray","scaleTable","barCounter","binBox"];
+
+  function build(){
+    if(stage.querySelector(".pr-furn"))return;
+    var box=document.createElement("div");
+    box.className="pr-furn";
+    box.innerHTML=ORDER.map(function(id){
+      return '<div class="pr-fi pr-fi-'+id+'" data-furn="'+id+'">'+ART[id]+'</div>';
+    }).join("");
+    /* 放在地板之後、寵物之前，所以寵物會站在家具前面 */
+    var floor=stage.querySelector(".pr-floor");
+    if(floor&&floor.nextSibling)stage.insertBefore(box,floor.nextSibling);
+    else stage.insertBefore(box,stage.firstChild);
+  }
+
+  var lastSig=null;
+  function sync(){
+    build();
+    var S;
+    try{S=window.petroom.get()||{};}catch(e){return;}
+    var furn=S.furn||{};
+    var sig=ORDER.map(function(id){return furn[id]?1:0;}).join("")+"|"+(S.lampOn?1:0);
+    if(sig===lastSig)return;
+    lastSig=sig;
+    ORDER.forEach(function(id){
+      var el=stage.querySelector('.pr-fi[data-furn="'+id+'"]');
+      if(!el)return;
+      el.classList.toggle("on",!!furn[id]);
+      if(id==="lamp")el.classList.toggle("off",!S.lampOn);
+    });
+  }
+
+  sync();
+  setInterval(sync,900);
+  window.petFurn={refresh:function(){lastSig=null;sync();}};
+})();
+</script>
+
+<style>
+/* === 一次專注一隻寵物（2026/07/31 重排）=== */
+/* 舞台自帶高度（單寵不會塌）。只顯示主寵，放大置中、站地板、有影子；其他與鎖住的都不顯示 */
+#petroom .pr-stage{min-height:300px}
+@media (max-width:600px){ #petroom .pr-stage{min-height:250px} }
+#petroom .pr-pets{position:absolute; inset:0; display:block; padding:0; z-index:2; overflow:visible}
+#petroom .pr-pet{display:none}
+#petroom .pr-pet.pr-main{
+  display:block; position:absolute; left:50%; bottom:15%;
+  transform:translateX(-50%) scale(1.2); transform-origin:center bottom;
+}
+#petroom .pr-pet svg,#petroom .pr-fi svg{position:relative; z-index:1}
+/* 下方照顧面板也只顯示現在這隻（跟舞台一致，其餘收起）*/
+#petroom #pr-panels .pr-panel:not(.pr-on){display:none}
+/* 對話框貼在舞台上緣、置中、疊最上層，跟著 sticky 舞台一起看得到 */
+#petroom .pr-stage > #prSayBar,
+#petroom .pr-stage > #prSayBar[data-who]{position:absolute; top:8px; left:12px; right:12px;
+  z-index:16; margin:0; min-height:0; padding:0; justify-content:center; pointer-events:none}
+#petroom .pr-stage > #prSayBar::after,
+#petroom .pr-stage > #prSayBar[data-who]::after{left:50%}
+/* 主寵名牌／等級牌置中在腳下方 */
+#petroom .pr-pet.pr-main .pr-tag,#petroom .pr-pet.pr-main .pr-lv{text-align:center}
+/* 落地陰影（主寵與家具共用） */
+#petroom .pr-shadow{position:absolute; left:50%; transform:translateX(-50%); z-index:0;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.5),transparent 72%);
+  height:15px; border-radius:50%; pointer-events:none}
+
+/* === 家具佈置（只管家具，不碰寵物）=== */
+#petroom .pr-bar .pr-arrange{margin-left:6px}
+#petroom .pr-bar .pr-arrange.on{border-color:var(--pr-green); color:var(--pr-green); background:#10251B}
+#petroom .pr-fi.off-item{display:none !important}
+/* 正常模式也讓（已擁有的）家具可點，點了晃一下當回饋 */
+#petroom .pr-fi.on{pointer-events:auto}
+@keyframes prFurnWobble{0%,100%{transform:rotate(0) scale(1)}
+  15%{transform:rotate(-7deg) scale(1.07)}42%{transform:rotate(5deg) scale(1.05)}68%{transform:rotate(-3deg) scale(1.02)}}
+#petroom .pr-fi.wobble svg{animation:prFurnWobble .5s ease-in-out; transform-origin:center bottom}
+#petroom.arrange .pr-furn{pointer-events:auto; z-index:6}
+#petroom.arrange .pr-fi.on{cursor:grab; touch-action:none}
+#petroom.arrange .pr-fi.on:active{cursor:grabbing}
+#petroom.arrange .pr-fi.on::before{content:""; position:absolute; inset:-4px;
+  border:2px dashed rgba(120,200,255,.55); border-radius:10px; pointer-events:none; z-index:8}
+#petroom .pr-x{display:none}
+#petroom.arrange .pr-fi.on .pr-x{
+  display:flex; align-items:center; justify-content:center;
+  position:absolute; top:-12px; right:-12px; width:24px; height:24px; z-index:9;
+  border-radius:50%; border:2px solid #fff; background:#c0392b; color:#fff;
+  font-size:13px; line-height:1; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.5);
+}
+#petroom .pr-tray{position:absolute; left:8px; right:8px; bottom:8px; z-index:10;
+  display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+  background:rgba(10,14,29,.92); border:1px solid var(--pr-line); border-radius:12px; padding:6px 8px}
+#petroom .pr-tray .pr-tray-label{font-size:11px; color:var(--pr-txt3)}
+#petroom .pr-tray button{font-family:inherit; font-size:12px; cursor:pointer; color:#fff;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px}
+#petroom .pr-tray .pr-reset{margin-left:auto; color:var(--pr-txt3); background:none; border:none; text-decoration:underline; padding:4px 2px}
+#petroom .pr-arrange-hint{position:absolute; left:50%; top:6px; transform:translateX(-50%); z-index:8;
+  background:rgba(10,14,29,.9); border:1px solid var(--pr-line); color:var(--pr-txt2);
+  padding:4px 12px; border-radius:999px; font-size:11.5px; white-space:nowrap; pointer-events:none}
+</style>
+<script>
+/* =========================================================
+   一次專注一隻寵物 + 只管家具的佈置
+   - 舞台只顯示主寵（放大置中、落地陰影），切換主寵用上方選擇列
+   - 佈置模式只搬家具（拖曳／✕收起／底部＋放回），寵物完全不參與
+   - 家具位置與顯示存獨立 localStorage，不動寵物房核心存檔
+   ========================================================= */
+(function(){
+  var ROOT=document.getElementById("petroom"); if(!ROOT) return;
+  var stage=ROOT.querySelector("#pr-stage"); if(!stage) return;
+  var bar=ROOT.querySelector(".pr-bar"); if(!bar) return;
+
+  var FURNNAME={floatTray:"泡泡浮台",scaleTable:"磅秤台",driftMat:"跑道地墊",lamp:"星砂燈",barCounter:"餵食吧台",binBox:"回收箱"};
+  var LKEY="petroomFurn_v3";
+  var L={furnPos:{},furnOff:{}};
+  try{ var r=localStorage.getItem(LKEY); if(r){ var o=JSON.parse(r); if(o&&typeof o==="object") L=o; } }catch(e){}
+  if(!L.furnPos) L.furnPos={}; if(!L.furnOff) L.furnOff={};
+  function saveL(){ try{ localStorage.setItem(LKEY,JSON.stringify(L)); }catch(e){} }
+  function getState(){ try{ return window.petroom.get()||{}; }catch(e){ return {}; } }
+
+  /* 主寵落地陰影：貼在腳下 */
+  function mainShadow(){
+    var main=stage.querySelector(".pr-pet.pr-main"); if(!main) return;
+    var s=main.querySelector(".pr-shadow");
+    if(!s){ s=document.createElement("div"); s.className="pr-shadow"; main.appendChild(s); }
+    var mv=main.querySelector(".pr-mv") || main; var h=mv.offsetHeight, w=mv.offsetWidth;
+    if(!h) return;
+    s.style.top=(mv.offsetTop + h - 8)+"px";
+    s.style.width=Math.max(44, w*0.8)+"px";
+  }
+
+  /* 家具：顯示/隱藏、位置、✕鈕、陰影 */
+  function applyFurn(){
+    var st=getState(), furn=st.furn||{};
+    stage.querySelectorAll(".pr-fi").forEach(function(el){
+      var id=el.getAttribute("data-furn"); if(!id) return;
+      el.classList.toggle("off-item", !!L.furnOff[id]);
+      if(!el.querySelector(".pr-x")){
+        var x=document.createElement("div"); x.className="pr-x"; x.textContent="✕"; x.title="收起這件家具";
+        x.addEventListener("pointerdown",function(ev){ ev.stopPropagation(); });
+        x.addEventListener("click",function(ev){ ev.stopPropagation(); ev.preventDefault();
+          L.furnOff[id]=true; saveL(); applyFurn(); });
+        el.appendChild(x);
+      }
+      if(!el.querySelector(".pr-shadow")){ var sh=document.createElement("div"); sh.className="pr-shadow"; el.appendChild(sh); }
+      var pos=L.furnPos[id];
+      if(pos){ el.style.left=pos.x+"%"; el.style.right="auto"; el.style.top="auto"; el.style.bottom=pos.y+"%"; el.style.transform="translateX(-50%)"; }
+      if(furn[id] && !L.furnOff[id]){ var s2=el.querySelector(".pr-shadow");
+        if(s2){ s2.style.top=(el.offsetHeight-8)+"px"; s2.style.width=Math.max(26, el.offsetWidth*0.7)+"px"; } }
+    });
+    buildTray(st);
+  }
+
+  function buildTray(st){
+    var tray=stage.querySelector(".pr-tray");
+    if(!ROOT.classList.contains("arrange")){ if(tray) tray.remove(); return; }
+    var off=[];
+    stage.querySelectorAll(".pr-fi").forEach(function(el){ var id=el.getAttribute("data-furn");
+      if(st.furn && st.furn[id] && L.furnOff[id]) off.push({id:id,name:FURNNAME[id]||id}); });
+    if(!tray){ tray=document.createElement("div"); tray.className="pr-tray"; stage.appendChild(tray); }
+    tray.innerHTML="";
+    var lab=document.createElement("span"); lab.className="pr-tray-label";
+    lab.textContent= off.length ? "收起的家具：" : "只搬家具 · 拖曳擺放 · ✕ 可收起";
+    tray.appendChild(lab);
+    off.forEach(function(o){
+      var b=document.createElement("button"); b.textContent="＋"+o.name;
+      b.onclick=function(){ delete L.furnOff[o.id]; saveL(); applyFurn(); };
+      tray.appendChild(b);
+    });
+    var rs=document.createElement("button"); rs.className="pr-reset"; rs.textContent="還原家具";
+    rs.onclick=function(){ if(confirm("把家具位置與顯示還原成預設？")){ L={furnPos:{},furnOff:{}}; saveL(); applyFurn(); } };
+    tray.appendChild(rs);
+  }
+
+  /* 家具拖曳（只有家具） */
+  var drag=null;
+  stage.addEventListener("pointerdown",function(e){
+    if(!ROOT.classList.contains("arrange")) return;
+    if(e.target.closest(".pr-x")) return;
+    var fi=e.target.closest(".pr-fi.on"); if(!fi) return;
+    if(fi.classList.contains("off-item")) return;
+    var sb=stage.getBoundingClientRect(), fb=fi.getBoundingClientRect();
+    drag={fi:fi,id:fi.getAttribute("data-furn"),sb:sb,offx:e.clientX-fb.left,offy:e.clientY-fb.top,fw:fb.width,fh:fb.height,cx:null,y:null};
+    e.preventDefault();
+  });
+  window.addEventListener("pointermove",function(e){
+    if(!drag) return; var sb=drag.sb;
+    var left=Math.max(0,Math.min(e.clientX-drag.offx-sb.left, sb.width-drag.fw));
+    var top =Math.max(0,Math.min(e.clientY-drag.offy-sb.top,  sb.height-drag.fh));
+    var cx=(left+drag.fw/2)/sb.width*100, y=(sb.height-top-drag.fh)/sb.height*100;
+    drag.fi.style.left=cx+"%"; drag.fi.style.right="auto"; drag.fi.style.top="auto"; drag.fi.style.bottom=y+"%"; drag.fi.style.transform="translateX(-50%)";
+    drag.cx=cx; drag.y=y; e.preventDefault();
+  },{passive:false});
+  window.addEventListener("pointerup",function(){
+    if(!drag) return;
+    if(drag.cx!=null){ var y=drag.y; if(y<12) y=5; L.furnPos[drag.id]={x:+drag.cx.toFixed(1),y:+y.toFixed(1)}; saveL(); }
+    drag=null; applyFurn();
+  });
+
+  /* 佈置按鈕 + 提示 */
+  var btn=document.createElement("button");
+  btn.className="pr-chip pr-arrange"; btn.type="button"; btn.textContent="🛠️ 佈置家具";
+  var hint=null;
+  btn.addEventListener("click",function(){
+    var on=ROOT.classList.toggle("arrange");
+    btn.classList.toggle("on",on);
+    btn.textContent = on ? "✓ 佈置中" : "🛠️ 佈置家具";
+    if(on){ if(!hint){ hint=document.createElement("div"); hint.className="pr-arrange-hint";
+      hint.textContent="只搬家具 · 拖曳擺放 · ✕收起 · 下方＋放回"; stage.appendChild(hint); } }
+    else if(hint){ hint.remove(); hint=null; }
+    applyFurn();
+  });
+  bar.appendChild(btn);
+
+  /* 正常模式點家具 → 晃一下當回饋（佈置模式不觸發，那邊是拖曳）*/
+  stage.addEventListener("click", function(e){
+    if(ROOT.classList.contains("arrange")) return;
+    var fi=e.target.closest(".pr-fi.on"); if(!fi) return;
+    fi.classList.remove("wobble"); void fi.offsetWidth; fi.classList.add("wobble");
+    clearTimeout(fi._wob); fi._wob=setTimeout(function(){ fi.classList.remove("wobble"); }, 520);
+  });
+
+  applyFurn(); mainShadow();
+  setInterval(function(){ applyFurn(); mainShadow(); }, 1000);
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   v15 音音美代子的表情控制
+   平常看熱血與飽足決定預設表情，動作發生時暫時覆蓋。
+   ========================================================= */
+(function(){
+  var ROOT=document.getElementById("petroom");
+  if(!ROOT)return;
+  function svg(){return ROOT.querySelector("#pr-p-mio svg");}
+  var holdUntil=0;
+  window.mioFace=function(e,ms){
+    var s=svg();if(!s)return;
+    s.setAttribute("data-e",e);
+    holdUntil=Date.now()+(ms||2000);
+  };
+  function auto(){
+    var s=svg();if(!s)return;
+    if(Date.now()<holdUntil)return;
+    var S;try{S=window.petroom.get()||{};}catch(e){return;}
+    if(!S.unlocked||!S.unlocked.mio){s.setAttribute("data-e","normal");return;}
+    var m=S.mio||{};
+    var want="normal";
+    /* 優先序：一身灰塵最明顯，其次是憋不住或餓到罵人 */
+    if(m.dust>=60)want="dirty";
+    else if(m.heat>=90)want="angry";
+    else if(m.full<25)want="angry";
+    if(s.getAttribute("data-e")!==want)s.setAttribute("data-e",want);
+  }
+  setInterval(auto,1100);
+  auto();
+})();
+</script>
+
+<style>
+/* === 寵物造型面板（2026/07/31 通用版：mio / man / slp 共用）=== */
+/* 造型圖層預設隱藏 */
+#petroom .mio .shoe-run,#petroom .mio .shoe-hike,#petroom .mio .gear-band,
+#petroom .man .gear-scarf,#petroom .man .gear-hat,
+#petroom .slp .gear-chew,#petroom .slp .gear-bandana{opacity:0}
+/* 美代子：鞋子 / 汗帶 */
+#petroom .mio[data-shoe="run"] .shoes,#petroom .mio[data-shoe="hike"] .shoes{opacity:0}
+#petroom .mio[data-shoe="run"] .shoe-run{opacity:1}
+#petroom .mio[data-shoe="hike"] .shoe-hike{opacity:1}
+#petroom .mio[data-band="1"] .gear-band{opacity:1}
+/* 阿饅：圍巾 / 毛帽 */
+#petroom .man[data-scarf="1"] .gear-scarf{opacity:1}
+#petroom .man[data-hat="1"] .gear-hat{opacity:1}
+/* 阿拖：咬咬環 / 頭巾 */
+#petroom .slp[data-chew="1"] .gear-chew{opacity:1}
+#petroom .slp[data-bandana="1"] .gear-bandana{opacity:1}
+/* 面板 */
+#petroom .pr-style{display:none; margin:0 0 10px; padding:10px 12px;
+  background:rgba(20,27,48,.6); border:1px solid var(--pr-line); border-radius:12px}
+#petroom .pr-style.show{display:block}
+#petroom .pr-style .ms-title{font-size:12px; color:var(--pr-gold); font-weight:bold; margin-bottom:6px}
+#petroom .pr-style .ms-row{display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-top:6px}
+#petroom .pr-style .ms-label{font-size:12px; color:var(--pr-txt3); min-width:44px}
+#petroom .pr-style button{font-family:inherit; font-size:12.5px; cursor:pointer; color:#fff;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.2); border-radius:999px; padding:5px 12px}
+#petroom .pr-style button.on{border-color:var(--pr-green); color:var(--pr-green); background:#10251B}
+</style>
+<script>
+/* 通用造型面板：一份程式吃 CFG，mio/man/slp 各自的造型。只在該寵物當主寵時出現。存獨立 localStorage */
+(function(){
+  var ROOT=document.getElementById("petroom"); if(!ROOT) return;
+  var stage=ROOT.querySelector("#pr-stage"); if(!stage) return;
+
+  var CFG={
+    mio:{ title:"🎀 音音美代子的造型", rows:[
+      {label:"鞋子", attr:"shoe", def:"basic", opts:[["basic","球鞋"],["run","高級路跑鞋"],["hike","登山鞋"]]},
+      {label:"汗帶", attr:"band", def:"0", opts:[["1","戴上"],["0","拿下"]]}
+    ]},
+    man:{ title:"🧣 生氣饅頭 阿饅的造型", rows:[
+      {label:"圍巾", attr:"scarf", def:"0", opts:[["1","圍上"],["0","拿下"]]},
+      {label:"毛帽", attr:"hat", def:"0", opts:[["1","戴上"],["0","拿下"]]}
+    ]},
+    slp:{ title:"🦈 拖鞋鯊 阿拖的造型", rows:[
+      {label:"咬咬環", attr:"chew", def:"0", opts:[["1","給它"],["0","收走"]]},
+      {label:"頭巾", attr:"bandana", def:"0", opts:[["1","綁上"],["0","解開"]]}
+    ]}
+  };
+
+  var KEY="petStyle_v2";
+  var st={};
+  try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&typeof o==="object") st=o; } }catch(e){}
+  Object.keys(CFG).forEach(function(k){ st[k]=st[k]||{}; CFG[k].rows.forEach(function(row){ if(st[k][row.attr]==null) st[k][row.attr]=row.def; }); });
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(st)); }catch(e){} }
+
+  function applyPet(k){
+    var svg=ROOT.querySelector("#pr-p-"+k+" svg"); if(!svg||!CFG[k]) return;
+    CFG[k].rows.forEach(function(row){ svg.setAttribute("data-"+row.attr, st[k][row.attr]); });
+  }
+  function applyAll(){ Object.keys(CFG).forEach(applyPet); }
+
+  var bar=document.createElement("div"); bar.className="pr-style";
+  if(stage.nextSibling) stage.parentNode.insertBefore(bar, stage.nextSibling); else stage.parentNode.appendChild(bar);
+
+  var curK=null;
+  function buildPanel(k){
+    curK=k; var cfg=CFG[k];
+    var html='<div class="ms-title">'+cfg.title+'</div>';
+    cfg.rows.forEach(function(row){
+      html+='<div class="ms-row"><span class="ms-label">'+row.label+'</span>';
+      row.opts.forEach(function(o){ html+='<button data-attr="'+row.attr+'" data-val="'+o[0]+'">'+o[1]+'</button>'; });
+      html+='</div>';
+    });
+    bar.innerHTML=html; paintBtns();
+  }
+  function paintBtns(){
+    if(!curK) return;
+    bar.querySelectorAll("button[data-attr]").forEach(function(b){
+      b.classList.toggle("on", String(st[curK][b.getAttribute("data-attr")])===b.getAttribute("data-val"));
+    });
+  }
+  bar.addEventListener("click", function(e){
+    var b=e.target.closest("button[data-attr]"); if(!b||!curK) return;
+    st[curK][b.getAttribute("data-attr")]=b.getAttribute("data-val");
+    save(); applyPet(curK); paintBtns();
+  });
+
+  function tick(){
+    var main, unlocked;
+    try{ var g=window.petroom.get(); main=g.main; unlocked=g.unlocked||{}; }catch(e){ return; }
+    if(CFG[main] && unlocked[main]){ if(curK!==main) buildPanel(main); bar.classList.add("show"); }
+    else bar.classList.remove("show");
+    applyAll();
+  }
+  var chipBar=ROOT.querySelector(".pr-bar");
+  if(chipBar) chipBar.addEventListener("click", function(){ setTimeout(tick, 60); });
+  applyAll(); tick();
+  setInterval(tick, 1000);
+})();
+</script>
+
+<style>
+/* === 下方面板分頁（2026/07/31）：一次只顯示一塊，頁面變短好選 === */
+#petroom .pr-tabs{display:flex; gap:5px; flex-wrap:wrap; margin:0 0 10px}
+#petroom .pr-tabs button{flex:1 1 0; min-width:18%; font-family:inherit; font-size:12.5px; cursor:pointer;
+  color:var(--pr-txt2); background:rgba(255,255,255,.05); border:1px solid var(--pr-line);
+  border-radius:10px; padding:9px 4px; white-space:nowrap}
+#petroom .pr-tabs button.on{color:#000; background:linear-gradient(135deg,var(--pr-gold),#ff8a00); border-color:transparent; font-weight:bold}
+#petroom .pr-tabs button.pr-hide{display:none}
+#petroom .tab-off{display:none !important}
+</style>
+<script>
+/* 下方面板分頁：把餵食／照顧／造型／每日／商店切成分頁，一次顯示一塊 */
+(function(){
+  var ROOT=document.getElementById("petroom"); if(!ROOT) return;
+  var stage=ROOT.querySelector("#pr-stage"); if(!stage) return;
+  var TABS=[{key:"care",label:"💗 照顧"},{key:"feed",label:"🍽️ 餵食"},{key:"style",label:"🎀 造型"},{key:"daily",label:"📋 每日"},{key:"shop",label:"🛍️ 商店"}];
+  var cur="care";
+
+  var tabbar=document.createElement("div"); tabbar.className="pr-tabs";
+  TABS.forEach(function(t){ var b=document.createElement("button"); b.textContent=t.label; b.dataset.tab=t.key; tabbar.appendChild(b); });
+  if(stage.nextSibling) stage.parentNode.insertBefore(tabbar, stage.nextSibling); else stage.parentNode.appendChild(tabbar);
+  tabbar.addEventListener("click", function(e){ var b=e.target.closest("button[data-tab]"); if(!b) return; cur=b.dataset.tab; apply(); });
+
+  function sections(){
+    var petx=document.getElementById("petxWrap");
+    var cards=petx?Array.from(petx.querySelectorAll(".px-card")):[];
+    return {
+      care: [document.getElementById("pr-panels"), document.getElementById("prPanelToggle")].filter(Boolean),
+      feed: cards.filter(function(c){ return /餵食/.test(c.textContent) && !/今日照顧/.test(c.textContent); }),
+      daily: cards.filter(function(c){ return /今日照顧/.test(c.textContent); }),
+      style: [ROOT.querySelector(".pr-style")].filter(Boolean),
+      shop: Array.from(ROOT.querySelectorAll(".pr-fold"))
+    };
+  }
+  function styleActive(){
+    try{ var g=window.petroom.get(); return !!(({mio:1,man:1,slp:1})[g.main] && g.unlocked && g.unlocked[g.main]); }catch(e){ return false; }
+  }
+  function apply(){
+    var hasStyle=styleActive();
+    var styleBtn=tabbar.querySelector('button[data-tab="style"]');
+    if(styleBtn) styleBtn.classList.toggle("pr-hide", !hasStyle);
+    if(cur==="style" && !hasStyle) cur="care";
+    var S=sections();
+    Object.keys(S).forEach(function(key){
+      (S[key]||[]).forEach(function(el){ if(el) el.classList.toggle("tab-off", key!==cur); });
+    });
+    tabbar.querySelectorAll("button[data-tab]").forEach(function(b){ b.classList.toggle("on", b.dataset.tab===cur); });
+  }
+  var chipBar=ROOT.querySelector(".pr-bar");
+  if(chipBar) chipBar.addEventListener("click", function(){ setTimeout(apply, 80); });
+  apply();
+  setInterval(apply, 1000);
+})();
+</script>
+
+<style>
+/* === 等級徽章移到舞台左上角，不再站在寵物正下方置中（2026/07/31）=== */
+#petroom .pr-pet .pr-lv{display:none !important}
+#petroom .pr-lvbadge{position:absolute; top:8px; left:10px; z-index:14;
+  background:#241D08; border:1.5px solid var(--pr-gold); color:var(--pr-gold);
+  font-size:12px; font-weight:bold; padding:3px 11px; border-radius:999px; pointer-events:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.45)}
+</style>
+<script>
+/* 等級徽章：改放舞台左上角，內容同步目前主寵的 Lv */
+(function(){
+  var ROOT=document.getElementById("petroom"); if(!ROOT) return;
+  var stage=ROOT.querySelector("#pr-stage"); if(!stage) return;
+  var badge=document.createElement("div"); badge.className="pr-lvbadge"; stage.appendChild(badge);
+  function tick(){
+    var main; try{ main=window.petroom.get().main; }catch(e){ return; }
+    var lv=ROOT.querySelector("#pr-p-"+main+" .pr-lv");
+    var t=lv?(lv.textContent||"").trim():"";
+    badge.textContent=t; badge.style.display=t?"block":"none";
+  }
+  tick(); setInterval(tick,700);
+})();
+</script>
+
+<script>
+/* 移除底部「成長故事」卡片（2026/07/31，VIVI 指定拿掉；回憶館保留） */
+(function(){
+  function hideStory(){
+    var s=document.getElementById("pxStory");
+    if(s){ var card=s.closest(".px-card"); if(card) card.style.display="none"; }
+  }
+  hideStory();
+  setInterval(hideStory, 1500);
 })();
 </script>
 
