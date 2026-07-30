@@ -412,6 +412,28 @@
 #petroom .dog[data-s="sleep"] .leg{animation:prPedal 1s ease-in-out infinite; transform-origin:top center}
 #petroom .dog[data-s="sleep"] .leg:nth-of-type(even){animation-delay:.5s}
 
+/* ===== 新寵物：生氣饅頭與拖鞋鯊 ===== */
+#petroom .pr-pets{flex-wrap:wrap; row-gap:10px}
+#petroom .man .brow{animation:prManBrow 3.6s ease-in-out infinite}
+@keyframes prManBrow{0%,100%{transform:translateY(0)}50%{transform:translateY(1.8px)}}
+#petroom .man .dough{transform-origin:75px 60px; animation:prManDough 3s ease-in-out infinite}
+@keyframes prManDough{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+#petroom .man[data-s="poke"] .brow{animation:prManSlam .45s ease-in-out 3}
+@keyframes prManSlam{0%,100%{transform:translateY(0)}50%{transform:translateY(4.5px)}}
+#petroom .man[data-s="poke"] .dough{animation:prManDough .5s ease-in-out 4}
+#petroom .man[data-s="sleep"] .all{animation:prLie 1s ease-out forwards}
+#petroom .man[data-s="sleep"] .brow{animation:none; transform:translateY(6px)}
+
+#petroom .slp .fin{transform-origin:112px 94px; animation:prSlpFin 2.8s ease-in-out infinite}
+@keyframes prSlpFin{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+#petroom .slp .strap{transform-origin:88px 96px; animation:prSlpStrap 3.4s ease-in-out infinite}
+@keyframes prSlpStrap{0%,100%{transform:rotate(0)}50%{transform:rotate(2deg)}}
+#petroom .slp[data-s="poke"] .mouth{transform-origin:30px 122px; animation:prSlpBite .32s ease-in-out 4}
+@keyframes prSlpBite{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.55)}}
+#petroom .slp[data-s="poke"] .all{animation:prChomp .32s ease-in-out 4}
+#petroom .slp[data-s="sleep"] .all{animation:prLie 1s ease-out forwards}
+#petroom .slp[data-s="sleep"] .fin{animation:none}
+
 @media (prefers-reduced-motion:reduce){#petroom *{animation:none !important; transition:none !important}}
 
 /* ===== 寵物室精簡版面（手機/電腦都更短）===== */
@@ -518,6 +540,10 @@
         <div id="qOptions"></div>
         <div id="qLockMsg" class="hide"></div>
         <div id="qHint" style="margin-top:12px;padding:10px;background:rgba(255,215,0,0.1);border-radius:8px;font-size:13px;color:var(--gold);display:none"></div>
+        <div id="qNextWrap" style="display:none;margin-top:12px">
+          <button class="btn" id="qNextBtn" style="width:100%" onclick="goNextQuestion()">看完答案了，下一題</button>
+          <p style="margin:8px 2px 0;font-size:12px;color:var(--muted);line-height:1.6">看懂正確答案再繼續，這一題會記進今天的錯題本。</p>
+        </div>
       </div>
       <div style="margin-top:10px;display:flex;justify-content:space-between;gap:8px">
         <button class="btn btn-ghost btn-sm" onclick="forfeitUnit()">🚪 放棄本組測驗</button>
@@ -547,8 +573,10 @@
   <button class="pr-chip" data-main="sea" aria-pressed="false">夢幻海馬</button>
   <button class="pr-chip" data-main="bur" aria-pressed="true">漢堡方塊</button>
   <button class="pr-chip" data-main="dog" aria-pressed="false">賽車狗阿酷</button>
+  <button class="pr-chip" data-main="man" aria-pressed="false">阿饅</button>
+  <button class="pr-chip" data-main="slp" aria-pressed="false">阿拖</button>
   <button class="pr-chip pr-hide" id="pr-lamp" aria-pressed="true" style="margin-left:auto">星砂主燈 開</button>
-  <button class="pr-chip pr-hide" id="pr-feedall">一鍵餵三隻</button>
+  <button class="pr-chip pr-hide" id="pr-feedall">一鍵餵食</button>
 </div>
 
 <div class="pr-stage" id="pr-stage">
@@ -714,6 +742,74 @@
         </g>
       </svg>
       <div class="pr-tag">賽車狗阿酷</div>
+    </div>
+
+    <div class="pr-pet" id="pr-p-man" data-pet="man">
+      <svg class="man" data-s="idle" width="146" height="168" viewBox="0 0 150 170" role="img" aria-label="生氣饅頭阿饅" xmlns="http://www.w3.org/2000/svg">
+<g class="all">
+  <ellipse cx="75" cy="150" rx="44" ry="8" fill="#000" opacity=".18"/>
+  <g class="body">
+    <ellipse cx="75" cy="104" rx="47" ry="43" fill="#F7F1E4"/>
+    <path d="M31 116c6 20 24 30 44 30s38-10 44-30c-8 16-25 24-44 24s-36-8-44-24z" fill="#E0D6C2" opacity=".55"/>
+    <path d="M40 134q10 7 35 7t35-7" fill="none" stroke="#D4C7AE" stroke-width="2" opacity=".8"/>
+    <path d="M46 141q8 5 29 5t29-5" fill="none" stroke="#D4C7AE" stroke-width="2" opacity=".6"/>
+    <g class="dough">
+      <path d="M66 64q2-11 10-9q3-9 11-4q7-6 9 4q-4 8-15 7q-10 2-15 2z" fill="#FBF7ED" stroke="#E0D6C2" stroke-width="1.4"/>
+    </g>
+    <g class="growx"></g>
+    <g class="brow" fill="#33302B">
+      <rect x="42" y="84" width="26" height="8" rx="4" transform="rotate(14 55 88)"/>
+      <rect x="82" y="84" width="26" height="8" rx="4" transform="rotate(-14 95 88)"/>
+    </g>
+    <g class="eye-open" fill="#33302B">
+      <circle cx="58" cy="103" r="4.6"/>
+      <circle cx="92" cy="103" r="4.6"/>
+    </g>
+    <circle cx="59.5" cy="101.5" r="1.4" fill="#FFF" class="eye-open"/>
+    <circle cx="93.5" cy="101.5" r="1.4" fill="#FFF" class="eye-open"/>
+    <ellipse cx="44" cy="116" rx="6.5" ry="3.6" fill="#F0A0A0" opacity=".65"/>
+    <ellipse cx="106" cy="116" rx="6.5" ry="3.6" fill="#F0A0A0" opacity=".65"/>
+    <path class="mouth" d="M66 120q9 4 18 0" fill="none" stroke="#33302B" stroke-width="2.6" stroke-linecap="round" transform="rotate(180 75 121)"/>
+  </g>
+</g>
+</svg>
+      <div class="pr-tag">生氣饅頭 阿饅</div>
+    </div>
+
+    <div class="pr-pet" id="pr-p-slp" data-pet="slp">
+      <svg class="slp" data-s="idle" width="146" height="168" viewBox="0 0 150 170" role="img" aria-label="拖鞋鯊阿拖" xmlns="http://www.w3.org/2000/svg">
+<g class="all">
+  <ellipse cx="76" cy="150" rx="52" ry="8" fill="#000" opacity=".18"/>
+  <g class="body" transform="rotate(-4 75 122)">
+    <g class="fin">
+      <path d="M96 92l16-26l8 28z" fill="#3A5A88"/>
+      <path d="M102 90l10-16" stroke="#2E4A74" stroke-width="1.6" fill="none"/>
+    </g>
+    <path d="M30 104q-14 2-14 20q0 18 16 19l76 3q26 1 28-18q2-20-22-22z" fill="#4A6FA5"/>
+    <path d="M22 138q26 8 56 8l40-2" fill="none" stroke="#3A5A88" stroke-width="2" opacity=".7"/>
+    <g class="mouth">
+      <path d="M17 112q-9 12 2 26l24-3l-2-22z" fill="#C4566B"/>
+      <g class="teeth" fill="#FFFFFF">
+        <path d="M20 113l5 8l5-9z"/><path d="M30 112l5 8l5-9z"/>
+        <path d="M23 136l5-8l5 8z"/><path d="M33 135l5-8l5 8z"/>
+      </g>
+    </g>
+    <g class="strap">
+      <path d="M58 106L88 84l32 20" fill="none" stroke="#E8EEF5" stroke-width="11" stroke-linecap="round"/>
+      <path d="M58 106L88 84l32 20" fill="none" stroke="#B8C6D8" stroke-width="2" opacity=".8"/>
+    </g>
+    <g class="eye-open">
+      <circle cx="80" cy="92" r="5.6" fill="#FDFDF8"/>
+      <circle cx="97" cy="92" r="5.6" fill="#FDFDF8"/>
+      <circle cx="81.5" cy="93" r="3" fill="#1E2A3A"/>
+      <circle cx="95.5" cy="93" r="3" fill="#1E2A3A"/>
+    </g>
+    <g class="growx"></g>
+    <text x="102" y="128" font-size="11" fill="#7A8CA0" font-family="sans-serif" opacity=".9">27</text>
+  </g>
+</g>
+</svg>
+      <div class="pr-tag">拖鞋鯊 阿拖</div>
     </div>
 
   </div>
@@ -905,8 +1001,8 @@ function startQuizUnit(cat){
   document.getElementById("studyHall").classList.add("hide");
   document.getElementById("studyResult").classList.add("hide");
   document.getElementById("studyQuiz").classList.remove("hide");lockChangeChar(true);loadUnitQuiz();}
-function forfeitUnit(){uiConfirm("確定要放棄目前這組測驗嗎？放棄將無法獲得 +50 完賽獎勵喔！",function(){clearInterval(qReadTimer);clearTimeout(qLockTimer);showHall();});}
-function showResult(){studyState="result";isUnitActive=false;
+function forfeitUnit(){uiConfirm("確定要放棄目前這組測驗嗎？放棄將無法獲得 +50 完賽獎勵喔！",function(){clearInterval(qReadTimer);clearTimeout(qLockTimer);hideNextGate();showHall();});}
+function showResult(){studyState="result";isUnitActive=false;hideNextGate();
   document.getElementById("studyQuiz").classList.add("hide");
   document.getElementById("studyResult").classList.remove("hide");
   var txt="本組答對 <b style='color:var(--green)'>"+unitCorrect+"</b> 題、答錯 <b style='color:var(--red)'>"+unitWrong+"</b> 題。<br>";
@@ -926,6 +1022,7 @@ function loadUnitQuiz(){
   if(q.read){rd.innerHTML="<b style='color:var(--primary)'>📖 小知識閱讀：</b>"+q.read;rd.style.display="block";}else{rd.style.display="none";}
   document.getElementById("qText").textContent=q.q;
   document.getElementById("qHint").style.display="none";
+  hideNextGate();
   const opts=shuffleArray(q.o);
   document.getElementById("qOptions").innerHTML=opts.map((opt,i)=>'<button class="opt-btn" data-opt="'+encodeURIComponent(opt)+'" onclick="checkAnswer(this)">'+["A","B","C","D"][i]+". "+opt+'</button>').join("");
   clearInterval(qReadTimer);clearTimeout(qLockTimer);var lm=document.getElementById("qLockMsg");lockOpts(true);
@@ -947,8 +1044,29 @@ function checkAnswer(btnEl){initAudio();const q=currentUnitQ[unitIndex];const se
     var wmsg="正確答案是「"+q.a+"」";
     if(unitWrong>3){SAVE.coins=Math.max(0,SAVE.coins-5);unitBonusOK=false;wmsg+="（本組已錯 "+unitWrong+" 題，倒扣 5 點）";}
     document.getElementById("qHint").textContent="💡 "+wmsg+"　"+q.h;document.getElementById("qHint").style.display="block";
-    persist();updateTop();setTimeout(function(){unitIndex++;loadUnitQuiz();},1600);}}
-function skipQuiz(){const q=currentUnitQ[unitIndex];if(q&&!SAVE.todayData.skipped.some(it=>it.q===q.q))SAVE.todayData.skipped.push({category:q.category,q:q.q});persist();unitIndex++;loadUnitQuiz();}
+    persist();updateTop();
+    /* 答錯不自動跳題。讓作答者看懂正確答案，自己按下一題 */
+    showNextGate();}}
+/* 答錯後的「下一題」關卡 */
+function showNextGate(){
+  var w=document.getElementById("qNextWrap");
+  if(!w)return;
+  w.style.display="block";
+  var b=document.getElementById("qNextBtn");
+  if(b){b.disabled=false;b.textContent="看完答案了，下一題";}
+  try{w.scrollIntoView({behavior:"smooth",block:"nearest"});}catch(e){}
+}
+function hideNextGate(){
+  var w=document.getElementById("qNextWrap");
+  if(w)w.style.display="none";
+}
+function goNextQuestion(){
+  var b=document.getElementById("qNextBtn");
+  if(b)b.disabled=true;
+  hideNextGate();
+  unitIndex++;loadUnitQuiz();
+}
+function skipQuiz(){hideNextGate();const q=currentUnitQ[unitIndex];if(q&&!SAVE.todayData.skipped.some(it=>it.q===q.q))SAVE.todayData.skipped.push({category:q.category,q:q.q});persist();unitIndex++;loadUnitQuiz();}
 
 /* ================= 寵物 SVG 繪製 ================= */
 function petSprite(pid,p,opts){
@@ -1530,18 +1648,20 @@ var FURN = [
   {id:"scaleTable", name:"疊層磅秤台",   cost:300, eff:"整齊度不再衰退，也不會掉層"},
   {id:"driftMat",   name:"甩尾跑道地墊", cost:350, eff:"衝刺獎勵乘以 1.4"},
   {id:"lamp",       name:"星砂主燈",     cost:400, eff:"房間光跟著主寵切換色溫"},
-  {id:"barCounter", name:"三格餵食吧台", cost:250, eff:"開啟一鍵餵三隻"},
+  {id:"barCounter", name:"三格餵食吧台", cost:250, eff:"開啟一鍵餵食"},
   {id:"binBox",     name:"亂度回收箱",   cost:200, eff:"房間亂度每小時自動下降 3"}
 ];
 var LIGHT = {
   sea:{room:"#1A1B2E", glow:"rgba(159,124,232,.20)"},
   bur:{room:"#241E12", glow:"rgba(255,194,74,.16)"},
-  dog:{room:"#2A1A14", glow:"rgba(224,138,60,.18)"}
+  dog:{room:"#2A1A14", glow:"rgba(224,138,60,.18)"},
+  man:{room:"#241E12", glow:"rgba(255,194,74,.16)"},
+  slp:{room:"#2A1A14", glow:"rgba(224,138,60,.18)"}
 };
 var LAYER_COLORS = ["#E24B4A","#8CC63F","#C1543C","#FFE9A0","#FFC24A"];
 var LAYER_NAMES  = ["番茄","酸黃瓜","培根","蛋","起司"];
-var KEYS = ["sea","bur","dog"];
-var UNLOCK_COST = {sea:500, bur:0, dog:0};
+var KEYS = ["sea","bur","dog","man","slp"];
+var UNLOCK_COST = {sea:500, bur:0, dog:0, man:200, slp:300};
 
 var memFallback = null, storageOK = true;
 function readRaw(){
@@ -1560,7 +1680,9 @@ function fresh(){
     owned:{}, equipped:{sea:[],bur:[],dog:[]}, furn:{}, lampOn:true,
     sea:{trust:60, bubbles:2, star:0, lastPet:0},
     bur:{full:70, tidy:70, layers:3, feeds:0, lastFeed:0, lastTidy:0},
-    dog:{energy:20, mess:0, lastRun:0, lastClean:0}
+    dog:{energy:20, mess:0, lastRun:0, lastClean:0},
+    man:{calm:70, lastPat:0},
+    slp:{bite:20, teeth:80, lastToss:0, lastBrush:0}
   };
 }
 function today(){ var d = new Date(); return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(); }
@@ -1570,6 +1692,16 @@ var S;
   var raw = readRaw();
   if(raw){ try{ S = JSON.parse(raw); }catch(e){ S = null; } }
   if(!S || S.v !== 1) S = fresh();
+})();
+
+/* 舊存檔補齊新寵物的欄位。只補缺的，不動任何既有數值 */
+(function(){
+  if(!S.man) S.man = {calm:70, lastPat:0};
+  if(!S.slp) S.slp = {bite:20, teeth:80, lastToss:0, lastBrush:0};
+  if(S.unlocked.man == null) S.unlocked.man = false;
+  if(S.unlocked.slp == null) S.unlocked.slp = false;
+  if(!S.equipped.man) S.equipped.man = [];
+  if(!S.equipped.slp) S.equipped.slp = [];
 })();
 
 (function(){
@@ -1642,6 +1774,12 @@ function advance(ms){
     log.wentWild = true;
   }
   if(hasF("binBox")) S.dog.mess = clamp(S.dog.mess - h * 3, 0, 100);
+
+  if(S.unlocked.man) S.man.calm = clamp(S.man.calm - h * 3, 0, 100);
+  if(S.unlocked.slp){
+    S.slp.bite = clamp(S.slp.bite + h * 10, 0, 100);
+    S.slp.teeth = clamp(S.slp.teeth - h * 2, 0, 100);
+  }
 
   return log;
 }
@@ -1731,7 +1869,9 @@ function bar(label, val, max, color, extra){
 var PANEL = {
   sea:{name:"夢幻海馬", desc:"慢、安靜、記得你怎麼對牠"},
   bur:{name:"漢堡方塊", desc:"貪吃、樂天、有強迫症"},
-  dog:{name:"賽車狗阿酷", desc:"過動、愛面子、其實膽小"}
+  dog:{name:"賽車狗阿酷", desc:"過動、愛面子、其實膽小"},
+  man:{name:"生氣饅頭 阿饅", desc:"嘴巴很兇、實際很膽小、非常怕孤單"},
+  slp:{name:"拖鞋鯊 阿拖", desc:"什麼都想咬、沒有惡意、非常好懂"}
 };
 
 function cool(last, ms){ return Math.max(0, ms - (Date.now() - last)); }
@@ -1792,6 +1932,29 @@ function panels(){
       else h += '<p class="pr-note">精力每小時漲 12，滿了就開始拆房間。衝刺一次消耗 60 精力，亂度越高獎勵越低。</p>';
     }
 
+    if(k === "man"){
+      h += bar("安心感", S.man.calm, 100, "#E8D8B8");
+      var mp = cool(S.man.lastPat, 30000);
+      h += '<div class="pr-row"><div class="pr-rlabel">照顧</div><div class="pr-mini">'+
+        '<button data-act="pat2" '+(mp>0?"disabled":"")+'>'+cdLabel("摸牠頭頂的麵團", mp)+'</button>'+
+        '<button data-act="rest">哄睡</button></div></div>';
+      if(S.man.calm < 30) h += '<p class="pr-note pr-warn">安心感太低，牠挪到角落生悶氣了。摸摸牠頭頂那撮麵團。</p>';
+      else h += '<p class="pr-note">安心感每小時掉 3。牠嘴上不承認，但被摸頭頂那撮麵團的時候會安心。</p>';
+    }
+
+    if(k === "slp"){
+      h += bar("咬勁", S.slp.bite, 100, "#4A6FA5", S.slp.bite >= 100 ? "想咬東西想瘋了" : "");
+      h += bar("牙齒潔淨", S.slp.teeth, 100, "#E8EEF5");
+      var oc = cool(S.slp.lastToss, 20000), bc2 = cool(S.slp.lastBrush, 60000);
+      h += '<div class="pr-row"><div class="pr-rlabel">照顧</div><div class="pr-mini">'+
+        '<button data-act="toss" '+(oc>0||S.slp.bite<40?"disabled":"")+'>'+
+        cdLabel(S.slp.bite<40 ? "丟東西給牠咬（咬勁不足）" : "丟東西給牠咬", oc)+'</button>'+
+        '<button data-act="brush" '+(bc2>0?"disabled":"")+'>'+cdLabel("幫牠刷牙", bc2)+'</button>'+
+        '<button data-act="rest">哄睡</button></div></div>';
+      if(S.slp.bite >= 100) h += '<p class="pr-note pr-warn">咬勁滿了，牠開始追著自己的背鰭咬。丟個東西給牠。</p>';
+      else h += '<p class="pr-note">咬勁每小時漲 10。牠咬下去的東西會從後面掉出來，牠自己不知道，不要告訴牠。</p>';
+    }
+
     h += '<div class="pr-row"><div class="pr-rlabel">配件</div><div class="pr-acc" data-acc="'+k+'"></div></div>';
     d.innerHTML = h;
 
@@ -1850,6 +2013,18 @@ function act(k, a){
     if(got === 0) flash("今天的點數已達上限");
   }
   if(a === "clean"){ S.dog.mess = clamp(S.dog.mess - 30, 0, 100); S.dog.lastClean = now; }
+  if(a === "pat2"){
+    S.man.calm = clamp(S.man.calm + 12, 0, 100);
+    S.man.lastPat = now; setState("man","poke",1200);
+  }
+  if(a === "toss"){
+    if(S.slp.bite >= 40){
+      S.slp.bite = clamp(S.slp.bite - 50, 0, 100);
+      S.slp.lastToss = now; setState("slp","poke",1400);
+      flashOk("咬下去的東西從後面掉出來了，牠回頭看了一眼");
+    }
+  }
+  if(a === "brush"){ S.slp.teeth = clamp(S.slp.teeth + 35, 0, 100); S.slp.lastBrush = now; }
   if(a === "rest"){ setState(k, "sleep", 5000); }
   save(); render();
 }
@@ -2154,8 +2329,8 @@ window.petroom = {
   var ROOT=document.getElementById("petroom");
   if(!ROOT||!window.petroom)return;
 
-  var KEYS=["sea","bur","dog"];
-  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷"};
+  var KEYS=["sea","bur","dog","man","slp"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖"};
 
   /* ---------- 位移層 ---------- */
   function wrap(){
@@ -2200,7 +2375,7 @@ window.petroom = {
   /* ---------- 對話列 ----------
      原本泡泡畫在寵物上方，但舞台是 overflow:hidden 且上方留白很窄，
      泡泡會被裁掉。改成固定放在舞台上方一列，小尾巴指向說話的那一隻。 */
-  var SHORT={sea:"海馬",bur:"漢堡",dog:"阿酷"};
+  var SHORT={sea:"海馬",bur:"漢堡",dog:"阿酷",man:"阿饅",slp:"阿拖"};
   function sayBar(){
     var bar=ROOT.querySelector("#prSayBar");
     if(!bar){
@@ -2241,6 +2416,13 @@ window.petroom = {
         low=S.dog.mess>70;
         hyper=S.dog.energy>=100;
         tempo=S.dog.energy>=60?.78:1.05;
+      }else if(k==="man"&&S.man){
+        low=S.man.calm<30;
+        tempo=S.man.calm>=70?.92:S.man.calm>=40?1.1:1.55;
+      }else if(k==="slp"&&S.slp){
+        hyper=S.slp.bite>=100;
+        low=S.slp.teeth<25;
+        tempo=S.slp.bite>=60?.85:1.05;
       }
       if(low)pet.setAttribute("data-low","1");else pet.removeAttribute("data-low");
       if(hyper)pet.setAttribute("data-hyper","1");else pet.removeAttribute("data-hyper");
@@ -2271,7 +2453,9 @@ window.petroom = {
   var LINES={
     sea:["泡泡飄起來了…","你今天有來，我就安心了。","慢慢來就好。","星星在我眼睛裡轉圈圈。"],
     bur:["芝麻要排整齊才舒服。","有點餓…有一點點。","我又疊高一層了嗎？","起司快滑下去了！"],
-    dog:["再跑一次！再一次！","我沒有在拆東西喔。","墨鏡歪了不要說出來。","衝啊！"]
+    dog:["再跑一次！再一次！","我沒有在拆東西喔。","墨鏡歪了不要說出來。","衝啊！"],
+    man:["我沒有在生氣。","誰把泡泡弄破的！嚇…我才沒有嚇到。","今天也要保持兇兇的。","你來了喔。沒有很開心。真的。"],
+    slp:["有什麼可以咬的嗎？","我是鯊魚，27 號的那種。","啪嗒。啪嗒。","咦，剛剛咬的東西呢？"]
   };
   var ambNext=0;
   function ambient(){
@@ -2290,9 +2474,15 @@ window.petroom = {
     }else if(k==="bur"){
       amb(k,"amb-ses",4,160,2200);
       if(Math.random()<.45)move(k,"grow");
-    }else{
+    }else if(k==="dog"){
       amb(k,"amb-dust",3,130,1500);
       move(k,Math.random()<.6?"run":"hop");
+    }else if(k==="man"){
+      amb(k,"amb-ses",3,200,2200);
+      if(Math.random()<.5)move(k,"wiggle");
+    }else{
+      amb(k,"amb-dust",2,160,1500);
+      move(k,Math.random()<.55?"tumble":"hop");
     }
     if(Math.random()<.4){
       var L=LINES[k]||[];
@@ -2308,7 +2498,11 @@ window.petroom = {
     {sel:".lTop",  act:"grow",   sea:null,                bur:"頭上的芝麻亂了！", dog:null},
     {sel:".ses",   act:"wiggle", sea:null,                bur:"我剛剛才排好…",   dog:null},
     {sel:".swp",   act:"sway",   sea:"殼上的光很漂亮吧。", bur:null,              dog:null},
-    {sel:".eye-open",act:"shrink",sea:"別戳眼睛！",        bur:"眼睛是芝麻做的。", dog:"看得到看得到。"}
+    {sel:".brow",  act:"wiggle", man:"眉毛不是給你玩的！"},
+    {sel:".dough", act:"hop",    man:"那裡…那裡可以。再摸一下。"},
+    {sel:".teeth", act:"shrink", slp:"我咬東西，但我沒有惡意。"},
+    {sel:".fin",   act:"sway",   slp:"背鰭是真的。我真的是鯊魚。"},
+    {sel:".eye-open",act:"shrink",sea:"別戳眼睛！",bur:"眼睛是芝麻做的。",dog:"看得到看得到。",man:"幹嘛，我很兇喔。",slp:"眼睛分開一點，看得比較廣。"}
   ];
   function bindTouch(){
     KEYS.forEach(function(k){
@@ -2523,8 +2717,8 @@ window.petroom = {
   var ROOT=document.getElementById("petroom");
   if(!ROOT||!window.petroom||!window.petroomFX)return;
   var NS="http://www.w3.org/2000/svg";
-  var KEYS=["sea","bur","dog"];
-  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷"};
+  var KEYS=["sea","bur","dog","man","slp"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖"};
   var EXP_PER_LV=40, LV_CAP=10;
 
   /* ---------- 食物與偏好 ---------- */
@@ -2572,16 +2766,20 @@ window.petroom = {
       '<circle cx="6.6" cy="9.6" r="2.5"/><circle cx="6.6" cy="14.4" r="2.5"/>'+
       '<circle cx="17.4" cy="9.6" r="2.5"/><circle cx="17.4" cy="14.4" r="2.5"/></g></svg>'
   };
-  var LOVE={sea:["nori","mochi"], bur:["cburg","pizza"], dog:["bone","yam"]};
-  var HATE={sea:["bone"],         bur:["apple"],         dog:["nori"]};
+  var LOVE={sea:["nori","mochi"], bur:["cburg","pizza"], dog:["bone","yam"], man:["boba"], slp:["bone","nori"]};
+  var HATE={sea:["bone"], bur:["apple"], dog:["nori"], man:["pizza"], slp:["mochi"]};
   var LOVELINE={
     sea:{nori:"海藻餅…這個我可以吃三片。",mochi:"甜甜的，泡泡都變星形了！"},
     bur:{cburg:"同類？不管了，好吃！",pizza:"起司配起司，完美。"},
-    dog:{bone:"骨頭餅乾！給我給我給我！",yam:"熱的地瓜最讚了！"}
+    dog:{bone:"骨頭餅乾！給我給我給我！",yam:"熱的地瓜最讚了！"},
+    man:{boba:"珍奶…我、我只是剛好口渴。"},
+    slp:{bone:"咔滋咔滋咔滋！",nori:"薄薄的最好咬！"}
   };
   var HATELINE={sea:{bone:"這個太硬了，我沒有牙齒啊。"},
                 bur:{apple:"太健康了，我不想變瘦。"},
-                dog:{nori:"這是紙嗎？我不要。"}};
+                dog:{nori:"這是紙嗎？我不要。"},
+                man:{pizza:"太多料了，我很單純。"},
+                slp:{mochi:"黏、黏在牙上了！救命！"}};
 
   /* ---------- 狀態 ---------- */
   function today(){
@@ -2678,6 +2876,24 @@ window.petroom = {
              '<path d="M35 12l19 6-19 6z" fill="#D93A3A"/>'+
              '<text x="40" y="21" font-size="9" fill="#FDF6EE" font-family="inherit">'+L+'</text></g>';
     }
+    if(k==="man"){
+      /* 阿饅：每兩級表面多一道開花裂紋 */
+      var mo="";
+      for(var q=0;q<rings&&q<4;q++){
+        mo+='<path d="M'+(58+q*12)+' '+(74-(q%2)*4)+'q6 8 0 16" fill="none" '+
+            'stroke="#E0D6C2" stroke-width="2" stroke-linecap="round" opacity=".9"/>';
+      }
+      return mo;
+    }
+    if(k==="slp"){
+      /* 阿拖：每兩級多一顆牙，鞋底多一道磨痕 */
+      var so="";
+      for(var w2=0;w2<rings&&w2<3;w2++){
+        so+='<path d="M'+(42+w2*9)+' 113l4 7l4-8z" fill="#FFFFFF"/>';
+        so+='<path d="M'+(64+w2*16)+' 134l10 2" stroke="#3A5A88" stroke-width="1.6" opacity=".7"/>';
+      }
+      return so;
+    }
     /* 阿酷：耳翼上每兩級多一道白線 */
     var o="";
     for(var j=0;j<rings&&j<4;j++){
@@ -2742,7 +2958,7 @@ window.petroom = {
     }
   }
   /* 每隻在 SVG 內部也有自己的吃相，跟外層的咀嚼疊加 */
-  var INNER={sea:"happy",bur:"eat",dog:"poke"};
+  var INNER={sea:"happy",bur:"eat",dog:"poke",man:"poke",slp:"poke"};
 
   function feedx(fid){
     var d=px();if(!d)return;
@@ -3025,6 +3241,384 @@ window.petroom = {
     feed:feedx,
     claim:claim,
     refresh:function(){growth();paintx(true);}
+  };
+})();
+</script>
+
+
+<style>
+/* =========================================================
+   v13 衰退與回憶館 / 成長故事（樣式）
+   純附加。要還原就把這段 style 和下面的 script 整段刪掉。
+   ========================================================= */
+#petroom .pr-pet[data-decay="2"] svg{filter:saturate(.7) brightness(.85); transition:filter 1s ease}
+#petroom .pr-pet[data-decay="3"] svg{filter:saturate(.45) brightness(.7); transition:filter 1s ease}
+#petroom .pr-pet[data-decay="2"] .pr-mv,
+#petroom .pr-pet[data-decay="3"] .pr-mv{animation:mvDroop 5.2s ease-in-out infinite}
+#petroom .pr-pet.px-away{display:none}
+
+#pxCare{margin:0 0 10px}
+#pxCare .pxc{background:#241D08; border:1px solid #6B5518; border-radius:12px;
+  padding:10px 13px; font-size:12.5px; line-height:1.7; color:#EAD9A8; margin-bottom:8px}
+#pxCare .pxc b{color:#FFD264; font-weight:500}
+#pxCare .pxc.pxc-deep{background:#2A1214; border-color:#7A3A3A; color:#EFC2C2}
+#pxCare .pxc.pxc-deep b{color:#FF9A9A}
+
+#pxMem .pxm-row{display:flex; align-items:center; gap:10px; padding:9px 0;
+  border-bottom:1px solid var(--pr-line); font-size:12.5px}
+#pxMem .pxm-row:last-child{border-bottom:none}
+#pxMem .pxm-name{color:var(--pr-txt); min-width:0; flex:1}
+#pxMem .pxm-sub{display:block; color:var(--pr-txt3); font-size:11px; margin-top:2px}
+#pxMem button{background:#241D08; border:1px solid var(--pr-gold); color:var(--pr-gold);
+  border-radius:9px; padding:6px 12px; font-size:12px; cursor:pointer; font-family:inherit; white-space:nowrap}
+#pxMem button:disabled{opacity:.42; cursor:not-allowed; border-color:var(--pr-line); color:var(--pr-txt3)}
+
+#pxStory .pxs-ch{border-bottom:1px solid var(--pr-line); padding:4px 0}
+#pxStory .pxs-ch:last-child{border-bottom:none}
+#pxStory summary{cursor:pointer; list-style:none; padding:8px 2px; font-size:13px; color:var(--pr-txt);
+  display:flex; align-items:center; gap:8px}
+#pxStory summary::-webkit-details-marker{display:none}
+#pxStory .pxs-lock{color:var(--pr-txt3)}
+#pxStory .pxs-lock summary{cursor:default}
+#pxStory .pxs-cond{margin-left:auto; font-size:11px; color:var(--pr-txt3); white-space:nowrap}
+#pxStory .pxs-new{font-size:10.5px; color:var(--pr-gold); border:1px solid #6B5518;
+  padding:0 6px; border-radius:8px}
+#pxStory .pxs-body{font-size:12.5px; line-height:1.9; color:var(--pr-txt2); padding:2px 2px 12px;
+  white-space:pre-line}
+</style>
+
+<script>
+/* =========================================================
+   v13 衰退與回憶館 / 成長故事
+   規則照規格書第七、八章：
+   衰退五階段，最後是「離開」不是死亡。資料永久保留，等級不歸零。
+   點數與答題資料絕不因衰退受影響。
+   狀態存在 SAVE.petx（與答題同一份存檔）。
+   ========================================================= */
+(function(){
+  var ROOT=document.getElementById("petroom");
+  if(!ROOT||!window.petroom||!window.petx||!window.petroomFX)return;
+  var KEYS=["sea","bur","dog","man","slp"];
+  var NAME={sea:"夢幻海馬",bur:"漢堡方塊",dog:"賽車狗阿酷",man:"生氣饅頭阿饅",slp:"拖鞋鯊阿拖"};
+  var HR=3600000;
+  var STAGE_H=[24,72,168,336];   /* 不安 / 虛弱 / 沉睡 / 離開 的門檻小時 */
+
+  function today(){
+    if(typeof getTodayStr==="function")return getTodayStr();
+    var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  }
+  function ymd(off){
+    var d=new Date();d.setDate(d.getDate()+(off||0));
+    return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+  }
+  function D(){
+    var d=(typeof window.petx.get==="function")?null:null;
+    if(typeof SAVE==="undefined"||!SAVE)return null;
+    var x=SAVE.petx;if(!x)return null;
+    x.care=x.care||{};
+    x.away=x.away||{};
+    x.wake=x.wake||{};
+    x.story=x.story||["c1"];
+    if(x.recallUsed==null)x.recallUsed=false;
+    return x;
+  }
+  function keep(){try{if(typeof persist==="function")persist();}catch(e){}}
+  function stats(){try{return window.petroom.get()||{};}catch(e){return {};}}
+  function ownedKeys(){
+    var un=(stats().unlocked)||{};
+    return KEYS.filter(function(k){return !!un[k];});
+  }
+  function markCare(k){
+    var x=D();if(!x||!k)return;
+    x.care[k]=Date.now();keep();
+  }
+  function markCareAll(){
+    var x=D();if(!x)return;
+    var now=Date.now();
+    ownedKeys().forEach(function(k){if(!x.away[k])x.care[k]=now;});
+    keep();
+  }
+  function stageOf(k){
+    var x=D();if(!x)return 0;
+    if(x.away[k])return 4;
+    var t=x.care[k];if(!t)return 0;
+    var h=(Date.now()-t)/HR;
+    if(h<STAGE_H[0])return 0;
+    if(h<STAGE_H[1])return 1;
+    if(h<STAGE_H[2])return 2;
+    if(h<STAGE_H[3])return 3;
+    return 4;
+  }
+
+  /* 首次啟動：所有已擁有的寵物照顧時間設為現在，不回溯懲罰 */
+  (function(){
+    var x=D();if(!x)return;
+    var now=Date.now();var changed=false;
+    ownedKeys().forEach(function(k){
+      if(!x.care[k]&&!x.away[k]){x.care[k]=now;changed=true;}
+    });
+    if(changed)keep();
+  })();
+
+  /* ---------- 照顧行為的掛勾 ---------- */
+  /* 點寵物本體 */
+  ROOT.addEventListener("click",function(ev){
+    var pet=ev.target.closest&&ev.target.closest(".pr-pet");
+    if(pet&&pet.dataset.pet)markCare(pet.dataset.pet);
+  },true);
+  /* 面板照顧按鈕：面板順序即 KEYS 順序 */
+  ROOT.addEventListener("click",function(ev){
+    var b=ev.target.closest&&ev.target.closest("#pr-panels button[data-act]");
+    if(!b)return;
+    var panel=b.closest(".pr-panel");if(!panel)return;
+    var i=Array.prototype.indexOf.call(panel.parentNode.children,panel);
+    if(i>=0&&KEYS[i])markCare(KEYS[i]);
+  },true);
+  /* 餵食：包住 petx.feed */
+  if(window.petx&&typeof window.petx.feed==="function"&&!window.petx.feed._careWrapped){
+    var _feed=window.petx.feed;
+    var wf=function(fid){
+      var m=(stats().main)||"bur";
+      var r=_feed.apply(this,arguments);
+      markCare(m);
+      return r;
+    };
+    wf._careWrapped=true;
+    window.petx.feed=wf;
+  }
+  /* 完成每日照顧任務：包住 petx.claim，全體算一次照顧，並處理沉睡喚醒 */
+  if(window.petx&&typeof window.petx.claim==="function"&&!window.petx.claim._careWrapped){
+    var _claim=window.petx.claim;
+    var wc=function(){
+      var x=D();
+      var sleeping=x?KEYS.filter(function(k){return stageOf(k)===3;}):[];
+      var r=_claim.apply(this,arguments);
+      var claimed=(SAVE&&SAVE.petx&&SAVE.petx.daily&&SAVE.petx.daily.claimed);
+      if(claimed&&x){
+        var t=today(),y=ymd(-1);
+        /* 沉睡中的寵物：連續三天完成照顧才喚醒，不直接醒 */
+        sleeping.forEach(function(k){
+          var w=x.wake[k]||{days:0,last:""};
+          if(w.last===t)return;
+          w.days=(w.last===y)?w.days+1:1;
+          w.last=t;
+          if(w.days>=3){
+            x.care[k]=Date.now();delete x.wake[k];
+            try{cheer(NAME[k]+" 醒過來了！牠一直在等你。");}catch(e){}
+            window.petroomFX.move(k,"grow");
+            window.petroomFX.say(k,"…你來了。我就知道。",3600);
+          }else{
+            x.wake[k]=w;
+            try{toast(NAME[k]+" 還在沉睡。連續照顧第 "+w.days+" 天，滿 3 天牠會醒來。");}catch(e){}
+          }
+        });
+        /* 其他寵物照顧時間更新 */
+        var now=Date.now();
+        ownedKeys().forEach(function(k){
+          if(!x.away[k]&&stageOf(k)<3)x.care[k]=now;
+        });
+        keep();
+      }
+      return r;
+    };
+    wc._careWrapped=true;
+    window.petx.claim=wc;
+  }
+
+  /* ---------- 衰退的顯示與離開 ---------- */
+  var saidStage={};
+  function applyDecay(){
+    var x=D();if(!x)return;
+    ownedKeys().forEach(function(k){
+      var pet=ROOT.querySelector("#pr-p-"+k);if(!pet)return;
+      var st=stageOf(k);
+      if(st>=4&&!x.away[k]){
+        /* 進入離開：記錄並移入回憶館。資料完整保留 */
+        x.away[k]=Date.now();keep();
+        try{cheer(NAME[k]+" 覺得這裡暫時不需要牠，回到海裡了。牠的一切都保留在回憶館。");}catch(e){}
+      }
+      pet.classList.toggle("px-away",!!x.away[k]);
+      if(x.away[k]){pet.removeAttribute("data-decay");return;}
+      if(st>=2)pet.setAttribute("data-decay",String(st));
+      else pet.removeAttribute("data-decay");
+      /* 階段一：進房間時說一句等你的話，每階段只說一次 */
+      if(st===1&&saidStage[k]!==1){
+        saidStage[k]=1;
+        window.petroomFX.say(k,"你昨天沒來。我等很久。",3400);
+      }
+      if(st<1)saidStage[k]=0;
+    });
+  }
+
+  /* ---------- 提示卡 ---------- */
+  function careHost(){
+    var el=document.getElementById("pxCare");
+    if(!el){
+      el=document.createElement("div");
+      el.id="pxCare";
+      var wrap=document.getElementById("petxWrap");
+      if(wrap&&wrap.parentNode)wrap.parentNode.insertBefore(el,wrap);
+      else ROOT.appendChild(el);
+    }
+    return el;
+  }
+  var careSig=null;
+  function paintCare(){
+    var x=D();if(!x)return;
+    var rows=[];
+    ownedKeys().forEach(function(k){
+      var st=stageOf(k);
+      if(x.away[k])return;
+      if(st===1)rows.push({k:k,st:1,t:"<b>"+NAME[k]+"</b> 有點不安，牠在等你。摸摸牠或餵牠一次就好。"});
+      if(st===2)rows.push({k:k,st:2,t:"<b>"+NAME[k]+"</b> 變得虛弱，顏色都淡了。照顧牠一次可以先穩住，之後要連著照顧兩天才會完全恢復。"});
+      if(st===3){
+        var w=x.wake[k];
+        rows.push({k:k,st:3,t:"<b>"+NAME[k]+"</b> 睡著了，叫不醒。連續三天完成每日照顧任務牠會醒來"+
+          (w&&w.days?("，目前第 "+w.days+" 天"):"")+"。再過幾天不理牠，牠會離開房間。"});
+      }
+    });
+    var sig=rows.map(function(r){return r.k+r.st+((x.wake[r.k]||{}).days||0);}).join("|");
+    if(sig===careSig)return;
+    careSig=sig;
+    var el=careHost();
+    el.innerHTML=rows.map(function(r){
+      return '<div class="pxc'+(r.st>=3?" pxc-deep":"")+'">'+r.t+'</div>';
+    }).join("");
+  }
+
+  /* ---------- 回憶館 ---------- */
+  function memHost(){
+    var el=document.getElementById("pxMem");
+    if(el)return el;
+    var card=document.createElement("div");
+    card.className="px-card";
+    card.innerHTML='<div class="px-h"><b>回憶館</b><span>離開的寵物在這裡，牠的一切都還在</span></div><div id="pxMem"></div>';
+    var wrap=document.getElementById("petxWrap");
+    if(wrap)wrap.appendChild(card);
+    card.style.display="none";
+    card.id="pxMemCard";
+    return document.getElementById("pxMem");
+  }
+  var memSig=null;
+  function paintMem(){
+    var x=D();if(!x)return;
+    var away=KEYS.filter(function(k){return !!x.away[k];});
+    var host=memHost();
+    var card=document.getElementById("pxMemCard");
+    if(card)card.style.display=away.length?"":"none";
+    var streak=(x.streak&&x.streak.days)||0;
+    var pts=(typeof SAVE!=="undefined"&&SAVE)?(SAVE.coins||0):0;
+    var sig=away.map(function(k){return k+"|"+x.away[k];}).join(",")+"|"+streak+"|"+(x.recallUsed?1:0)+"|"+pts;
+    if(sig===memSig)return;
+    memSig=sig;
+    if(!away.length){host.innerHTML="";return;}
+    host.innerHTML=away.map(function(k){
+      var days=Math.max(1,Math.round((Date.now()-x.away[k])/86400000));
+      var lv=window.petx.lv?window.petx.lv(k):1;
+      var free=!x.recallUsed;
+      var can=streak>=7&&(free||pts>=800);
+      var why=streak<7?"需要連續照顧滿 7 天（目前 "+streak+" 天）":
+              (free?"第一次呼喚免費":"需要 800 點");
+      return '<div class="pxm-row"><span class="pxm-name">'+NAME[k]+
+        '<span class="pxm-sub">Lv.'+lv+'　離開 '+days+' 天　等級與紀錄都保留著</span></span>'+
+        '<button data-recall="'+k+'" '+(can?"":"disabled")+'>呼喚回來（'+why+'）</button></div>';
+    }).join("");
+    host.querySelectorAll("[data-recall]").forEach(function(b){
+      b.onclick=function(){recall(b.getAttribute("data-recall"));};
+    });
+  }
+  function recall(k){
+    var x=D();if(!x||!x.away[k])return;
+    var streak=(x.streak&&x.streak.days)||0;
+    if(streak<7){try{toast("要先連續照顧滿 7 天，證明你現在會照顧牠。");}catch(e){}return;}
+    if(!x.recallUsed){
+      x.recallUsed=true;
+    }else{
+      if(((typeof SAVE!=="undefined"&&SAVE)?(SAVE.coins||0):0)<800){
+        try{toast("點數不足，呼喚需要 800 點。");}catch(e){}return;
+      }
+      try{window.petroom.addPoints(-800);}catch(e){return;}
+    }
+    delete x.away[k];
+    /* 回來後從虛弱階段開始，需要照顧才會完全恢復 */
+    x.care[k]=Date.now()-100*HR;
+    keep();
+    memSig=null;careSig=null;
+    applyDecay();paintCare();paintMem();
+    try{cheer(NAME[k]+" 回來了！牠現在很虛弱，好好照顧牠。");}catch(e){}
+    setTimeout(function(){
+      window.petroomFX.say(k,"…我回來了。這次你會記得我嗎？",4200);
+    },800);
+  }
+
+  /* ---------- 成長故事 ---------- */
+  var STORY=[
+    {id:"c1",t:"第一章　漂來的東西",cond:"一開始就有",ok:function(){return true;},
+     body:"暫住所本來沒有名字。它只是海底一個凹進去的地方，什麼東西被水流帶著走，最後都會卡在這裡。\n\n你來的那天，這裡只有一塊漢堡。它正在數自己身上的芝麻，數到第七顆的時候被你嚇到，芝麻全散了。它花了很久才重新排好，然後看著你，好像在等你解釋你是誰。\n\n你沒有解釋。你只是坐下來，開始寫功課。\n\n每次你答對一題，水裡就會浮起一顆小小的泡泡。漢堡追著泡泡跑，吃到第一顆的時候，它整塊抖了一下，然後跳了兩下。\n\n那是暫住所第一次有東西在跳。"},
+    {id:"c2",t:"第二章　名字",cond:"任一寵物 Lv.3",ok:function(){return anyLv(3);},
+     body:"你發現這些東西是沒有名字的。\n\n不是被遺忘，是從來沒有過。它們漂過來的時候身上什麼都沒帶，包括自己叫什麼。所以你開始幫它們取名。\n\n取名這件事比你想的重要。取了名字之後，它們開始有不同的樣子。原本只是一塊漢堡，現在會為了芝麻排不整齊而當機一整個下午。原本只是一顆饅頭，現在會在你晚一點來的時候，用那對很粗的眉毛表達不滿，然後在你摸它的時候立刻裝作沒事。\n\n你注意到，它們的變化跟你有關。你答的題越多，浮起來的泡泡越多，它們就越像自己。"},
+    {id:"c3",t:"第三章　它們在看你",cond:"任一寵物 Lv.6",ok:function(){return anyLv(6);},
+     body:"有一天你答題答到卡住，一題想了很久。\n\n你抬頭的時候發現它們都在看你。漢堡停止排芝麻，饅頭的眉毛放下來了，拖鞋安靜地閉上嘴。它們不知道你在算什麼，但它們知道你在努力。\n\n你把那題寫完了。答對的那一刻，泡泡浮起來，它們全部同時跳了起來。\n\n你才明白這件事一直是雙向的。你在餵它們，它們也在等你。"},
+    {id:"c4",t:"第四章　留下來的理由",cond:"任一寵物 Lv.10",ok:function(){return anyLv(10);},
+     body:"暫住所不再是暫住所了。\n\n漂來這裡的東西本來都會再漂走，水流會把它們帶到下一個地方。但你發現它們沒有走。有東西留下來了。\n\n你問饅頭為什麼不走。它用眉毛做了一個很複雜的表情，然後慢慢挪到你旁邊靠著。\n\n它沒有回答。但你懂了。"},
+    {id:"c5",t:"第五章　看管人",cond:"同時擁有五隻寵物",ok:function(){return ownedKeys().length>=5;},
+     body:"現在這裡有五個。\n\n有時候會很吵。拖鞋鯊咬了漢堡的一層，咬完從後面掉出來，漢堡當機了三分鐘。饅頭在旁邊生氣，但它的生氣沒有威嚇力，沒有人理它。\n\n你在旁邊寫功課。\n\n海底沒有窗戶，你不知道外面是白天還是晚上。但你知道每次你答對一題，身後就會有一片小小的騷動。\n\n這就夠了。"}
+  ];
+  function anyLv(n){
+    if(!window.petx.lv)return false;
+    return KEYS.some(function(k){return window.petx.lv(k)>=n;});
+  }
+  function storyHost(){
+    var el=document.getElementById("pxStory");
+    if(el)return el;
+    var card=document.createElement("div");
+    card.className="px-card";
+    card.innerHTML='<div class="px-h"><b>成長故事</b><span>養育牠們會解鎖新的章節</span></div><div id="pxStory"></div>';
+    var wrap=document.getElementById("petxWrap");
+    if(wrap)wrap.appendChild(card);
+    return document.getElementById("pxStory");
+  }
+  var storySig=null;
+  function paintStory(){
+    var x=D();if(!x)return;
+    var changed=false;
+    STORY.forEach(function(c){
+      if(c.ok()&&x.story.indexOf(c.id)<0){
+        x.story.push(c.id);changed=true;
+        try{cheer("解鎖新的故事章節："+c.t);}catch(e){}
+      }
+    });
+    if(changed)keep();
+    var sig=x.story.join(",");
+    if(sig===storySig)return;
+    storySig=sig;
+    var host=storyHost();
+    host.innerHTML=STORY.map(function(c){
+      var un=x.story.indexOf(c.id)>=0;
+      if(!un){
+        return '<div class="pxs-ch pxs-lock"><summary>'+c.t+
+          '<span class="pxs-cond">未解鎖　'+c.cond+'</span></summary></div>';
+      }
+      return '<details class="pxs-ch"><summary>'+c.t+
+        '<span class="pxs-cond">'+c.cond+'</span></summary>'+
+        '<div class="pxs-body">'+c.body+'</div></details>';
+    }).join("");
+  }
+
+  /* ---------- 啟動 ---------- */
+  function tick(){
+    var v=document.getElementById("view-pet");
+    if(!v||v.classList.contains("hide"))return;
+    applyDecay();paintCare();paintMem();paintStory();
+  }
+  setInterval(tick,2500);
+  setTimeout(tick,600);
+
+  window.petx13={
+    stage:stageOf,
+    care:markCare,
+    recall:recall,
+    refresh:function(){careSig=null;memSig=null;storySig=null;tick();}
   };
 })();
 </script>
