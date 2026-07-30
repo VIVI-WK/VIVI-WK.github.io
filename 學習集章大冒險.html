@@ -2430,13 +2430,8 @@ function panels(){
     d.innerHTML = h;
 
     var accBox = d.querySelector('[data-acc="'+k+'"]');
-    WEAR.filter(function(w){
-      if(w.pet === k) return true;
-      /* 通用配件(pet:"all")只在該寵物 SVG 真的有對應配件圖時才顯示，
-         避免阿饅/阿拖/美代子這些新寵「已穿但身上沒畫」的空戴 */
-      if(w.pet === "all") return !!ROOT.querySelector("#pr-p-"+k+" .ac-"+w.id);
-      return false;
-    }).forEach(function(w){
+    /* 配件全部改由上方「🎀 造型」分頁的免費開關控制，照顧分頁不再顯示付費配件列 */
+    WEAR.filter(function(){ return false; }).forEach(function(w){
       var b = document.createElement("button");
       if(!has(w.id)){
         b.textContent = w.name + " " + w.cost + " 點";
@@ -4553,6 +4548,16 @@ window.petroom = {
 /* 阿拖：咬咬環 / 頭巾 */
 #petroom .slp[data-chew="1"] .gear-chew{opacity:1}
 #petroom .slp[data-bandana="1"] .gear-bandana{opacity:1}
+/* 前三隻：原本付費配件改成免費造型開關（!important 蓋過 pr-hide / wearing 的控制）*/
+#petroom .sea[data-ring="1"] .ac-ring{display:block !important} #petroom .sea[data-ring="0"] .ac-ring{display:none !important}
+#petroom .sea[data-veil="1"] .ac-veil{display:block !important} #petroom .sea[data-veil="0"] .ac-veil{display:none !important}
+#petroom .sea[data-scarf="1"] .ac-scarf{display:block !important} #petroom .sea[data-scarf="0"] .ac-scarf{display:none !important}
+#petroom .bur[data-flag="1"] .ac-flag{display:block !important} #petroom .bur[data-flag="0"] .ac-flag{display:none !important}
+#petroom .bur[data-tray="1"] .ac-tray{display:block !important} #petroom .bur[data-tray="0"] .ac-tray{display:none !important}
+#petroom .bur[data-scarf="1"] .ac-scarf{display:block !important} #petroom .bur[data-scarf="0"] .ac-scarf{display:none !important}
+#petroom .dog[data-spoiler="1"] .ac-spoiler{display:block !important} #petroom .dog[data-spoiler="0"] .ac-spoiler{display:none !important}
+#petroom .dog[data-exring="1"] .ac-exring{display:block !important} #petroom .dog[data-exring="0"] .ac-exring{display:none !important}
+#petroom .dog[data-scarf="1"] .ac-scarf{display:block !important} #petroom .dog[data-scarf="0"] .ac-scarf{display:none !important}
 /* 面板 */
 #petroom .pr-style{display:none; margin:0 0 10px; padding:10px 12px;
   background:rgba(20,27,48,.6); border:1px solid var(--pr-line); border-radius:12px}
@@ -4571,6 +4576,21 @@ window.petroom = {
   var stage=ROOT.querySelector("#pr-stage"); if(!stage) return;
 
   var CFG={
+    sea:{ title:"🐴 夢幻海馬的造型", rows:[
+      {label:"吻環", attr:"ring", def:"0", opts:[["1","戴上"],["0","拿下"]]},
+      {label:"鰭帔", attr:"veil", def:"0", opts:[["1","披上"],["0","拿下"]]},
+      {label:"領巾", attr:"scarf", def:"0", opts:[["1","圍上"],["0","拿下"]]}
+    ]},
+    bur:{ title:"🍔 漢堡方塊的造型", rows:[
+      {label:"竹籤旗", attr:"flag", def:"0", opts:[["1","插上"],["0","拿下"]]},
+      {label:"紙托", attr:"tray", def:"0", opts:[["1","墊上"],["0","拿下"]]},
+      {label:"領巾", attr:"scarf", def:"0", opts:[["1","圍上"],["0","拿下"]]}
+    ]},
+    dog:{ title:"🐶 賽車狗阿酷的造型", rows:[
+      {label:"定風片", attr:"spoiler", def:"0", opts:[["1","裝上"],["0","拿下"]]},
+      {label:"排氣尾環", attr:"exring", def:"0", opts:[["1","裝上"],["0","拿下"]]},
+      {label:"領巾", attr:"scarf", def:"0", opts:[["1","圍上"],["0","拿下"]]}
+    ]},
     mio:{ title:"🎀 音音美代子的造型", rows:[
       {label:"鞋子", attr:"shoe", def:"basic", opts:[["basic","球鞋"],["run","高級路跑鞋"],["hike","登山鞋"]]},
       {label:"汗帶", attr:"band", def:"0", opts:[["1","戴上"],["0","拿下"]]}
@@ -4673,7 +4693,7 @@ window.petroom = {
     };
   }
   function styleActive(){
-    try{ var g=window.petroom.get(); return !!(({mio:1,man:1,slp:1})[g.main] && g.unlocked && g.unlocked[g.main]); }catch(e){ return false; }
+    try{ var g=window.petroom.get(); return !!(({sea:1,bur:1,dog:1,man:1,slp:1,mio:1})[g.main] && g.unlocked && g.unlocked[g.main]); }catch(e){ return false; }
   }
   function apply(){
     var hasStyle=styleActive();
