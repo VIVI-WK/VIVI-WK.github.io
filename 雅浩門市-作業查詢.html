@@ -90,14 +90,14 @@
   <header>
     <div class="en">YAHO FURNITURE · STORE OPERATION LOOKUP</div>
     <h1>雅浩門市 作業查詢</h1>
-    <div class="meta">忘記流程時回來查 ・ 選狀況只給當下那一段 ・ v2026.07</div>
+    <div class="meta">忘記流程時回來查 ・ 選狀況只給當下那一段 ・ v2026.07.21</div>
   </header>
   <input class="search" id="search" placeholder="輸入關鍵字找流程，例如：退款、業績、發票、盤點、贈送…" oninput="doSearch(this.value)">
   <div class="nav" id="nav"></div>
   <div id="stage"></div>
   <div class="foot">
     本工具僅供雅浩門市同仁查詢作業流程，非完整作業手冊。<br>
-    製作：鄭VIVI ・ 門市部 ・ 內容版本 v2026.07
+    製作：鄭VIVI ・ 門市部 ・ 內容版本 v2026.07.21
   </div>
 </div>
 
@@ -108,7 +108,7 @@ document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
   if((e.ctrlKey||e.metaKey)&&['u','s','p','c','a'].includes(k))e.preventDefault();
   if((e.ctrlKey&&e.shiftKey)&&['i','j','c'].includes(k))e.preventDefault();});
 (function(){let h='';for(let y=0;y<3600;y+=150)for(let x=-100;x<1700;x+=340)
-  h+='<span style="top:'+y+'px;left:'+x+'px">鄭VIVI ・ 雅浩門市部 ・ v2026.07</span>';
+  h+='<span style="top:'+y+'px;left:'+x+'px">鄭VIVI ・ 雅浩門市部 ・ v2026.07.21</span>';
   document.getElementById('wm').innerHTML=h;})();
 
 /* =================== 節點 =================== */
@@ -126,7 +126,7 @@ const NODES={
     {k:'10',t:'商品贈送',d:'送個人、送公司、簽名歸檔',to:'gift'},
     {k:'11',t:'商品保留',d:'依來源流程、期限、爭議判定',to:'reserve'},
     {k:'12',t:'業績歸屬與輪班',d:'判定、綁定、爭議、效期、輪班、LINE',to:'attr'},
-    {k:'13',t:'常見錯誤紅線',d:'18 條常見錯誤與正確做法',res:'r_errors'},
+    {k:'13',t:'常見錯誤紅線',d:'19 條常見錯誤與正確做法',res:'r_errors'},
     {k:'14',t:'商品知識與政策',d:'保固、木質輪、停產、其他',to:'product'},
     {k:'15',t:'通訊錄・部門據點',d:'部門職掌、據點電話、LINE 群組',to:'contacts'}
   ]},
@@ -241,7 +241,7 @@ const NODES={
     {k:'4',t:'客戶不滿要換業務',d:'',res:'a_switch'},
     {k:'5',t:'歸屬效期 / 追溯期',d:'',res:'a_expiry'},
     {k:'6',t:'輪班與跨店接待',d:'',res:'a_shift'},
-    {k:'7',t:'LINE 綁定與分配',d:'官方 LINE、來電派單',res:'a_line'}
+    {k:'7',t:'LINE 綁定與分配',d:'',res:'a_line'}
   ]},
   product:{title:'商品知識與政策 — 要查什麼？',opts:[
     {k:'1',t:'保固規範',d:'MADESK、Herman Miller 貼紙',res:'r_warranty'},
@@ -294,7 +294,7 @@ const RES={
     {h:'據點與輪班',list:['門市據點：內湖總公司、仁愛 NORMANN 概念店。','兩店隔週輪班；公司認知的「門市」為仁愛。','已取消統一客服專線，線上窗口為官方 LINE 與客服信箱 info@yaho.com.tw，門市以兩店各自專線為主。']},
     {h:'五大核心動線',list:['接待 → 報價 → 登打訂單 → 結帳 → 登打文中 ERP → 結單後出貨。','先把主線練熟；退換貨、調撥、盤點、吊牌、贈送、跨部門協作屬延伸，依實際遇到再補強。']},
     {h:'溝通管道',list:['對公司各部門以 Email 為主、Teams 即時聯繫；門市內部用 LINE 或 Email。','牽涉金額、出貨、退換貨、需留紀錄的通報，一律走 Email 以利查核。']},
-    {h:'動態登打',list:['路徑：公司協同作業資料夾的「展售中心動態紀錄」。','需登打：客戶姓名、電話、Email、詢問品項、處理狀況；成交者加註訂單編號。']}]},
+    {h:'動態登打',list:['路徑：公司協同作業資料夾的「展售中心動態紀錄」。','需登打：客戶姓名、電話、Email、詢問品項、處理狀況；成交者加註訂單編號。電話格式不可有空格或橫槓。','未成交客戶一樣要打，並註明看了什麼商品、有沒有報價。','動態當下就要打；已成交當下沒打的，最遲成交日起七日內補登；沒成交的當日就要補上。逾期未補登，客戶就不是你的，事後不得追討。','動態要有效，前提是真的服務過：須有實質互動、報價紀錄或對話證明；僅 LINE 綁定或只登記姓名電話視為無效。']}]},
 
   r_recept_retail:{tag:'接待 ・ 一般/零售客戶',list:['產品介紹：操作解說、人體工學概念、品牌故事。','提供當前活動資訊與優惠。','協助路線導航與來店預約。']},
   r_recept_call:{tag:'接待 ・ 來電客戶',list:['處理客戶問題、維修詢問、客訴。','售後服務以線上操作流程教學為主，可錄影、加 LINE、傳 Email 輔助。']},
@@ -408,7 +408,7 @@ const RES={
   r_reserve_dispute:{tag:'商品保留 ・ 爭議判定',list:['未依流程先行保留就銷售，視同未保留完成。','相同商品保留依流程正確性與時間判定；流程有誤者，即使最早留言仍視為無效。','保留未於期限內取消或未發信延後，視同取消直接釋放。','延長保留依當初方式通知（LINE 就 LINE、MAIL 就 MAIL），避免影響上下架判斷。']},
 
   a_basic:{tag:'業績歸屬 ・ 判定基準',sub:'客戶未綁定指定業務時的基本判定',
-    list:['業績歸屬以客戶「實際到店當天」值班業務為準，不是電話預約當天。','例：客人預約 3/5 到內湖，就算 3/5 當天內湖值班業務的。','一切以「動態」為主；動態要註明客戶姓名＋電話才具舉證效力。','依公告制度執行，不以個人解讀為準。有疑慮當下在群組提出；事後才爭議，一律門市經理處理。'],
+    list:['業績歸屬以客戶「實際到店當天」值班業務為準，不是電話預約當天。','例：客人預約 3/5 到內湖，就算 3/5 當天內湖值班業務的。','一切以「動態」為主；動態要註明客戶姓名＋電話才具舉證效力。','動態當下就要打；成交當下沒打的最遲成交日起七日內補登（以檔案存檔紀錄為準），逾期未補登不得事後追討。','依公告制度執行，不以個人解讀為準。有疑慮當下在群組提出；事後才爭議，一律門市經理處理。'],
     note:'最簡單自保：<b>每次服務完馬上寫動態</b>。有服務、有紀錄，什麼都不用怕。'},
   a_bind:{tag:'業績歸屬 ・ 有效綁定',sub:'什麼情況客戶算你的',sub2:'算你的（至少符合一種）',
     list:['動態有寫，姓名電話齊全，被問起講得出當時談了什麼。','跟客戶真的來回聊過，討論過尺寸／材質／顏色，拿得出對話截圖。','給過正式報價，且客戶有約好到店時間。','客戶到店是你接待的，客戶記得你。'],
@@ -416,14 +416,14 @@ const RES={
     list2:['客戶說不認識你，你動態沒寫、對話紀錄也拿不出來。','只單方面傳訊息或丟報價，客戶從來沒回過。','系統上只登記名字電話，沒動態、沒任何講過話的證明。'],
     note:'<b>掛名不代表擁有，有服務才算數。</b>'},
   a_conflict:{tag:'業績歸屬 ・ 現場衝突',sub:'B 接待成交、才發現系統掛的是 A',
-    steps:['現場優先：先把客人服務完、把單成交，嚴禁在客戶面前爭執。','群組通報：成交後 B 在群組標記 A 說明狀況。','換 A 舉證：A 要拿出與客戶「雙向互動」的截圖或動態。'],
+    steps:['現場優先：先把客人服務完、把單成交，嚴禁在客戶面前爭執。','群組通報：成交後 B 在群組標記 A 說明狀況（建議發 Email 留紀錄，並同時讓門市經理與 A 都知道，不可只找單方）。','換 A 舉證：A 要拿出與客戶「雙向互動」的截圖或動態。','兩位業務先自行協調，協調完成才變更業務員；門市經理需看到完整協調過程。無法協調時才由門市經理介入裁定，該筆業績歸門市經理。'],
     note:'判定：A 拿不出雙向互動證明，或客戶表示不認識 A → <b>歸現場 B</b>。'},
   a_switch:{tag:'業績歸屬 ・ 客戶要換業務',sub:'客戶因不滿原業務服務，指定換人',
     list:['客戶要求換人：須出示客戶截圖證明，訂單由門市經理處理（歸總公司業績）。','無法出示截圖，但公司直接了解到客戶的不滿：同樣由門市經理處理。']},
   a_expiry:{tag:'業績歸屬 ・ 效期與追溯',sub:'綁定多久、爭議追溯多久',
     list:['設計師綁定有效一年；一般客戶六個月（皆以動態為主）。','業績異議追溯期一個月。例：4 月業績結算後，5/25 為最後追溯期。','官網業績若因文中作業誤入他人，請私下結算。']},
   a_shift:{tag:'業績歸屬 ・ 輪班與跨店',sub:'2026/03/02 統一規範（最新且優先）',
-    list:['公司認知的「門市」為仁愛 NORMANN 概念店；仁愛與內湖隔週輪班。','仁愛當天有排班者必須到店、嚴禁避店；仁愛休假由內湖支援。','休假視同放棄當日輪班，當日詢問與訊息由值班同仁承接。','加班／休假來加班不接電話、不接待客戶，以免影響歸屬判定。','跨店接待：仁愛當班若有自己客戶要去內湖試坐，需事先與內湖協調，或改約自己上班時間再前往。','每週連續工作不得超過六天，以五天為限。']},
+    list:['公司認知的「門市」為仁愛 NORMANN 概念店；仁愛與內湖隔週輪班。','仁愛當天有排班者必須到店、嚴禁避店；仁愛休假由內湖支援。','休假視同放棄當日輪班，當日詢問與訊息由值班同仁承接。','加班／休假來加班不接電話、不接待客戶，以免影響歸屬判定。','電話各接各線：內湖接 02-2545-2382、仁愛接 02-2545-2383；內湖休假時由當天仁愛值班人員自行完成轉接設定。','跨店接待：仁愛當班若有自己客戶要去內湖試坐，需事先與內湖協調，或改約自己上班時間再前往。','每週連續工作不得超過六天，以五天為限。']},
   a_line:{tag:'業績歸屬 ・ LINE 綁定分配',sub:'官方 LINE 與來電派單規則',
     list:['門市動態紀錄優先認定；LINE 綁定僅在無動態紀錄時才適用。','動態須註明客戶姓名＋電話，才具舉證效力。','有爭議以時間先後為準，需截圖或紀錄佐證，由內勤協助改派。','客戶用官方 LINE 留言：內勤查綁定後派業務。','客戶來電：門市主動問是否已綁定 LINE 業務；已綁定則引導回 LINE 由該業務處理。']},
 
@@ -445,7 +445,8 @@ const RES={
     ['官網未出貨取消誤走線下發票作廢與退款流程','官網後台退刷時系統自動處理退款與電子發票，門市不需另行作業'],
     ['官網取消後將編號補回給下一筆訂單','已取消的官網編號不補號，後續訂單直接接續下一個編號'],
     ['退貨誤以為要逐關等待，先等發票才改單、取貨，延誤時程','通報與取貨、改單、追發票同步進行；僅退款需等發票、商品、訂單三項完成'],
-    ['更新出貨未於訂單說明原因、未更新文中','依流程訂單寫明原因並同步更新文中']]}},
+    ['成交後未於七日內補登動態，事後才主張客戶歸屬','接待當下即登打動態；成交後最遲七日內補登，逾期不得追討'],
+    ['未成交客戶不打動態，隔日他人接待成交才主張歸屬','未成交客戶當日一樣登打動態，註明商品與有無報價；否則須出示接洽或報價證明']]}},
 
   r_warranty:{tag:'商品知識 ・ 保固',list:['MADESK 升降桌（2024/01/17）：馬達一年、桌板三個月，銷售時務必告知客戶。','Herman Miller 椅款保固貼紙（訂單注意事項第 15 項）：請客戶收貨時確認貼紙完整，勿撕毀或遺失，否則原廠不提供保固；銷售當下明確告知。']},
   r_wheels:{tag:'商品知識 ・ 木質輪規格',table:{head:['型號','說明','建議用途'],rows:[
@@ -491,21 +492,39 @@ const CRUMB={recept:'接待',quote:'報價',order:'訂單登打',cols:'三欄填
   designer:'設計師代訂',order_types:'各類商品',checkout:'結帳發票',post:'結單後',
   return:'退換貨',ret_web:'官網取消',ret_return:'退貨',ret_exchange:'換貨',stock:'調撥盤點吊牌',
   daily:'門市日常',gift:'商品贈送',reserve:'商品保留',attr:'業績歸屬',product:'商品知識',contacts:'通訊錄'};
-function go(id){stack.push(id);document.getElementById('search').value='';draw();}
-function showRes(id){stack.push('res:'+id);draw();}
-function back(){if(stack.length>1){stack.pop();draw();}}
-function home(){stack=['home'];document.getElementById('search').value='';draw();}
+function labelOf(s){
+  if(s.startsWith('res:')) return RES[s.slice(4)]?RES[s.slice(4)].tag:'結果';
+  if(s.startsWith('search:')) return '搜尋「'+s.slice(7)+'」';
+  return CRUMB[s]||s;
+}
+/* 把手機／瀏覽器的返回鍵也接進導覽：每次前進就在瀏覽器歷程記一筆，按返回就回到上一頁查詢 */
+var histOK=false;
+try{history.replaceState({s:['home']},'');histOK=true;}catch(e){histOK=false;}
+function pushHist(){if(histOK){try{history.pushState({s:stack.slice()},'');}catch(e){}}}
+function replaceHist(){if(histOK){try{history.replaceState({s:stack.slice()},'');}catch(e){}}}
+function go(id){stack.push(id);pushHist();draw();}
+function showRes(id){stack.push('res:'+id);pushHist();draw();}
+function back(){if(histOK){history.back();}else if(stack.length>1){stack.pop();draw();}}
+function home(){stack=['home'];pushHist();draw();}
+if(histOK)window.addEventListener('popstate',function(e){
+  stack=(e.state&&e.state.s)?e.state.s.slice():['home'];draw();});
 
 function draw(){
   const cur=stack[stack.length-1];
   const nav=document.getElementById('nav');
   if(stack.length>1){
-    const crumbs=stack.slice(1).map(s=>s.startsWith('res:')?(RES[s.slice(4)]?RES[s.slice(4)].tag:'結果'):(CRUMB[s]||s)).join(' ／ ');
+    const crumbs=stack.slice(1).map(labelOf).join(' ／ ');
     nav.innerHTML='<span class="navbtn" onclick="home()">⌂ 首頁</span>'
       +'<span class="navbtn" onclick="back()">‹ 上一步</span>'
       +'<span class="crumb">'+crumbs+'</span>';
   } else nav.innerHTML='';
-  if(cur.startsWith('res:')) drawResult(cur.slice(4)); else drawNode(cur);
+  /* 同步搜尋框：離開搜尋狀態就清空；回到搜尋狀態且框是空的（例如按上一步回來）就把關鍵字帶回來 */
+  const sb=document.getElementById('search');
+  if(cur.startsWith('search:')){ if(!sb.value) sb.value=cur.slice(7); }
+  else if(sb.value) sb.value='';
+  if(cur.startsWith('res:')) drawResult(cur.slice(4));
+  else if(cur.startsWith('search:')) drawSearch(cur.slice(7));
+  else drawNode(cur);
 }
 function drawNode(id){
   const n=NODES[id];let h='<div class="card">';
@@ -561,17 +580,26 @@ function textOf(r){
   if(r.blocks)r.blocks.forEach(b=>{t+=' '+(b.h||'');if(b.list)t+=' '+b.list.join(' ');if(b.steps)t+=' '+b.steps.join(' ');if(b.table){t+=' '+b.table.head.join(' ');b.table.rows.forEach(row=>t+=' '+row.join(' '));}if(b.fields)b.fields.forEach(f=>t+=' '+f.join(' '));});
   return t;
 }
+/* 搜尋改為導覽堆疊的一個狀態（search:關鍵字），按上一步能回到搜尋結果、再回到原本選單 */
 function doSearch(q){
   q=q.trim();
-  document.getElementById('nav').innerHTML='';
-  if(!q){draw();return;}
+  const top=stack[stack.length-1];
+  if(!q){
+    if(top.startsWith('search:')){ if(histOK){history.back();return;} stack.pop(); }
+    draw();return;
+  }
+  if(top.startsWith('search:')){stack[stack.length-1]='search:'+q;replaceHist();}
+  else {stack.push('search:'+q);pushHist();}
+  draw();
+}
+function drawSearch(q){
   const hits=[];
   for(const id in RES){if(textOf(RES[id]).indexOf(q)>=0)hits.push(id);}
   let h='<div class="card"><p class="q">搜尋「'+q+'」</p>';
   if(!hits.length){h+='<p class="empty">沒有找到，換個關鍵字試試（例如：退款、發票、盤點、綁定、贈送）。</p></div>';
     document.getElementById('stage').innerHTML=h;return;}
   h+='<p class="hint">找到 '+hits.length+' 筆，點進去看。</p><div class="opts">';
-  hits.forEach(id=>{h+='<div class="opt" onclick="stack=[\'home\'];showRes(\''+id+'\')"><div class="k">›</div>'
+  hits.forEach(id=>{h+='<div class="opt" onclick="showRes(\''+id+'\')"><div class="k">›</div>'
     +'<div class="col"><span class="t">'+RES[id].tag+'</span>'+(RES[id].sub?'<span class="d">'+RES[id].sub+'</span>':'')+'</div></div>';});
   h+='</div></div>';
   document.getElementById('stage').innerHTML=h;
