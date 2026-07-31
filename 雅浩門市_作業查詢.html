@@ -497,10 +497,17 @@ function labelOf(s){
   if(s.startsWith('search:')) return '搜尋「'+s.slice(7)+'」';
   return CRUMB[s]||s;
 }
-function go(id){stack.push(id);draw();}
-function showRes(id){stack.push('res:'+id);draw();}
-function back(){if(stack.length>1){stack.pop();draw();}}
-function home(){stack=['home'];draw();}
+/* 把手機／瀏覽器的返回鍵也接進導覽：每次前進就在瀏覽器歷程記一筆，按返回就回到上一頁查詢 */
+var histOK=false;
+try{history.replaceState({s:['home']},'');histOK=true;}catch(e){histOK=false;}
+function pushHist(){if(histOK){try{history.pushState({s:stack.slice()},'');}catch(e){}}}
+function replaceHist(){if(histOK){try{history.replaceState({s:stack.slice()},'');}catch(e){}}}
+function go(id){stack.push(id);pushHist();draw();}
+function showRes(id){stack.push('res:'+id);pushHist();draw();}
+function back(){if(histOK){history.back();}else if(stack.length>1){stack.pop();draw();}}
+function home(){stack=['home'];pushHist();draw();}
+if(histOK)window.addEventListener('popstate',function(e){
+  stack=(e.state&&e.state.s)?e.state.s.slice():['home'];draw();});
 
 function draw(){
   const cur=stack[stack.length-1];
@@ -578,11 +585,11 @@ function doSearch(q){
   q=q.trim();
   const top=stack[stack.length-1];
   if(!q){
-    if(top.startsWith('search:'))stack.pop();
+    if(top.startsWith('search:')){ if(histOK){history.back();return;} stack.pop(); }
     draw();return;
   }
-  if(top.startsWith('search:'))stack[stack.length-1]='search:'+q;
-  else stack.push('search:'+q);
+  if(top.startsWith('search:')){stack[stack.length-1]='search:'+q;replaceHist();}
+  else {stack.push('search:'+q);pushHist();}
   draw();
 }
 function drawSearch(q){
