@@ -29,6 +29,13 @@
   .chip-pts{border-color:var(--gold);color:var(--gold)}
   .chip-coin{border-color:var(--green);color:var(--green)}
   .chip-stam{border-color:var(--pink);color:var(--pink)}
+  .help{font-size:12px;line-height:1.75;color:#d8e6ff;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.28);border-radius:10px;padding:10px 12px;margin-top:8px}
+  .help b{color:var(--gold);display:block;margin:6px 0 2px}
+  .help b:first-child{margin-top:0}
+  .help ol,.help ul{margin:2px 0 2px 18px;padding:0}
+  .help li{margin:4px 0}
+  .cfg-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.14)}
+  .cfg-item:last-child{border-bottom:0}
   .game-card.gc-out{opacity:.5;filter:saturate(.4)}
   .btn{cursor:pointer;border:none;border-radius:12px;padding:10px 16px;font-size:14px;font-weight:bold;
     font-family:var(--font);transition:all .15s ease;display:inline-flex;align-items:center;justify-content:center;gap:6px}
@@ -251,18 +258,42 @@
 #petroom .pr-lockbox button:disabled{opacity:.45; cursor:not-allowed}
 
 #petroom .pr-bubs{position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:3}
+/* 泡泡是可以點的收點數道具。原本只是半透明灰圈，看起來像破圖，
+   所以改成：亮邊＋高光＋圓心直接寫出點數，並加一圈脈動提示可點。 */
 #petroom .pr-bub{
   position:absolute; pointer-events:auto; cursor:pointer;
-  border-radius:50%; border:1px solid rgba(220,238,248,.55);
-  background:rgba(220,238,248,.16); animation:prDrift 5s ease-in-out infinite;
+  border-radius:50%; border:2px solid #7FE3F0;
+  background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.55) 0 14%, rgba(127,227,240,.30) 38%, rgba(77,216,230,.16) 100%);
+  box-shadow:0 0 0 3px rgba(127,227,240,.14), 0 0 12px rgba(77,216,230,.35);
+  animation:prDrift 5s ease-in-out infinite, prBubPulse 1.9s ease-in-out infinite;
+  display:flex; align-items:center; justify-content:center;
 }
 #petroom .pr-bub.pr-starb{
-  border-color:rgba(255,240,168,.8); background:rgba(255,240,168,.2);
+  border-color:#FFD264;
+  background:radial-gradient(circle at 34% 30%, rgba(255,255,255,.6) 0 14%, rgba(255,210,100,.34) 38%, rgba(255,210,100,.18) 100%);
+  box-shadow:0 0 0 3px rgba(255,210,100,.16), 0 0 14px rgba(255,210,100,.4);
 }
+@keyframes prBubPulse{0%,100%{box-shadow:0 0 0 3px rgba(127,227,240,.12), 0 0 10px rgba(77,216,230,.28)}
+  50%{box-shadow:0 0 0 6px rgba(127,227,240,.05), 0 0 16px rgba(77,216,230,.46)}}
+#petroom .pr-bub:active{transform:scale(.9)}
+/* 圓心的點數字 */
+#petroom .pr-bub b{
+  font-size:11px; font-weight:800; line-height:1; color:#EAFBFF;
+  text-shadow:0 1px 3px rgba(0,0,0,.7); pointer-events:none;
+}
+#petroom .pr-bub.pr-starb b{color:#FFF3C4}
 #petroom .pr-bub em{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-  font-size:11px; font-style:normal; color:#FFF0A8;
+  position:absolute; left:50%; top:-9px; transform:translateX(-50%);
+  font-size:10px; font-style:normal; color:#FFD264; pointer-events:none;
 }
+/* 第一次看到泡泡時的說明標籤，收過一顆之後就不再出現 */
+#petroom .pr-bubhint{
+  position:absolute; z-index:15; pointer-events:none;
+  background:rgba(10,18,28,.9); border:1px solid #4DD8E6; color:#EAFBFF;
+  font-size:11px; line-height:1.5; padding:4px 8px; border-radius:9px;
+  box-shadow:0 4px 12px rgba(0,0,0,.45); white-space:nowrap;
+}
+@media (prefers-reduced-motion:reduce){#petroom .pr-bub{animation:none}}
 
 #petroom .pr-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:14px}
 #petroom .pr-panel{background:var(--pr-card); border:1px solid var(--pr-line); border-radius:14px; padding:15px 17px}
@@ -1177,7 +1208,7 @@
   <main id="view-treats" class="panel hide">
     <div style="margin-bottom:10px">
       <h3>🎁 生活特權兌換</h3>
-      <p style="font-size:12px;color:var(--muted);margin-top:2px">用 ⭐ 點數向家長兌換特權。定價以「幾組題」統一換算：每做完 1 組 10 題約 150 點。這裡也能把點數換成金幣（200 點=1 金幣），金幣再跟家長換零用錢。</p>
+      <p id="treatIntro" style="font-size:12px;color:var(--muted);margin-top:2px">用 ⭐ 點數向家長兌換特權。定價以「幾組題」統一換算：每做完 1 組 10 題約 150 點。這裡也能把點數換成金幣（200 點=1 金幣），金幣再跟家長換零用錢。</p>
     </div>
     <div id="treatList"></div>
   </main>
@@ -1189,13 +1220,54 @@
         <h3 style="color:var(--gold)">🔒 家長管理與學習診斷</h3>
         <button class="btn btn-ghost btn-sm" onclick="closeParent()">關閉</button>
       </div>
+
+      <div class="quiz-card" style="margin-bottom:12px;border:1.5px solid var(--gold)">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h4 style="color:var(--gold);margin:0">📘 第一次使用請先看這裡</h4>
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 展開說明" onclick="toggleHelp('help-flow',this)">❔ 展開說明</button>
+        </div>
+        <div id="help-flow" class="help hide">
+          <b>整套流程</b>
+          <ol>
+            <li>孩子做完一組 10 題，賺到 ⭐ 點數。點數只能靠答題取得，家長也可以額外獎勵。</li>
+            <li>孩子在「🎁 特權兌換」頁用點數換你設定的獎勵，換成功後畫面會叫他來找你領。</li>
+            <li>點數也能換成 🪙 金幣，金幣才是用來換零用錢的。兩種貨幣分開，是為了不讓獎勵和現金混在一起。</li>
+            <li>獎勵內容與所需點數由你在下面「🎁 兌換清單設定」自己決定，改完孩子那邊立刻生效。</li>
+          </ol>
+          <b>下面這些是正常運作，不是壞掉</b>
+          <ul>
+            <li>設了次數上限的項目，當天換完按鈕就會變灰，隔天自動恢復。</li>
+            <li>關掉家長區後再進來要重新輸入密碼，這是刻意設計的。</li>
+            <li>「約幾組題」是換算出來的參考值，會隨你設定的點數自動變動。</li>
+            <li>孩子的點數不會因為你修改清單而增減。改點數只影響之後的兌換。</li>
+          </ul>
+          <b>兩件要先知道的限制</b>
+          <ul>
+            <li>所有紀錄與設定都存在這台裝置的瀏覽器裡，不會同步到其他手機或電腦。換裝置或清除瀏覽資料就會不見，請先用下面的「匯出設定」留一份備份。</li>
+            <li>家長密碼只能防止孩子隨手點進來，不是資安防護。熟悉電腦的孩子仍有辦法繞過，請當成信任約定而不是門鎖。</li>
+          </ul>
+        </div>
+      </div>
+
       <div class="quiz-card" style="margin-bottom:12px">
-        <h4 style="color:var(--primary);margin-bottom:6px">📊 今日學習概況</h4>
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+          <h4 style="color:var(--primary);margin:0">📊 今日學習概況</h4>
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 說明" onclick="toggleHelp('help-today',this)">❔ 說明</button>
+        </div>
         <div id="todayOverview" style="font-size:13px;color:#fff;line-height:1.8"></div>
+        <div id="help-today" class="help hide">
+          今日的數字每天凌晨自動歸零，累計答對題數會一直累加。⚡ 小遊戲次數是賽車／圈叉／記憶三個各自計算，不共用。
+        </div>
       </div>
       <div class="quiz-card" style="margin-bottom:12px">
-        <h4 style="color:var(--gold);margin-bottom:6px">⚠️ 今日卡關/略過題目紀錄</h4>
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+          <h4 style="color:var(--gold);margin:0">⚠️ 今日卡關/略過題目紀錄</h4>
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 說明" onclick="toggleHelp('help-wrong',this)">❔ 說明</button>
+        </div>
         <div id="todayLogBox" class="log-box"></div>
+        <div id="help-wrong" class="help hide">
+          這裡列出孩子今天答錯與略過的題目，用來看他卡在哪一類，不影響點數。清單每天重新開始，所以早上進來看到空白是正常的。
+        </div>
       </div>
       <div class="quiz-card" style="margin-bottom:12px">
         <h4 style="color:var(--green);margin-bottom:6px">🪙 金幣兌換零用錢</h4>
@@ -1203,6 +1275,18 @@
         <div class="row" style="gap:8px">
           <button class="btn btn-primary btn-sm" style="flex:1" onclick="parentRedeemGold()">💸 金幣換錢</button>
           <button class="btn btn-ghost btn-sm" style="flex:1" onclick="parentSetRate()">⚙️ 設定匯率</button>
+        </div>
+        <div class="row" style="justify-content:flex-end;margin-top:6px">
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 說明" onclick="toggleHelp('help-gold',this)">❔ 說明</button>
+        </div>
+        <div id="help-gold" class="help hide">
+          <b>怎麼用</b>
+          <ol>
+            <li>孩子在「🎁 特權兌換」頁把點數換成金幣（幾點換 1 枚由你設定）。</li>
+            <li>你按「金幣換錢」，填要換掉幾枚，系統扣掉金幣並算出金額，你再實際把零用錢給他。</li>
+            <li>「設定匯率」是決定 1 枚金幣值多少台幣。</li>
+          </ol>
+          系統只負責記帳與扣除，不會真的轉帳，發錢這一步要你自己做。每一筆都會寫進下面的兌換紀錄。
         </div>
       </div>
       <div class="quiz-card" style="margin-bottom:12px">
@@ -1217,12 +1301,82 @@
           <button class="btn btn-primary btn-sm" style="flex:1" onclick="parentAddStamina()">⚡ 補遊戲次數</button>
           <button class="btn btn-primary btn-sm" style="flex:1" onclick="testFill()">🧪 一鍵補滿</button>
         </div>
+        <div class="row" style="justify-content:flex-end;margin-top:6px">
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 說明" onclick="toggleHelp('help-test',this)">❔ 說明</button>
+        </div>
+        <div id="help-test" class="help hide">
+          「+100／+500／+1000」和「自訂點數」是額外獎勵孩子點數用的，會記進兌換紀錄。「補遊戲次數」讓三個小遊戲各多 2 次。<br>
+          「一鍵補滿」是你自己想試玩、想確認畫面時用的，會把點數與金幣直接灌滿。孩子在旁邊時建議別按，會讓點數失去意義。
+        </div>
+      </div>
+      <div class="quiz-card" style="margin-bottom:12px;border:1.5px solid var(--pink)">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+          <h4 style="color:var(--pink);margin:0">🎁 兌換清單設定</h4>
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 操作說明" onclick="toggleHelp('help-cfg',this)">❔ 操作說明</button>
+        </div>
+        <div id="help-cfg" class="help hide">
+          <b>新增一個獎勵</b>
+          <ol>
+            <li>按「➕ 新增項目」，依序填三個欄位：名稱、需要幾點、每天限幾次。</li>
+            <li>名稱就是孩子會看到的那行字，可以貼 emoji，最多 30 字。</li>
+            <li>需要幾點填 1 以上的整數。旁邊會自動換算成「約幾組題」，方便你判斷難度。</li>
+            <li>每天限幾次填 <b>0 就是不限次數</b>；填 1 就是一天只能換一次，最多 20。</li>
+          </ol>
+          <b>修改與刪除</b>
+          <ul>
+            <li>「修改」可以改名稱、點數、次數上限。改名稱不會影響今天已經用掉的次數。</li>
+            <li>「刪除」會連同這個項目今天的使用次數一起清掉，孩子那邊立刻消失。已經換掉的點數不會退還。</li>
+            <li>任何一欄填錯（空白、非數字、0 點），系統會直接取消這次修改並告訴你原因，不會存進去。</li>
+          </ul>
+          <b>換算設定</b>
+          <ul>
+            <li>「1 組題幾點」只影響「約幾組題」這行參考文字，不會改變孩子實際賺到的點數。</li>
+            <li>「幾點換 1 金幣」會同時改掉孩子兌換頁上的兩顆換金幣按鈕。</li>
+          </ul>
+          <b>匯出與匯入</b>
+          <ul>
+            <li>「匯出設定」下載一個 json 檔，裡面只有獎勵清單與換算比例，<b>不含</b>孩子的點數和學習紀錄，可以安心傳給其他家長。</li>
+            <li>「匯入設定」會取代目前整份清單。孩子的點數、寵物、學習進度都不受影響。</li>
+            <li>裝置不能下載檔案時，匯出會改成跳出文字讓你複製，對方用「貼上設定文字」匯入。</li>
+          </ul>
+        </div>
+        <div id="treatCfgBox" style="margin-bottom:8px"></div>
+        <div class="row" style="gap:6px;margin-bottom:6px">
+          <button class="btn btn-gold btn-sm" style="flex:1" onclick="treatAdd()">➕ 新增項目</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="treatResetDefault()">↩️ 還原預設清單</button>
+        </div>
+        <div class="row" style="gap:6px;margin-bottom:6px">
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="treatSetUnit()">⚖️ 1 組題幾點</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="treatSetGold()">🪙 幾點換 1 金幣</button>
+        </div>
+        <div class="row" style="gap:6px">
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="treatExport()">⬇️ 匯出設定</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="treatImportPick()">⬆️ 匯入設定</button>
+          <button class="btn btn-ghost btn-sm" style="flex:1" onclick="treatImportPaste()">📋 貼上設定文字</button>
+        </div>
+        <input type="file" id="treatImportFile" accept=".json,application/json,text/plain" style="display:none" onchange="treatImportFile(this)">
+      </div>
+
+      <div class="quiz-card" style="margin-bottom:12px">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+          <h4 style="color:var(--primary);margin:0">📜 兌換紀錄</h4>
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 說明" onclick="toggleHelp('help-log',this)">❔ 說明</button>
+        </div>
+        <div id="redeemLog" class="log-box"></div>
+        <div id="help-log" class="help hide">
+          孩子的每一次兌換、你每一次加點與改設定都會記在這裡，最新的在最上面，只保留最近 60 筆。孩子說換過某個獎勵時，可以在這裡對帳。
+        </div>
       </div>
       <div class="quiz-card" style="margin-bottom:12px">
-        <h4 style="color:var(--primary);margin-bottom:6px">📜 兌換紀錄</h4>
-        <div id="redeemLog" class="log-box"></div>
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px">
+          <h4 style="color:var(--red);margin:0">⚠️ 重置所有進度</h4>
+          <button class="btn btn-ghost btn-sm" data-lb="❔ 說明" onclick="toggleHelp('help-reset',this)">❔ 說明</button>
+        </div>
+        <div id="help-reset" class="help hide">
+          會清掉點數、金幣、寵物、答題紀錄與兌換清單設定，只保留孩子的名字、頭像與家長密碼。<b>無法復原</b>，按下去前請先「匯出設定」保留一份獎勵清單。
+        </div>
+        <button class="btn btn-ghost full btn-sm" onclick="resetAll()">⚠️ 確定重置所有進度</button>
       </div>
-      <button class="btn btn-ghost full btn-sm" onclick="resetAll()">⚠️ 重置所有進度</button>
     </div>
   </div>
 
@@ -1316,6 +1470,41 @@ const FOODS=[
 const COSTUMES=[{id:"goggles",t:"賽車護目鏡",emoji:"🥽",cost:150},{id:"cape",t:"魔法披風",emoji:"🦸",cost:250},{id:"crown",t:"閃耀皇冠",emoji:"👑",cost:400}];
 const FURNI=[{id:"chair",t:"賽車電競椅",emoji:"🪑",cost:200},{id:"rug",t:"跑道地毯",emoji:"⬛",cost:250},{id:"table",t:"星砂茶几",emoji:"🟡",cost:200}];
 
+/* ===== 兌換清單設定：預設值與資料清洗 =====
+   清單、換算基準都存在存檔裡，家長可自行修改。
+   舊玩家的存檔沒有這些欄位，一律由 normTreatCfg() 補上預設值。 */
+var DEFAULT_TREATS=[
+  {id:"fold", t:"🧺 少摺衣服 1 次",   cost:500,  cap:0},
+  {id:"dry",  t:"☀️ 少曬衣服 1 次",   cost:500,  cap:0},
+  {id:"snack",t:"🧋 自選點心/飲料 1 份",cost:900, cap:0},
+  {id:"tv",   t:"📺 看電視 15 分鐘",  cost:2000, cap:1},
+  {id:"phone",t:"📱 玩手機 20 分鐘",  cost:3000, cap:1}
+];
+var TREAT_MAX_ITEMS=20;
+var __treatSeq=0;
+/* id 由系統產生，家長改名字不會動到 id，今天已用的次數才不會對不上 */
+function newTreatId(){__treatSeq++;return "t"+Date.now().toString(36)+"_"+__treatSeq.toString(36);}
+function cleanTreatName(v){return (""+(v==null?"":v)).replace(/[<>]/g,"").trim().slice(0,30);}
+function cleanTreatCost(v){var n=parseInt(v,10);if(!isFinite(n))return null;if(n<1||n>999999)return null;return n;}
+function cleanTreatCap(v){if(v===""||v==null)return 0;var n=parseInt(v,10);if(!isFinite(n)||n<0)return 0;return Math.min(n,20);}
+function normTreatCfg(s){
+  s.setUnit=(s.setUnit>0)?Math.round(s.setUnit):150;
+  s.pt2gold=(s.pt2gold>0)?Math.round(s.pt2gold):200;
+  if(!Array.isArray(s.treats)){
+    s.treats=DEFAULT_TREATS.map(function(o){return {id:o.id,t:o.t,cost:o.cost,cap:o.cap};});
+  }
+  var seen={};
+  s.treats=s.treats.filter(function(o){return o&&typeof o==="object";}).map(function(o){
+    var id=(""+(o.id==null?"":o.id)).replace(/[^A-Za-z0-9_-]/g,"");
+    if(!id||seen[id])id=newTreatId();
+    seen[id]=1;
+    var nm=cleanTreatName(o.t)||"未命名項目";
+    var c=cleanTreatCost(o.cost);if(c==null)c=100;
+    return {id:id,t:nm,cost:c,cap:cleanTreatCap(o.cap)};
+  }).slice(0,TREAT_MAX_ITEMS);
+  return s;
+}
+
 /* ================= 存檔 ================= */
 const KEY="studyAdventure_v8";
 let SAVE=loadSave();let currentUnitQ=[];let unitIndex=0;let qReadTimer=null,qLockTimer=null;
@@ -1327,6 +1516,7 @@ function norm(s){
   s.avatar=s.avatar||"🐱";s.charCreated=s.charCreated||false;
   s.usedQ=s.usedQ||[];s.car=s.car||{engine:1,tire:1};s.stats=s.stats||{correct:0,wrong:0};
   s.goldRate=s.goldRate==null?1:s.goldRate;s.log=s.log||[];
+  normTreatCfg(s);
   if(!s.pets){const old=s.pet||{};s.pets={cat:{owned:true,name:old.name||"咕嚕",exp:old.exp||0,hunger:old.hunger==null?80:old.hunger,clean:old.clean==null?75:old.clean,mood:old.mood==null?90:old.mood,weight:old.weight||1}};}
   ["seahorse","burger","dog"].forEach(id=>{if(!s.pets[id])s.pets[id]=newPet(id);if(!s.pets[id].face)s.pets[id].face={eyes:"auto",mouth:"auto"};});
   if(s.pets.cat){if(s.activePet==="cat")s.activePet="burger";if(s.companion==="cat")s.companion=null;delete s.pets.cat;}
@@ -1982,14 +2172,48 @@ function confirmChar(){const nm=document.getElementById("charNameInput").value.t
 
 /* 特權兌換 */
 /* 特權統一尺規：1 組 10 題 ≈ 150 點；特權以「幾組題」計價 */
-const SET_UNIT=150;const PT2GOLD=200;
-function exchangeGold(n){var cost=n*PT2GOLD;if(SAVE.coins<cost){toast("點數不足！換 "+n+" 金幣要 "+cost+" 點（你只有 "+SAVE.coins+" 點）。");return;}SAVE.coins-=cost;SAVE.gold+=n;persist();updateTop();renderTreats();addLog("點數換金幣：-"+cost+"點 → +"+n+"金幣");cheer("🪙 +"+n);toast("用 "+cost+" 點換到 "+n+" 金幣！");}
-const TREATS=[{id:"fold",t:"🧺 少摺衣服 1 次",cost:500},{id:"dry",t:"☀️ 少曬衣服 1 次",cost:500},{id:"snack",t:"🧋 自選點心/飲料 1 份",cost:900},{id:"tv",t:"📺 看電視 15 分鐘",cost:2000,cap:1},{id:"phone",t:"📱 玩手機 20 分鐘",cost:3000,cap:1}];
-function renderTreats(){document.getElementById("treatList").innerHTML='<div class="quiz-card" style="margin-bottom:12px;border:1.5px solid var(--green)"><b style="color:var(--green)">🪙 點數換金幣</b> <small style="color:var(--muted)">200 點 = 1 金幣（金幣再跟家長換零用錢）</small><div class="row" style="gap:8px;margin-top:8px"><button class="btn btn-primary btn-sm" style="flex:1" onclick="exchangeGold(1)">換 1 金幣（200點）</button><button class="btn btn-primary btn-sm" style="flex:1" onclick="exchangeGold(5)">換 5 金幣（1000點）</button></div></div>'+TREATS.map((x,i)=>{var cap="",ex="",dis="";if(x.cap){var lf=x.cap-treatUsed(x.id);cap=' <span style="color:var(--muted)">·每天限'+x.cap+'次</span>';if(lf<=0){dis=' disabled style="opacity:.4;cursor:not-allowed"';ex='<br><small style="color:var(--red)">今日已達上限，明天再來</small>';}}return '<div class="quiz-card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>'+x.t+'</b>'+cap+'<br><small style="color:var(--gold)">需要 '+x.cost+' 點（約 '+Math.round(x.cost/SET_UNIT)+' 組題）</small>'+ex+'</div><button class="btn btn-gold btn-sm"'+dis+' onclick="redeemTreat('+i+')">兌換</button></div>';}).join("");}
+/* 換算基準改存在存檔裡，家長可調；讀不到值時退回原本的 150 / 200 */
+function setUnit(){return (SAVE.setUnit>0)?SAVE.setUnit:150;}
+function pt2gold(){return (SAVE.pt2gold>0)?SAVE.pt2gold:200;}
+function treatList(){return Array.isArray(SAVE.treats)?SAVE.treats:[];}
+function findTreat(id){var L=treatList();for(var i=0;i<L.length;i++){if(L[i].id===id)return L[i];}return null;}
+function forgetTreatUse(id){if(SAVE.treatUse&&SAVE.treatUse.used)delete SAVE.treatUse.used[id];}
+function exchangeGold(n){var cost=n*pt2gold();if(SAVE.coins<cost){toast("點數不足！換 "+n+" 金幣要 "+cost+" 點（你只有 "+SAVE.coins+" 點）。");return;}SAVE.coins-=cost;SAVE.gold+=n;persist();updateTop();renderTreats();addLog("點數換金幣：-"+cost+"點 → +"+n+"金幣");cheer("🪙 +"+n);toast("用 "+cost+" 點換到 "+n+" 金幣！");}
+function renderTreats(){
+  var box=document.getElementById("treatList");if(!box)return;
+  var P=pt2gold(),U=setUnit(),L=treatList();
+  var intro=document.getElementById("treatIntro");
+  if(intro)intro.innerHTML="用 ⭐ 點數向家長兌換特權。定價以「幾組題」統一換算：每做完 1 組 10 題約 "+U+" 點。這裡也能把點數換成金幣（"+P+" 點＝1 金幣），金幣再跟家長換零用錢。";
+  var h='<div class="quiz-card" style="margin-bottom:12px;border:1.5px solid var(--green)"><b style="color:var(--green)">🪙 點數換金幣</b> <small style="color:var(--muted)">'+P+' 點 = 1 金幣（金幣再跟家長換零用錢）</small><div class="row" style="gap:8px;margin-top:8px"><button class="btn btn-primary btn-sm" style="flex:1" onclick="exchangeGold(1)">換 1 金幣（'+P+'點）</button><button class="btn btn-primary btn-sm" style="flex:1" onclick="exchangeGold(5)">換 5 金幣（'+(P*5)+'點）</button></div></div>';
+  if(!L.length){
+    h+='<div class="quiz-card" style="text-align:center;color:var(--muted);padding:16px;line-height:1.8">目前沒有可兌換的項目。<br>請家長從「🔒 家長區 → 🎁 兌換清單設定」新增。</div>';
+  }
+  L.forEach(function(x){
+    var cap="",ex="",dis="";
+    if(x.cap>0){
+      var lf=x.cap-treatUsed(x.id);
+      cap=' <span style="color:var(--muted)">·每天限'+x.cap+'次</span>';
+      if(lf<=0){dis=' disabled style="opacity:.4;cursor:not-allowed"';ex='<br><small style="color:var(--red)">今天的次數用完了，明天會自動恢復</small>';}
+    }
+    h+='<div class="quiz-card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px"><div><b>'+esc(x.t)+'</b>'+cap+'<br><small style="color:var(--gold)">需要 '+x.cost+' 點（約 '+Math.round(x.cost/U)+' 組題）</small>'+ex+'</div><button class="btn btn-gold btn-sm"'+dis+' onclick="redeemTreat(\''+x.id+'\')">兌換</button></div>';
+  });
+  box.innerHTML=h;
+}
 function treatDayStr(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();}
 function treatUsed(id){if(!SAVE.treatUse||SAVE.treatUse.day!==treatDayStr())return 0;return SAVE.treatUse.used[id]||0;}
 function treatBump(id){if(!SAVE.treatUse||SAVE.treatUse.day!==treatDayStr())SAVE.treatUse={day:treatDayStr(),used:{}};SAVE.treatUse.used[id]=(SAVE.treatUse.used[id]||0)+1;}
-function redeemTreat(i){const x=TREATS[i];if(x.cap&&treatUsed(x.id)>=x.cap){toast("「"+x.t+"」今天已經換過囉，明天再來！");return;}if(SAVE.coins<x.cost){toast("點數不足！");return;}uiConfirm("確定兌換「"+x.t+"」嗎？",function(){SAVE.coins-=x.cost;if(x.cap)treatBump(x.id);persist();updateTop();renderTreats();addLog("兌換特權："+x.t+"（-"+x.cost+"點）");toast("兌換成功！請向家長領取："+x.t);});}
+function redeemTreat(id){
+  var x=findTreat(id);
+  if(!x){toast("這個項目已經被家長移除了。");renderTreats();return;}
+  if(x.cap>0&&treatUsed(x.id)>=x.cap){toast("「"+x.t+"」今天的次數用完了，明天會自動恢復。");return;}
+  if(SAVE.coins<x.cost){toast("點數不足！還差 "+(x.cost-SAVE.coins)+" 點。");return;}
+  uiConfirm("確定兌換「"+x.t+"」嗎？",function(){
+    SAVE.coins-=x.cost;if(x.cap>0)treatBump(x.id);
+    persist();updateTop();renderTreats();
+    addLog("兌換特權："+x.t+"（-"+x.cost+"點）");
+    toast("兌換成功！請向家長領取："+x.t);
+  });
+}
 
 /* 家長區 */
 let parentOK=false;
@@ -2002,7 +2226,7 @@ function openParent(){if(!ensureParent())return;const td=SAVE.todayData;const to
   td.skipped.forEach(it=>html+='<div class="log-item"><span class="badge-tag badge-skip">略過</span>['+it.category+'] '+it.q+'</div>');
   document.getElementById("todayLogBox").innerHTML=html||"<div style='color:var(--muted);text-align:center;padding:8px'>今日無錯題與略過紀錄。</div>";
   document.getElementById("goldInfo").innerHTML="目前 <b style='color:var(--green)'>"+SAVE.gold+"</b> 枚金幣｜匯率：1 金幣 = NT$ "+SAVE.goldRate+"（金幣是唯一能換錢的貨幣，點數只能換特權與寵物用品）";
-  renderRedeemLog();document.getElementById("parentModal").classList.remove("hide");}
+  renderTreatCfg();renderRedeemLog();document.getElementById("parentModal").classList.remove("hide");}
 function closeParent(){document.getElementById("parentModal").classList.add("hide");parentOK=false;}
 function nowStr(){var d=new Date();function z(n){return (n<10?"0":"")+n;}return (d.getMonth()+1)+"/"+d.getDate()+" "+z(d.getHours())+":"+z(d.getMinutes());}
 function addLog(m){SAVE.log=SAVE.log||[];SAVE.log.unshift({t:nowStr(),m:m});if(SAVE.log.length>60)SAVE.log=SAVE.log.slice(0,60);persist();}
@@ -2014,6 +2238,125 @@ function parentAddStamina(){addPlays(2);addLog("家長補遊戲次數 三個各 
 function parentSetRate(){const r=parseFloat(prompt("設定金幣匯率：1 金幣 = NT$ ?（例如 1 或 0.5）",SAVE.goldRate));if(r>0){SAVE.goldRate=r;persist();openParent();toast("已設定 1 金幣 = NT$"+r);}}
 function parentRedeemGold(){const g=parseInt(prompt("目前 "+SAVE.gold+" 枚金幣（1 金幣=NT$"+SAVE.goldRate+"）。要兌換幾枚成零用錢？","1"));
   if(g>0&&SAVE.gold>=g){SAVE.gold-=g;addLog("金幣換零用錢：-"+g+"金幣 = NT$"+(g*SAVE.goldRate));persist();updateTop();openParent();toast("已兌換 "+g+" 枚金幣＝NT$"+(g*SAVE.goldRate)+"，請發給孩子零用錢！");}else toast("金幣不足或數字無效！");}
+/* ===== 家長區：兌換清單設定 ===== */
+function toggleHelp(id,btn){
+  var el=document.getElementById(id);if(!el)return;
+  var hidden=el.classList.toggle("hide");
+  if(btn)btn.textContent=hidden?(btn.getAttribute("data-lb")||"❔ 操作說明"):"▲ 收合說明";
+}
+function renderTreatCfg(){
+  var el=document.getElementById("treatCfgBox");if(!el)return;
+  var U=setUnit(),P=pt2gold(),L=treatList();
+  var h='<div style="font-size:12px;color:var(--muted);margin-bottom:6px">目前換算：1 組 10 題 ≈ '+U+' 點｜'+P+' 點 = 1 金幣｜共 '+L.length+'/'+TREAT_MAX_ITEMS+' 個項目</div>';
+  if(!L.length){
+    h+='<div style="color:var(--red);font-size:12px;padding:6px 0">清單是空的，孩子在「特權兌換」頁會看不到任何項目。</div>';
+  }
+  L.forEach(function(x){
+    var used=treatUsed(x.id);
+    h+='<div class="cfg-item"><div style="min-width:0;font-size:13px"><b>'+esc(x.t)+'</b><br>'+
+       '<small style="color:var(--gold)">'+x.cost+' 點（約 '+Math.round(x.cost/U)+' 組題）</small>'+
+       '<small style="color:var(--muted)">｜'+(x.cap>0?("每天 "+x.cap+" 次，今天已用 "+used):"每天不限次數")+'</small></div>'+
+       '<div class="row" style="gap:4px;flex:0 0 auto">'+
+       '<button class="btn btn-ghost btn-sm" onclick="treatEdit(\''+x.id+'\')">修改</button>'+
+       '<button class="btn btn-ghost btn-sm" onclick="treatDel(\''+x.id+'\')">刪除</button></div></div>';
+  });
+  el.innerHTML=h;
+}
+function treatAdd(){
+  if(treatList().length>=TREAT_MAX_ITEMS){toast("最多 "+TREAT_MAX_ITEMS+" 個項目，請先刪掉用不到的。");return;}
+  var nm=cleanTreatName(prompt("項目名稱（孩子會看到這行字，可以貼 emoji）：","🎬 看一集卡通"));
+  if(!nm){toast("名稱不能空白，已取消新增。");return;}
+  var c=cleanTreatCost(prompt("「"+nm+"」要多少點才能換？（1～999999 的整數）\n參考：1 組 10 題約 "+setUnit()+" 點","500"));
+  if(c==null){toast("點數要填 1 以上的整數，已取消新增。");return;}
+  var cap=cleanTreatCap(prompt("每天最多能換幾次？填 0 表示不限次數（最多 20）","0"));
+  SAVE.treats.push({id:newTreatId(),t:nm,cost:c,cap:cap});
+  persist();addLog("家長新增兌換項目："+nm+"（"+c+"點"+(cap>0?("，每天"+cap+"次"):"")+"）");
+  renderTreatCfg();renderTreats();toast("已新增「"+nm+"」");
+}
+function treatEdit(id){
+  var x=findTreat(id);if(!x){renderTreatCfg();return;}
+  var nm=cleanTreatName(prompt("項目名稱：",x.t));
+  if(!nm){toast("名稱不能空白，這次沒有修改。");return;}
+  var c=cleanTreatCost(prompt("需要幾點？（1～999999 的整數）\n參考：1 組 10 題約 "+setUnit()+" 點",x.cost));
+  if(c==null){toast("點數要填 1 以上的整數，這次沒有修改。");return;}
+  var cap=cleanTreatCap(prompt("每天最多幾次？0 表示不限（最多 20）",x.cap));
+  var old=x.t;x.t=nm;x.cost=c;x.cap=cap;persist();
+  addLog("家長修改兌換項目："+old+" → "+nm+"（"+c+"點"+(cap>0?("，每天"+cap+"次"):"")+"）");
+  renderTreatCfg();renderTreats();toast("已更新「"+nm+"」");
+}
+function treatDel(id){
+  var x=findTreat(id);if(!x)return;
+  uiConfirm("確定刪除「"+x.t+"」？孩子的兌換頁會馬上看不到它。",function(){
+    SAVE.treats=treatList().filter(function(o){return o.id!==id;});
+    forgetTreatUse(id);
+    persist();addLog("家長刪除兌換項目："+x.t);
+    renderTreatCfg();renderTreats();toast("已刪除「"+x.t+"」");
+  });
+}
+function treatResetDefault(){
+  uiConfirm("要把兌換清單換回原本的 5 個預設項目嗎？現在自訂的項目會被取代。",function(){
+    SAVE.treats=DEFAULT_TREATS.map(function(o){return {id:o.id,t:o.t,cost:o.cost,cap:o.cap};});
+    SAVE.treatUse={day:treatDayStr(),used:{}};
+    persist();addLog("家長還原預設兌換清單");
+    renderTreatCfg();renderTreats();toast("已還原預設清單");
+  });
+}
+function treatSetUnit(){
+  var v=prompt("做完 1 組 10 題，大約值多少點？\n這個數字只影響「約幾組題」的顯示，不會改變孩子實際賺到的點數。",setUnit());
+  if(v===null)return;
+  var n=parseInt(v,10);
+  if(!(n>0)){toast("要填 1 以上的整數，這次沒有修改。");return;}
+  SAVE.setUnit=n;persist();addLog("家長修改換算基準：1 組題 = "+n+" 點");
+  renderTreatCfg();renderTreats();toast("已設定 1 組題 ≈ "+n+" 點");
+}
+function treatSetGold(){
+  var v=prompt("幾點可以換 1 枚金幣？\n金幣才是能換零用錢的貨幣。",pt2gold());
+  if(v===null)return;
+  var n=parseInt(v,10);
+  if(!(n>0)){toast("要填 1 以上的整數，這次沒有修改。");return;}
+  SAVE.pt2gold=n;persist();addLog("家長修改點數換金幣："+n+" 點 = 1 金幣");
+  renderTreatCfg();renderTreats();toast("已設定 "+n+" 點 = 1 金幣");
+}
+/* 匯出／匯入：只帶設定，不帶孩子的點數與學習紀錄 */
+function treatExport(){
+  var cfg={type:"studyAdventure-reward-config",ver:1,setUnit:setUnit(),pt2gold:pt2gold(),goldRate:SAVE.goldRate,
+    treats:treatList().map(function(o){return {id:o.id,t:o.t,cost:o.cost,cap:o.cap};})};
+  var txt=JSON.stringify(cfg,null,2);
+  try{
+    var b=new Blob([txt],{type:"application/json"});
+    var u=URL.createObjectURL(b);
+    var a=document.createElement("a");a.href=u;a.download="兌換設定.json";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(function(){URL.revokeObjectURL(u);},1500);
+    toast("已下載「兌換設定.json」，可以傳給其他家長匯入。");
+  }catch(e){
+    prompt("這台裝置不能直接下載，請手動複製下面這段文字：",txt);
+  }
+}
+function treatImportPick(){var f=document.getElementById("treatImportFile");if(f){f.value="";f.click();}}
+function treatImportFile(input){
+  var f=input.files&&input.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){treatImportText(r.result);};
+  r.onerror=function(){toast("讀不到這個檔案，請改用「貼上設定文字」。");};
+  r.readAsText(f);
+}
+function treatImportPaste(){var t=prompt("把兌換設定的文字整段貼在這裡：","");if(t)treatImportText(t);}
+function treatImportText(txt){
+  var cfg=null;
+  try{cfg=JSON.parse(txt);}catch(e){toast("這段內容不是有效的設定檔，請確認完整複製。");return;}
+  if(!cfg||!Array.isArray(cfg.treats)||!cfg.treats.length){toast("設定檔裡沒有兌換項目，沒有匯入。");return;}
+  var tmp=normTreatCfg({setUnit:cfg.setUnit,pt2gold:cfg.pt2gold,treats:cfg.treats});
+  uiConfirm("匯入後會把現在的 "+treatList().length+" 個項目換成檔案裡的 "+tmp.treats.length+" 個。孩子的點數與學習紀錄不會變。要繼續嗎？",function(){
+    SAVE.treats=tmp.treats;SAVE.setUnit=tmp.setUnit;SAVE.pt2gold=tmp.pt2gold;
+    if(cfg.goldRate>0)SAVE.goldRate=cfg.goldRate;
+    SAVE.treatUse={day:treatDayStr(),used:{}};
+    persist();addLog("家長匯入兌換設定（"+tmp.treats.length+" 個項目）");
+    renderTreatCfg();renderTreats();renderRedeemLog();
+    document.getElementById("goldInfo").innerHTML="目前 <b style='color:var(--green)'>"+SAVE.gold+"</b> 枚金幣｜匯率：1 金幣 = NT$ "+SAVE.goldRate;
+    toast("已匯入 "+tmp.treats.length+" 個項目。");
+  });
+}
 function resetAll(){uiConfirm("確定重置所有進度嗎？此動作無法復原！",function(){const pin=SAVE.pin,name=SAVE.name,av=SAVE.avatar;localStorage.removeItem(KEY);SAVE=loadSave();SAVE.pin=pin;SAVE.name=name;SAVE.avatar=av;SAVE.charCreated=true;persist();updateTop();closeParent();toast("已重置！");});}
 
 /* 清潔刷事件（觸控＋滑鼠） */
@@ -2092,7 +2435,7 @@ function writeRaw(v){
 
 function fresh(){
   return {
-    v:1, points:300, lastSeen:Date.now(), day:today(), earnedToday:0,
+    v:1, points:300, lastSeen:Date.now(), day:today(), earnedToday:0, bubTaught:false,
     main:"bur", unlocked:{sea:false,bur:true,dog:true},
     owned:{}, equipped:{sea:[],bur:[],dog:[]}, furn:{}, lampOn:true,
     sea:{trust:60, bubbles:2, star:0, lastPet:0},
@@ -2118,6 +2461,7 @@ var S;
   if(!S.slp) S.slp = {bite:20, teeth:80, lastToss:0, lastBrush:0};
   if(!S.mio) S.mio = {heat:40, full:70, speeches:0, dust:0, lastSpeak:0, lastRun:0, lastComfort:0, lastWash:0};
   if(typeof S.mio.dust !== "number") S.mio.dust = 0;
+  if(typeof S.bubTaught !== "boolean") S.bubTaught = false;   /* 泡泡是否已教過 */
   if(typeof S.mio.lastWash !== "number") S.mio.lastWash = 0;
   if(S.unlocked.man == null) S.unlocked.man = false;
   if(S.unlocked.slp == null) S.unlocked.slp = false;
@@ -2247,37 +2591,70 @@ function bubbles(){
   box.innerHTML = "";
   if(!S.unlocked.sea) return;
   var n = Math.floor(S.sea.bubbles);
+  if(n <= 0) return;
   var stars = Math.min(S.sea.star, n);
   var stageW = ROOT.querySelector("#pr-stage").clientWidth;
+  /* 一排 5 顆、從左邊起算，最右只到 12+4*32+32 = 172px，
+     不會碰到置中的星砂主燈；起始 y 壓到 46px，讓開上方的對話框。 */
+  var perRow = 5, gapX = 32, gapY = 32, x0 = 12, y0 = 46;
+  var shown = 0;
   for(var i=0;i<n;i++){
     var isStar = i < stars;
-    var d = isStar ? 26 : 20;
+    var d = isStar ? 34 : 28;
     var b = document.createElement("div");
     b.className = "pr-bub" + (isStar ? " pr-starb" : "");
     b.style.width = d+"px"; b.style.height = d+"px";
-    b.style.left = (14 + (i % 6) * 30) + "px";
-    b.style.top = (12 + Math.floor(i / 6) * 30) + "px";
+    b.style.left = (x0 + (i % perRow) * gapX) + "px";
+    b.style.top = (y0 + Math.floor(i / perRow) * gapY) + "px";
     b.style.animationDelay = (i * 0.4) + "s";
-    b.title = isStar ? "星形泡泡 45 點" : "泡泡 25 點";
-    if(isStar) b.innerHTML = "<em>\u2605</em>";
+    b.title = isStar ? "星形泡泡：點一下收 45 點" : "泡泡：點一下收 25 點";
+    b.setAttribute("role","button");
+    b.setAttribute("aria-label", isStar ? "星形泡泡，收 45 點" : "泡泡，收 25 點");
+    b.innerHTML = (isStar ? "<em>★</em>" : "") + "<b>" + (isStar ? 45 : 25) + "</b>";
     b.onclick = (function(star){ return function(ev){
       ev.stopPropagation();
       var got = earn(star ? 45 : 25);
       S.sea.bubbles = Math.max(0, S.sea.bubbles - 1);
       if(star) S.sea.star = Math.max(0, S.sea.star - 1);
+      S.bubTaught = true;          /* 收過一顆就不用再提示了 */
       save(); render();
-      if(got === 0) flash("今天的點數已達上限");
+      if(got === 0) flash("今天的點數已達上限，泡泡先留著吧");
+      else flash("收下泡泡　＋" + got + " 點", "var(--pr-gold)");
     };})(isStar);
-    if(stageW < 460 && i >= 6) break;
-    box.appendChild(b);
+    if(stageW < 460 && shown >= 5) break;
+    box.appendChild(b); shown++;
+  }
+  /* 還沒收過泡泡的人，畫面上直接告訴他可以做什麼。
+     舞台左上角已經有等級徽章（.pr-lvbadge），所以先量它的寬度再讓開，
+     右邊剩下的寬度不夠時就改放到泡泡下方，寧可往下也不要互相遮住。 */
+  if(!S.bubTaught && shown > 0){
+    var hint = document.createElement("div");
+    hint.className = "pr-bubhint";
+    hint.textContent = "👆 點泡泡收點數";
+    var badge = ROOT.querySelector(".pr-lvbadge");
+    var bRight = 0;
+    if(badge && badge.style.display !== "none"){
+      bRight = (badge.offsetLeft || 10) + (badge.offsetWidth || 64) + 8;
+    }
+    var rows = Math.ceil(shown / perRow);
+    var needW = 132;                                   /* 這行字大概要的寬度 */
+    if(bRight > 0 && (stageW - bRight - 10) < needW){
+      /* 徽章右邊塞不下，就放到泡泡底下 */
+      hint.style.left = x0 + "px";
+      hint.style.top = (y0 + rows * gapY + 4) + "px";
+    }else{
+      hint.style.left = Math.max(x0, bRight) + "px";
+      hint.style.top = (y0 - 26) + "px";
+    }
+    box.appendChild(hint);
   }
 }
 
 var flashTimer, flashUntil = 0;
-function flash(msg){
+function flash(msg, col){
   var el = ROOT.querySelector("#pr-cap");
   el.textContent = msg;
-  el.style.color = "var(--pr-red)";
+  el.style.color = col || "var(--pr-red)";
   flashUntil = Date.now() + 2600;
   clearTimeout(flashTimer);
   flashTimer = setTimeout(function(){ el.style.color = ""; flashUntil = 0; renderCap(); }, 2600);
@@ -2335,14 +2712,14 @@ function panels(){
 
     if(k === "sea"){
       h += bar("信任度", S.sea.trust, 100, "#AFA9EC");
-      h += bar("累積泡泡", Math.floor(S.sea.bubbles), bubbleCap(), "#A8DDF0",
+      h += bar("累積泡泡（點房間裡的泡泡可收點數）", Math.floor(S.sea.bubbles), bubbleCap(), "#A8DDF0",
         S.sea.star > 0 ? "含 "+Math.min(S.sea.star, Math.floor(S.sea.bubbles))+" 顆星形" : "");
       var pc = cool(S.sea.lastPet, 30000);
       h += '<div class="pr-row"><div class="pr-rlabel">照顧</div><div class="pr-mini">'+
         '<button data-act="pet" '+(pc>0?"disabled":"")+'>'+cdLabel("輕輕摸牠", pc)+'</button>'+
         '<button data-act="rest">哄睡</button></div></div>';
       if(S.sea.trust < 40) h += '<p class="pr-note pr-warn">信任度低於 40，牠停止吐泡泡了。摸摸牠。</p>';
-      else h += '<p class="pr-note">信任度每小時掉 3，戴上薄紗鰭帔會減半。信任度 40 以上每 20 分鐘產一顆泡泡，點畫面上的泡泡收點數。</p>';
+      else h += '<p class="pr-note">信任度每小時掉 3，戴上薄紗鰭帔會減半。信任度 40 以上每 20 分鐘產一顆泡泡，最多存 '+bubbleCap()+' 顆。<b>泡泡會浮在房間左上角，點一下收 25 點，星形泡泡收 45 點。</b></p>';
     }
 
     if(k === "bur"){
