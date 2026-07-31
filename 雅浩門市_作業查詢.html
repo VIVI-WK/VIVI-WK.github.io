@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雅浩門市 作業查詢</title>
+<style>
+  :root{
+    --ink:#1f2328; --sub:#5b6470; --line:#e2e5ea; --bg:#f4f6f8;
+    --card:#ffffff; --accent:#2f5d8a; --accent-soft:#eaf1f8;
+    --warn:#8a5a1f; --warn-soft:#fbf3e6; --red:#a23b3b; --red-soft:#f9ecec;
+  }
+  *{box-sizing:border-box;
+    -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;
+    -webkit-touch-callout:none;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Microsoft JhengHei","微軟正黑體","PingFang TC","Noto Sans TC",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.75;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wm{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.05;}
+  .wm span{position:absolute;font-size:22px;color:#000;white-space:nowrap;
+    transform:rotate(-30deg);font-weight:700;letter-spacing:2px;}
+  .wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:24px 18px 60px;}
+  header{text-align:center;margin-bottom:16px;}
+  header .en{font-size:12px;letter-spacing:3px;color:var(--sub);}
+  header h1{font-size:23px;margin:4px 0 6px;letter-spacing:1px;}
+  header .meta{font-size:12px;color:var(--sub);}
+  .search{width:100%;padding:12px 15px;border:1px solid var(--line);border-radius:10px;
+    font-size:15px;font-family:inherit;margin-bottom:12px;background:#fff;}
+  .search:focus{outline:none;border-color:var(--accent);}
+  .nav{display:flex;gap:8px;margin-bottom:14px;min-height:20px;align-items:center;flex-wrap:wrap;}
+  .navbtn{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:13.5px;
+    font-weight:700;color:var(--accent);padding:6px 12px;border:1px solid var(--line);
+    background:var(--card);border-radius:8px;}
+  .navbtn:hover{background:var(--accent-soft);}
+  .crumb{font-size:12.5px;color:var(--sub);margin-left:2px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:22px 20px;box-shadow:0 2px 10px rgba(20,30,45,.04);}
+  .q{font-size:17px;font-weight:700;margin:0 0 4px;}
+  .hint{font-size:13px;color:var(--sub);margin:0 0 16px;}
+  .opts{display:grid;gap:9px;}
+  .opt{display:flex;align-items:center;gap:13px;padding:13px 15px;border:1px solid var(--line);
+    border-radius:11px;cursor:pointer;background:#fff;transition:.12s;}
+  .opt:hover{border-color:var(--accent);background:var(--accent-soft);}
+  .opt .k{min-width:30px;height:28px;padding:0 6px;flex:0 0 auto;border-radius:8px;background:var(--accent-soft);
+    color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+  .opt .col{display:flex;flex-direction:column;}
+  .opt .t{font-weight:700;font-size:15px;}
+  .opt .d{font-size:12px;color:var(--sub);}
+  .rule{margin:16px 0 0;background:var(--red-soft);border-left:4px solid var(--red);
+    padding:12px 15px;border-radius:0 8px 8px 0;font-size:13px;color:#4a2222;}
+  .rule b{color:var(--red);}
+  .rtag{display:inline-block;font-size:12px;font-weight:700;color:var(--accent);
+    background:var(--accent-soft);padding:4px 12px;border-radius:20px;margin-bottom:12px;}
+  .result h2{font-size:19px;margin:0 0 4px;}
+  .rsub{font-size:13.5px;color:var(--sub);margin:0 0 16px;}
+  .fields{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
+    border-radius:11px;overflow:hidden;margin:4px 0;}
+  .frow{display:grid;grid-template-columns:120px 1fr;background:#fff;}
+  .fk{background:#f7f9fb;padding:12px 14px;font-size:13px;color:var(--sub);font-weight:700;
+    border-right:1px solid var(--line);display:flex;align-items:center;}
+  .fv{padding:12px 15px;font-size:15px;font-weight:700;}
+  .fv small{display:block;font-weight:400;font-size:12px;color:var(--sub);margin-top:2px;}
+  ol.steps{margin:6px 0;padding-left:0;counter-reset:s;list-style:none;}
+  ol.steps li{position:relative;padding:9px 0 9px 40px;border-bottom:1px solid var(--line);font-size:14.5px;}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:9px;
+    width:26px;height:26px;background:var(--accent-soft);color:var(--accent);border-radius:7px;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+  ul.plain{margin:6px 0;padding-left:20px;font-size:14.5px;}
+  ul.plain li{padding:3px 0;}
+  .subh{font-size:13.5px;font-weight:700;color:var(--accent);margin:16px 0 4px;
+    padding-bottom:4px;border-bottom:2px solid var(--accent-soft);}
+  table.mini{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0;}
+  table.mini th,table.mini td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top;}
+  table.mini th{background:#f7f9fb;color:var(--sub);font-weight:700;}
+  table.mini td:first-child{font-weight:700;}
+  .note{margin-top:16px;background:var(--warn-soft);border-left:4px solid var(--warn);
+    padding:12px 15px;border-radius:0 8px 8px 0;font-size:13.5px;color:#4a3a1a;}
+  .note b{color:var(--warn);}
+  .foot{text-align:center;margin-top:26px;font-size:11.5px;color:#9aa2ac;line-height:1.6;}
+  .empty{color:var(--sub);font-size:14px;text-align:center;padding:20px;}
+</style>
+</head>
+<body>
+<div class="wm" id="wm"></div>
+<div class="wrap">
+  <header>
+    <div class="en">YAHO FURNITURE · STORE OPERATION LOOKUP</div>
+    <h1>雅浩門市 作業查詢</h1>
+    <div class="meta">忘記流程時回來查 ・ 選狀況只給當下那一段 ・ v2026.07.21</div>
+  </header>
+  <input class="search" id="search" placeholder="輸入關鍵字找流程，例如：退款、業績、發票、盤點、贈送…" oninput="doSearch(this.value)">
+  <div class="nav" id="nav"></div>
+  <div id="stage"></div>
+  <div class="foot">
+    本工具僅供雅浩門市同仁查詢作業流程，非完整作業手冊。<br>
+    製作：鄭VIVI ・ 門市部 ・ 內容版本 v2026.07.21
+  </div>
+</div>
+
+<script>
+['contextmenu','copy','cut','dragstart'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault()));
+document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();
+  if(e.key==='F12')e.preventDefault();
+  if((e.ctrlKey||e.metaKey)&&['u','s','p','c','a'].includes(k))e.preventDefault();
+  if((e.ctrlKey&&e.shiftKey)&&['i','j','c'].includes(k))e.preventDefault();});
+(function(){let h='';for(let y=0;y<3600;y+=150)for(let x=-100;x<1700;x+=340)
+  h+='<span style="top:'+y+'px;left:'+x+'px">鄭VIVI ・ 雅浩門市部 ・ v2026.07.21</span>';
+  document.getElementById('wm').innerHTML=h;})();
+
+/* =================== 節點 =================== */
+const NODES={
+  home:{title:'要查什麼？',hint:'選一個主題，一步一步問，只給你當下需要的那一段。也可以直接用上面的關鍵字搜尋。',opts:[
+    {k:'01',t:'現況總覽',d:'據點、動線、溝通管道、動態',res:'r_overview'},
+    {k:'02',t:'接待',d:'零售、來電、設計師、企業、老闆朋友',to:'recept'},
+    {k:'03',t:'報價',d:'查價順序、折扣、各類報價要點',to:'quote'},
+    {k:'04',t:'訂單登打與文中',d:'三欄、設計師代訂、各類商品、官網、ERP',to:'order'},
+    {k:'05',t:'結帳與發票',d:'現場、線下付款、先出貨、開發票',to:'checkout'},
+    {k:'06',t:'結單後與退佣',d:'通知出貨、安排出貨、設計師退佣',to:'post'},
+    {k:'07',t:'退換貨處理',d:'退貨、換貨、退款、官網取消、另開單',to:'return'},
+    {k:'08',t:'調撥・盤點・吊牌',d:'調撥、盤點流程、回報、吊牌分工',to:'stock'},
+    {k:'09',t:'門市日常維護',d:'開閉店、環境、行政、服裝班務',to:'daily'},
+    {k:'10',t:'商品贈送',d:'送個人、送公司、簽名歸檔',to:'gift'},
+    {k:'11',t:'商品保留',d:'依來源流程、期限、爭議判定',to:'reserve'},
+    {k:'12',t:'業績歸屬與輪班',d:'判定、綁定、爭議、效期、輪班、LINE',to:'attr'},
+    {k:'13',t:'常見錯誤紅線',d:'19 條常見錯誤與正確做法',res:'r_errors'},
+    {k:'14',t:'商品知識與政策',d:'保固、木質輪、停產、其他',to:'product'},
+    {k:'15',t:'通訊錄・部門據點',d:'部門職掌、據點電話、LINE 群組',to:'contacts'}
+  ]},
+
+  recept:{title:'接待 — 哪種客戶？',opts:[
+    {k:'1',t:'一般 / 零售客戶',d:'',res:'r_recept_retail'},
+    {k:'2',t:'來電客戶',d:'',res:'r_recept_call'},
+    {k:'3',t:'設計師',d:'',res:'r_recept_designer'},
+    {k:'4',t:'企業客戶',d:'',res:'r_recept_corp'},
+    {k:'5',t:'老闆朋友',d:'',res:'r_recept_boss'},
+    {k:'6',t:'跳班怎麼算',d:'',res:'r_recept_jump'}
+  ]},
+  quote:{title:'報價 — 要查什麼？',opts:[
+    {k:'1',t:'查價基本動作',d:'報價前的查價順序',res:'r_quote_flow'},
+    {k:'2',t:'折扣確認',d:'詢價窗口與已固定折扣',res:'r_quote_discount'},
+    {k:'3',t:'各類報價要點',d:'一般/專案/設計師/企業/維修/官網',res:'r_quote_types'}
+  ]},
+  order:{title:'訂單登打與文中 — 要查什麼？',opts:[
+    {k:'1',t:'文中三欄怎麼填',d:'請款客戶／業務員／工地部門',to:'cols'},
+    {k:'2',t:'設計師代訂',d:'客戶欄／保固／收貨地址',to:'designer'},
+    {k:'3',t:'各類商品登打',d:'現貨/訂貨/期貨/展品/特賣/維修',to:'order_types'},
+    {k:'4',t:'官網金額組合下單',d:'客戶下單流程與重要規則',res:'r_order_web'},
+    {k:'5',t:'文中欄位與簡化原則',d:'四欄邏輯、客工商建檔',res:'r_erp_fields'},
+    {k:'6',t:'文中關帳與修改規則',d:'關帳、改單、結案欄位',res:'r_erp_close'},
+    {k:'7',t:'訂單成立共通規則',d:'查庫存、一單一信、第二人確認',res:'r_order_common'}
+  ]},
+  cols:{q:'這筆訂單從哪裡來？',hint:'訂單來源決定請款客戶、業務員、工地部門三欄。',opts:[
+    {k:'1',t:'官網下單',d:'客戶在雅浩官網下的單',to:'cols_web'},
+    {k:'2',t:'線下門市現場成交',d:'客戶到店，業務直接接洽',res:'s3'},
+    {k:'3',t:'MOMO 平台',d:'從 MOMO 後台收到的訂單',res:'s4'},
+    {k:'4',t:'PCHOME 平台',d:'從 PCHOME 收到的訂單',res:'s5'}
+  ]},
+  cols_web:{q:'這個官網客戶有綁定門市業務嗎？',hint:'系統帶不帶業務代號，決定業務員與工地部門。',opts:[
+    {k:'有',t:'有綁定業務',d:'系統帶官網分身代號（7000）',res:'s1'},
+    {k:'無',t:'沒綁 / 不確定',d:'系統帶通用代號 Z002',res:'s2'}
+  ]},
+  designer:{q:'設計師代訂 — 這筆是哪種狀況？',hint:'接單時主動問設計師：保固歸誰、收貨在誰家。',opts:[
+    {k:'A',t:'業主收貨、保固歸業主',d:'',res:'dA'},
+    {k:'B',t:'業主收貨、保固歸設計師',d:'',res:'dB'},
+    {k:'C',t:'設計師自己收貨轉交',d:'',res:'dC'},
+    {k:'D',t:'業主自己下單，設計師只介紹',d:'',res:'dD'}
+  ]},
+  order_types:{title:'各類商品登打 — 哪一種？',opts:[
+    {k:'1',t:'現貨',d:'',res:'r_order_instock'},
+    {k:'2',t:'訂貨',d:'',res:'r_order_purchase'},
+    {k:'3',t:'期貨',d:'',res:'r_order_future'},
+    {k:'4',t:'展品',d:'含三處紅框備註',res:'r_order_display'},
+    {k:'5',t:'特賣品',d:'',res:'r_order_sale'},
+    {k:'6',t:'維修',d:'',res:'r_order_repair'}
+  ]},
+  checkout:{title:'結帳與發票 — 要查什麼？',opts:[
+    {k:'1',t:'付款（現場）',d:'刷卡、現金、其他',res:'r_pay_onsite'},
+    {k:'2',t:'付款（線下）',d:'刷卡授權、現金匯款、支票',res:'r_pay_offsite'},
+    {k:'3',t:'未付款先出貨',d:'三步驟、限 2 筆',res:'r_pay_pre'},
+    {k:'4',t:'開立發票',d:'開立方式與補充規範',res:'r_invoice'}
+  ]},
+  post:{title:'結單後與退佣 — 要查什麼？',opts:[
+    {k:'1',t:'通知出貨',d:'',res:'r_post_notify'},
+    {k:'2',t:'安排出貨',d:'',res:'r_post_arrange'},
+    {k:'3',t:'設計師退佣七步驟',d:'跨四部門、約 1.5 個月',res:'r_rebate'}
+  ]},
+  return:{title:'退換貨 — 這筆是什麼狀況？',
+    rule:'<b>鐵則</b>　不論出貨前後、退或換，第一關一定是門市經理簽核，未簽核前不發任何通知。簽核後通知同時發（客服、會計、改單、約收貨、追發票）。只有兩件要等：退款要等發票收回＋商品收回檢查無誤＋訂單改好通知完，三樣到齊；換新款要等舊品收回檢查無誤。',
+    opts:[
+    {k:'1',t:'官網訂單客戶要取消',d:'客戶在官網後台取消',to:'ret_web'},
+    {k:'2',t:'線下訂單退貨',d:'客戶要退、不換',to:'ret_return'},
+    {k:'3',t:'線下訂單換貨',d:'客戶要換別的款',to:'ret_exchange'},
+    {k:'4',t:'退款怎麼退',d:'依付款方式的退款方式',res:'refund'},
+    {k:'5',t:'要不要另開新訂單',d:'退換貨產生金額變動時',res:'neworder'},
+    {k:'6',t:'前置紅線',d:'無七天鑑賞、個人因素退貨',res:'r_return_redline'}
+  ]},
+  ret_web:{q:'商品出貨了嗎？',hint:'官網退款≠線下退款，先確認出貨狀態。',opts:[
+    {k:'未',t:'還沒出貨',d:'官網未結案前客戶自行取消',res:'web_before'},
+    {k:'已',t:'已經出貨',d:'客戶事後要求取消退貨',res:'web_after'}
+  ]},
+  ret_return:{q:'現在是出貨前還是出貨後？',opts:[
+    {k:'前',t:'出貨前',d:'還沒安排出貨',res:'before_ship'},
+    {k:'後',t:'出貨後',d:'商品已出',res:'return_after'}
+  ]},
+  ret_exchange:{q:'現在是出貨前還是出貨後？',opts:[
+    {k:'前',t:'出貨前',d:'還沒安排出貨',res:'before_ship'},
+    {k:'後',t:'出貨後',d:'商品已出',res:'exchange_after'}
+  ]},
+  stock:{title:'調撥・盤點・吊牌 — 要查什麼？',opts:[
+    {k:'1',t:'調撥作業',d:'前提、各情境、仁愛提醒',res:'r_transfer'},
+    {k:'2',t:'盤點流程',d:'',res:'r_inventory_flow'},
+    {k:'3',t:'盤點表欄位',d:'',res:'r_inventory_cols'},
+    {k:'4',t:'盤點回報原則',d:'',res:'r_inventory_report'},
+    {k:'5',t:'吊牌作業',d:'門市/產品部/行銷部分工',res:'r_tag'}
+  ]},
+  daily:{title:'門市日常維護 — 要查什麼？',opts:[
+    {k:'1',t:'開店檢查',d:'',res:'r_open'},
+    {k:'2',t:'閉店檢查',d:'',res:'r_close'},
+    {k:'3',t:'環境維護',d:'展間、零件備貨、茶水間',res:'r_maint'},
+    {k:'4',t:'日常行政',d:'動態、簽收信件包裹',res:'r_admin'},
+    {k:'5',t:'服裝與班務',d:'服裝、上班據點、排班',res:'r_dress'}
+  ]},
+  gift:{title:'商品贈送 — 送給誰？',opts:[
+    {k:'1',t:'送個人朋友',d:'要姓名、身分證、戶籍地址',res:'r_gift_person'},
+    {k:'2',t:'送公司行號',d:'要公司名稱、統一編號',res:'r_gift_company'},
+    {k:'3',t:'老闆簽名與資料歸檔',d:'',res:'r_gift_sign'}
+  ]},
+  reserve:{title:'商品保留 — 要查什麼？',opts:[
+    {k:'1',t:'依來源的保留流程',d:'新店倉/官網/專案/仁愛/內湖',res:'r_reserve_flow'},
+    {k:'2',t:'通知方式與期限',d:'現貨14天、展品7天',res:'r_reserve_notify'},
+    {k:'3',t:'保留爭議判定',d:'',res:'r_reserve_dispute'}
+  ]},
+  attr:{title:'業績歸屬 — 要查什麼？',opts:[
+    {k:'1',t:'業績算誰的（判定基準）',d:'到店當天、動態舉證',res:'a_basic'},
+    {k:'2',t:'有效綁定要什麼條件',d:'哪些算你的、哪些不算',res:'a_bind'},
+    {k:'3',t:'到店成交發現別人掛名',d:'現場衝突怎麼處理',res:'a_conflict'},
+    {k:'4',t:'客戶不滿要換業務',d:'',res:'a_switch'},
+    {k:'5',t:'歸屬效期 / 追溯期',d:'',res:'a_expiry'},
+    {k:'6',t:'輪班與跨店接待',d:'',res:'a_shift'},
+    {k:'7',t:'LINE 綁定與分配',d:'',res:'a_line'}
+  ]},
+  product:{title:'商品知識與政策 — 要查什麼？',opts:[
+    {k:'1',t:'保固規範',d:'MADESK、Herman Miller 貼紙',res:'r_warranty'},
+    {k:'2',t:'木質輪規格',d:'BB/C7/DC1/H9',res:'r_wheels'},
+    {k:'3',t:'停產與不再進貨',d:'',res:'r_discont'},
+    {k:'4',t:'其他',d:'Celaeno 隱形膜工具卡',res:'r_other'}
+  ]},
+  contacts:{title:'通訊錄・部門據點 — 要查什麼？',opts:[
+    {k:'1',t:'部門對照',d:'各部門主要職掌',res:'r_depts'},
+    {k:'2',t:'據點與聯絡方式',d:'地址、電話、網址',res:'r_sites'},
+    {k:'3',t:'LINE 群組用途',d:'',res:'r_groups'},
+    {k:'4',t:'查價工具順序',d:'',res:'r_tools'}
+  ]}
+};
+
+/* =================== 結果 =================== */
+const RES={
+  s1:{tag:'情境一 ・ 官網-門市業務成交',sub:'客戶在官網下單，且有綁定門市業務員',
+    fields:[['客戶','收貨人本名'],['請款客戶','L0C0192 順立智慧'],
+      ['業務員','7004 官網-Vita / 7005 官網-Ivy','依綁定業務選填（官網分身 7000 系列）'],['工地部門','A01 仁愛門市']],
+    note:'業務員要打<b>官網分身（7000 系列）</b>，不是門市本尊。'},
+  s2:{tag:'情境二 ・ 官網-官網成交',sub:'客戶在官網下單，但沒有綁定任何業務',
+    fields:[['客戶','收貨人本名'],['請款客戶','L0C0192 順立智慧'],
+      ['業務員','Z002 官網-順立','未綁業務一律用通用代號'],['工地部門','G 總公司']],
+    note:'沒綁業務時工地部門是 <b>G 總公司</b>，別打成仁愛門市。'},
+  s3:{tag:'情境三 ・ 線下門市成交',sub:'客戶到門市現場成交，由業務直接接洽',
+    fields:[['客戶','客戶本名'],['請款客戶','同客戶（客戶本人付款）'],
+      ['業務員','6001 仁愛-Ivy / 6002 仁愛-Vita','依成交業務選填（線下本尊 6000 系列）'],['工地部門','A01 仁愛門市']],
+    note:'業務員打<b>線下本尊（6000 系列）</b>。內湖值班成交，工地一樣打 A01 仁愛門市。'},
+  s4:{tag:'情境四 ・ MOMO 外站',sub:'客戶在 MOMO 平台下單',
+    fields:[['客戶','收貨人本名'],['請款客戶','SMN00018 MOMO購物'],['業務員','Z003 MOMO','外站通用代號，不分業務'],['工地部門','A04 電商']],
+    note:'外站工地部門是 <b>A04 電商</b>。'},
+  s5:{tag:'情境五 ・ PCHOME 外站',sub:'客戶在 PCHOME 平台下單，流程同 MOMO',
+    fields:[['客戶','收貨人本名'],['請款客戶','SMN00031 PCHOME線上'],['業務員','Z004 PC HOME','外站通用代號，不分業務'],['工地部門','A04 電商']],
+    note:'代號跟 MOMO 不同：請款客戶 <b>SMN00031</b>、業務員 <b>Z004</b>。'},
+  dA:{tag:'設計師代訂 A',sub:'設計師訂購、業主收貨、業主獨立保固',
+    fields:[['客戶欄','設計師','客戶欄=訂購人，掛設計師名下'],['備註出貨地址','要（填業主家）'],['保固人','業主'],['另建客工商','要','自建業主客工商 + 備註「保固人：業主 XXX」']],
+    note:'保固歸業主，需<b>自建業主客工商</b>並在備註寫明保固人。'},
+  dB:{tag:'設計師代訂 B',sub:'設計師訂購、業主收貨、保固歸設計師',
+    fields:[['客戶欄','設計師'],['備註出貨地址','要（填業主家）'],['保固人','設計師'],['另建客工商','不用','保固歸設計師，直接用設計師建檔']],
+    note:'保固歸設計師<b>不用另建客工商</b>，但收貨在業主家，備註仍要填實際地址。'},
+  dC:{tag:'設計師代訂 C',sub:'設計師訂購、設計師自己收貨轉交',
+    fields:[['客戶欄','設計師'],['備註出貨地址','不用','收貨在設計師建檔地址'],['保固人','依設計師說明'],['另建客工商','若要業主保固則同 A']],
+    note:'設計師自己收貨、地址與建檔相同可<b>免備註</b>；保固歸誰要問清楚。'},
+  dD:{tag:'設計師代訂 D',sub:'業主自己下單、設計師只是介紹',
+    fields:[['客戶欄','業主','業主即為客戶本人'],['備註出貨地址','不用'],['保固人','業主'],['另建客工商','不用','業主已為客戶']],
+    note:'這其實是<b>一般客戶</b>，四角色同一人，照一般訂單處理。'},
+
+  r_overview:{tag:'現況總覽',title:'門市現況',blocks:[
+    {h:'據點與輪班',list:['門市據點：內湖總公司、仁愛 NORMANN 概念店。','兩店隔週輪班；公司認知的「門市」為仁愛。','已取消統一客服專線，線上窗口為官方 LINE 與客服信箱 info@yaho.com.tw，門市以兩店各自專線為主。']},
+    {h:'五大核心動線',list:['接待 → 報價 → 登打訂單 → 結帳 → 登打文中 ERP → 結單後出貨。','先把主線練熟；退換貨、調撥、盤點、吊牌、贈送、跨部門協作屬延伸，依實際遇到再補強。']},
+    {h:'溝通管道',list:['對公司各部門以 Email 為主、Teams 即時聯繫；門市內部用 LINE 或 Email。','牽涉金額、出貨、退換貨、需留紀錄的通報，一律走 Email 以利查核。']},
+    {h:'動態登打',list:['路徑：公司協同作業資料夾的「展售中心動態紀錄」。','需登打：客戶姓名、電話、Email、詢問品項、處理狀況；成交者加註訂單編號。電話格式不可有空格或橫槓。','未成交客戶一樣要打，並註明看了什麼商品、有沒有報價。','動態當下就要打；已成交當下沒打的，最遲成交日起七日內補登；沒成交的當日就要補上。逾期未補登，客戶就不是你的，事後不得追討。','動態要有效，前提是真的服務過：須有實質互動、報價紀錄或對話證明；僅 LINE 綁定或只登記姓名電話視為無效。']}]},
+
+  r_recept_retail:{tag:'接待 ・ 一般/零售客戶',list:['產品介紹：操作解說、人體工學概念、品牌故事。','提供當前活動資訊與優惠。','協助路線導航與來店預約。']},
+  r_recept_call:{tag:'接待 ・ 來電客戶',list:['處理客戶問題、維修詢問、客訴。','售後服務以線上操作流程教學為主，可錄影、加 LINE、傳 Email 輔助。']},
+  r_recept_designer:{tag:'接待 ・ 設計師',list:['請客戶提供設計師名片，交業助建檔，建檔完成再建入 ERP。','不定時提供新品 EDM 與活動資訊給設計師，並藉此更新動態。','設計師帶業主來店，若對方主動告知已有總公司同仁接洽過，留下客戶姓名電話，於「雅浩家具-專案」LINE 群組確認由業務部或專案部哪位接洽。']},
+  r_recept_corp:{tag:'接待 ・ 企業客戶',list:['協助試坐指導，門市端僅做基本介紹。','未合作過的企業客戶：門市業務先接洽、詢問採購數量後向 Stanley 報價；若 Stanley 告知已有業務接洽，由原業務承接，不重複報價。','已有合作紀錄的企業大單：直接轉接 Stanley。']},
+  r_recept_boss:{tag:'接待 ・ 老闆朋友',list:['與老闆確認後再接待與報價。','若涉及贈送，依「商品贈送」流程辦理。']},
+  r_recept_jump:{tag:'接待 ・ 跳班認定',list:['客戶未預約進門市參觀，不論是否留資料都算跳班。','接洽後發現是同事案子則不算跳班，可接下一個班。']},
+
+  r_quote_flow:{tag:'報價 ・ 查價基本動作',title:'查價順序',blocks:[
+    {h:'每次報價前先依序查價，確認價格再談折扣',table:{head:['順序','工具','說明'],rows:[
+      ['1','Airtable','主要商品資料庫，由產品部教學上手。'],
+      ['2','公司協同作業資料夾','Airtable 查不到時，進公檔價格表查詢。'],
+      ['3','採購部/產品部','公檔也查不到時，Email 產品部協助查詢。']]}}]},
+  r_quote_discount:{tag:'報價 ・ 折扣確認',blocks:[
+    {h:'折扣詢價窗口',list:['折扣表尚未完整分類，除下列已固定折扣外，所有詢價折扣一律先請 Stanley 確認，不可自行套用。']},
+    {h:'已固定折扣（可直接套用）',table:{head:['商品','散客','設計師'],rows:[['MADESK 升降桌','85 折','75 折'],['其他','依公告更新','—']]}}]},
+  r_quote_types:{tag:'報價 ・ 各類報價要點',list:['一般客戶：以現貨及官網商品為主，依 Airtable 報價，折扣依固定表或請 Stanley 確認。','專案報價：依數量需求先自行換算，折扣與專案處理請 Stanley 確認；客製或特殊商品須確認交期與是否可進台灣。','設計師報價：成立設計師與業主兩份；留意業主端是否另有業務先接到。','企業客戶：接洽流程見「接待 ・ 企業客戶」。','維修報價：由客服部提供零件資訊與報價；客戶嫌貴想改購新品，客服部會轉回門市接洽。','官網：說明商品資訊與活動，提供推薦碼填寫。'],
+    note:'設計師報價一定要成立兩份（設計師＋業主）。'},
+
+  r_order_common:{tag:'訂單登打 ・ 共通規則',list:['下單前務必查庫存，避免超賣。','每筆訂單單獨成立一封 Email，主旨依狀態加訂單編號：訂單成立-編號、訂單出貨-編號、訂單對帳-編號、訂單退貨-編號、訂單型號更改-編號、訂單備註更改-編號。','訂貨的價格與型號皆須由第二人確認。']},
+  r_order_instock:{tag:'商品登打 ・ 現貨',steps:['確認產品價格、型號、庫存。','與客戶確認出貨時間。','登打文中 ERP，並 Email 訂單給相關部門。']},
+  r_order_purchase:{tag:'商品登打 ・ 訂貨',list:['價格與型號：由產品部確認後，門市須由第二人再次確認。','可否訂貨：由採購部確認可否單獨訂貨、可否進到台灣。','預估交期：由採購部確認後，門市於訂單說明預計交期。']},
+  r_order_future:{tag:'商品登打 ・ 期貨',list:['確認新店倉庫表是否已訂貨，於訂單說明預計到貨日。','確認預計到貨數量並於訂單載明。']},
+  r_order_display:{tag:'商品登打 ・ 展品',blocks:[
+    {h:'登打要點',list:['型號：無型號則 Email 相關部門查詢，型號先列待補。','價格：有價格標為展品價；無價格 Email 查詢。','保固：確認保固並於訂單備註說明。','運送：自運確認自取時間並請客戶簽收；貨運依公司流程出貨。','庫存售完通報行銷部與客服部；官網如有上架需下架。']},
+    {h:'展品售出 — 三處紅框備註（經公司告知有保固敘述時）',list:['訂單紙本最下方：客戶簽署「知悉稍有刮傷但功能無誤、同意不退換、不列入保固」。','文中備註資料欄（備註一）：例「展品升降桌無保固」。','文中明細備註（備註二）：例「#21600363-升降桌 E45 展品售出無保固」。']}],
+    note:'實體店試坐下單<b>無七天鑑賞期</b>，銷售當下務必告知；展品售出當下立即更新盤點表。'},
+  r_order_sale:{tag:'商品登打 ・ 特賣品',list:['確認價格：有價格標為特賣價；無價格 Email 查詢。','確認庫存並更新盤點。','特賣狀況如實告知客戶，保固時間於訂單備註。','運送同展品：自運親簽、貨運安排出貨。']},
+  r_order_repair:{tag:'商品登打 ・ 維修',list:['維修方式：自運或貨運配送。','訂貨流程：區分現貨零件與需訂貨零件。']},
+  r_order_web:{tag:'官網金額組合下單',blocks:[
+    {h:'客戶下單流程',steps:['引導客戶至官網下單，協助確認商品與金額組合。','於官網「訂單備註」與「商家備註」兩欄同時填規格/型號與出貨時間（切勿填在物流訊息處），兩欄內容需一致。','商家備註為僅商家可見欄位，客戶事後改訂單備註，商家備註仍保有原始紀錄佐證。','依官網訂單備註欄位順序編號，切勿跳號；上一筆未完成付款可先跳號，付款成功後由負責窗口依序補回。','確認編號後自行登打文中：請款客戶打順立智慧、業務打官網-xxx、工地部門打總公司-業務。']},
+    {h:'重要規則',list:['此類官網訂單拋單仍由後勤處理，門市需自行登打文中。','門市不得在文中成立、客服已拋單後又直接改官網備註，以免資訊落差。','出貨時間變更一律 Email 通知客服部，客服僅依 Email 更新。']}]},
+  r_erp_fields:{tag:'文中 ・ 欄位與簡化原則',blocks:[
+    {h:'欄位邏輯',list:['請款客戶：付款的人，誰付款打在此欄。','客戶：訂購人，這筆訂單掛在誰名下；系統用此欄客工商建檔資料出貨。','付款人與訂購人同一人（一般散客）兩欄可建同一人。','另有收貨人、聯絡人，務必在訂單備註說明關聯。','訂購人與收貨人不同（設計師訂、業主收）：文中備註資料分頁填實際出貨地址。','保固人與訂購人不同（設計師代訂業主保固）：另建業主客工商，備註「保固人：業主 XXX」。','金額一律未稅價（退佣訂單除外）。']},
+    {h:'客工商建檔',list:['客工商欄位不直接綁業務員，只有打訂單時才登打所屬業務。','查到顧客資料卻無權限：通知客服部移除該客戶的業務員後即可使用。']},
+    {h:'設計師訂單',list:['付款人與收貨人依是否退佣，建立設計師或業主資料。','退佣時單價為業主未稅價，以及設計師購買未稅價。','文中退佣設計師欄位價格為該商品總計未稅價，不可拆開打，否則帳會錯。']}],
+    note:'不同來源的三欄打法完全不同，詳見「文中三欄怎麼填」與情境對照表。'},
+  r_erp_close:{tag:'文中 ・ 關帳與修改規則',list:['文中登打完成會自動關帳。','當月訂單因客戶臨時改出貨時間或地址錯誤：直接改訂單正本並 Email 通報，不須請會計刪單；地址錯誤務必同時到客供商改正確地址。','非當月訂單需修改，才需請會計部開啟文中。','任何文中金額變動，一律通知會計部。','客戶名稱有特殊字，請會計部於文中協助造字。','訂單維護區「結案」欄位顯示 1 或 2 時不能直接改，須先通知會計部開啟文中，否則影響結帳。判別方式由主管或資深同仁協助。']},
+
+  r_pay_onsite:{tag:'結帳 ・ 付款（現場）',list:['刷卡：刷清於訂單註明刷卡銀行；分期註明銀行及期數。','現金：付清註明付清金額；訂金或尾款各自註明金額。','其他（匯款、跑流程等）：於訂單註明付款方式。']},
+  r_pay_offsite:{tag:'結帳 ・ 付款（線下）',list:['刷卡授權：訂單註明刷卡金額及訂單編號，Email 請會計部授權；成功會計 Email 通知，失敗告知原因並通知門市與客戶確認。','現金匯款：訂單註明匯款時間、後五碼、金額，通知會計確認；確認收款後 Teams/Email 通知，未核對到也會通知門市再與客戶確認。','支票：與客戶確認交付日與到期日，預計付款日前再確認並通知會計部領取。']},
+  r_pay_pre:{tag:'結帳 ・ 未付款先出貨',steps:['先確認客戶付款流程與背景，提供資訊請公司審核。','訂單需由「會計部主管」簽名審核同意後才能成立。','同一客戶限最多 2 筆未收款訂單；超過須先結清前單。'],
+    note:'必須走完三步驟，且同一客戶<b>限定最多 2 筆</b>。'},
+  r_invoice:{tag:'結帳 ・ 開立發票',blocks:[
+    {h:'開立方式',list:['現場客戶：確認品名、日期、金額；三聯式確認抬頭統編；確認開立金額（訂金/尾款/全額）；Email 通知會計部開立並郵寄；完成於訂單註明發票號碼。','已付款非現場客戶：確認郵寄地址、三聯式抬頭統編需同匯款人資訊、開立金額，訂單備註後 Email 請會計開立。','未付款先開立：依「未付款先出貨」流程，需會計部主管於訂單簽名同意，再 Email 請會計開立並郵寄。']},
+    {h:'補充規範',list:['發票本統一於內湖總公司，門市現場結帳客戶也由會計代開並郵寄。','一張訂單一張發票。','個人名義支付可開三聯或二聯；公司戶支付時匯款公司名稱與統編需同發票一致。','發票更換需於發票日之次月 7 日前將舊發票交會計部，逾期不受理。','多張訂單對應多張發票需合理拆分：單一品項數量不可拆；金額需與文中一致，不可為配合客戶而改文中金額造成毛利為負。','發票品名與備註清楚寫在格內，勿覆蓋重疊。']}]},
+
+  r_post_notify:{tag:'結單後 ・ 通知出貨',list:['一般品項：由公司或採購部發佈驗收完成通知。','客服部端：升降桌組裝完成發佈通知；台北市依訂單順序安排；外縣市專車確認排程；維修零件到貨通知。']},
+  r_post_arrange:{tag:'結單後 ・ 安排出貨',list:['現貨或訂貨已到貨、已付清：確認可出貨時間，更新訂單與文中出貨日期。','未付清：詢問付款方式，付款完成後再更新訂單安排出貨，並更新文中出貨日期。']},
+  r_rebate:{tag:'結單後 ・ 設計師退佣',title:'七大步驟',blocks:[
+    {table:{head:['步驟','動作','關鍵提醒'],rows:[
+      ['一','先確認退佣方式','公司退佣 DM、個人退佣 DS，影響全部後續'],
+      ['二','成立兩份報價單','業主與設計師訂單分開；設計師訂單貼退佣試算表截圖'],
+      ['三','文中退佣登打','與一般訂單不同，易錯點見說明表第三章'],
+      ['四','出貨後等 2 週','等滿 2 週才能申請；月底出貨案提醒次月 5 日前給發票'],
+      ['五','備齊申請資料','業主訂單、設計師訂單、退佣明細表、合約規劃書、存摺影本'],
+      ['六','填退佣明細表','用退佣申請表 v2026.05.22 Excel 自動計算'],
+      ['七','送會計部辦理','送內湖總公司會計部，作業約 1.5 個月不含假日']]}}],
+    note:'退佣跨四部門、約一個半月，任一階段出錯後段全部重做。細節以「設計師退佣執行流程說明表」為權威。'},
+
+  web_before:{tag:'官網取消 ・ 未出貨',sub:'官網未結案前，客戶於後台自行取消（門市已與客戶再確認）',
+    steps:['與客戶再次確認取消意願，請客戶於 LINE 或 Email 留書面確認並截圖存底。','先給門市經理簽核：列印官網訂單，註明取消原因與確認日期，請經理簽名。未簽核前不做後續動作。','業務至文中訂單備註：註明「客戶於未出貨前要求取消訂單」＋客戶確認日期。','Email 通知客服部：客戶已於官網後台取消，請勿安排出貨。','Email 通知會計部：文中該筆未出貨、已備註取消，請留意。（步驟 4、5 同時發）'],
+    note:'退款與電子發票由官網後台退刷時系統自動處理，<b>門市不需另行作業</b>。'},
+  web_after:{tag:'官網取消 ・ 已出貨',sub:'官網訂單已出貨，客戶事後要求取消退貨',
+    steps:['將官網訂單列印下來（線上訂單無紙本正本，需自行列印作為簽核依據）。','於列印訂單註明退貨原因，請門市經理簽核。','簽核後依「線下訂單退貨 ・ 出貨後」流程辦理取貨、退款、發票。'],
+    note:'官網退款≠線下退款：官網走<b>後台退刷、電子發票自動取消</b>，不走發票作廢流程。'},
+  before_ship:{tag:'退換貨 ・ 出貨前',sub:'商品尚未出貨（退貨、換貨共通）',
+    steps:['先給門市經理簽核：訂單寫清楚退換原因請經理簽名，未簽核前不發通知。','簽核後馬上發信客服部：更新訂單並通報，請客服部取消出貨。','同時發信會計部：更新訂單並通報，請會計部開啟文中告知需修改內容。（2、3 同時發）']},
+  return_after:{tag:'退貨 ・ 出貨後',sub:'商品已出，客戶要退貨',
+    steps:['先給門市經理簽核（未簽核前不發通知）。','簽核後同時發信客服部＋會計部：客服準備收貨、會計知道金額會改。','確認商品狀況（瑕疵）：確認包材、約收回時間、與客服確認可否當天收送；拍瑕疵照連訂單發採購／客服／工程。','訂製商品：等採購與原廠確認維修狀況再安排取回；原廠無法回覆則與經理確認去留再修訂單。','商品收回倉庫後，客服會把單據貼「雅浩門市工程部」LINE 群組；看到自己單據後在群組請工程檢查。包材不完整要跟客戶收包材費。','主動追蹤檢查進度（工程常外出，隔幾天沒消息就群組問或打電話）。瑕疵請業務協助跟客戶協商。','工程確認沒問題、退款金額確定後，Email 給會計＋工程：告知檢查完畢、退多少、訂單改成什麼；文中不能直接改的請會計開文中。'],
+    note:'<b>退款要等三樣到齊</b>：發票收回＋商品收回檢查無誤＋訂單改好通知完，客戶催也不行。'},
+  exchange_after:{tag:'換貨 ・ 出貨後',sub:'商品已出，客戶要換別的款',
+    steps:['先給門市經理簽核（未簽核前不發通知）。','簽核後同時發信客服部＋會計部：客服準備收貨與送貨、會計知道金額會改。','確認包材：不完整要跟客戶收包材費。','約客戶收回時間；商品收回倉庫後在「雅浩門市工程部」群組依客服單據請工程檢查並追蹤；工程確認沒問題才能換新款。','跟客戶確認換貨金額：換貴的補多少、換便宜退多少。','跟客服部確認新品何時送。','訂製商品換貨：拍瑕疵照連訂單發採購／客服／工程，再約取回時間。','金額確定後再發一次信給會計部：最後換成什麼、差額多少；文中不能直接改的請會計開文中。'],
+    note:'<b>換新款要等</b>舊品收回、檢查無誤才能換。'},
+  refund:{tag:'退款方式',sub:'依付款方式辦理退款',table:{head:['付款方式','退款處理'],rows:[
+    ['現場刷卡(一銀) 本人帶卡','現場協助刷退。'],
+    ['現場刷卡(一銀) 非本人','Email 信用卡刷退同意書 → 財務部 → 核准後填一銀刷退申請書寄出 → Email 通知門市。'],
+    ['現場刷卡(聯合) 本人帶卡','現場協助刷退。'],
+    ['現場刷卡(聯合) 非本人','Email 刷退同意書 → 財務部 → 核准 Email 通知門市 → 門市操作退刷。'],
+    ['授權刷卡','填退刷單請會計部協助退刷。'],
+    ['線上付款','官網後台退刷（電子發票自動取消）。'],
+    ['現金付款','提供原付款人存摺影本，掃描連訂單正本 Email 給會計部協助匯款。']]},
+    note:'退貨責任非本公司應負時，酌收退匯手續費 <b>30 元</b>（實際依會計部指示）。'},
+  neworder:{tag:'要不要另開新訂單',sub:'退換貨產生金額變動時的判斷',table:{head:['情境','另開新訂單？','說明'],rows:[
+    ['A 訂單退貨，需收包材／運費等費用','要','另成立新訂單，需有編號並備註是因 A 訂單所產生的費用。'],
+    ['A 單純商品金額變動（當月未關帳，如 A 換 B 或 A 退 A）','不用','同一筆訂單更新內容，說明 A 換 B 的差額。'],
+    ['跨月已關帳，只要有產生金額','要','另立新訂單，避免影響上月已結帳的毛利與營收。']]}},
+  r_return_redline:{tag:'退換貨 ・ 前置紅線',list:['因個人因素導致顧客退貨、造成公司成本損失，屬公司規範管理項目。','實體店試坐下單不適用七天無條件退貨，屬正規退貨流程；包材完整、由客戶負擔運費與包材費。']},
+
+  r_transfer:{tag:'調撥作業',blocks:[
+    {h:'前提：確認客服部已 Email 開立出借或調撥單',list:['專案部/業務部/行銷部出借：相關窗口通知客服部開立出借單；門市確認商品、擺出借立牌，歸還後協助清潔。','老闆借出：客服部直接提供資料；門市確認商品、擺出借立牌、協助清潔並更新盤點。','借出歸還商品需確認功能、外觀、擺放位置；有瑕疵協助清潔並歸位，型號或狀況有誤於盤點表備註。']},
+    {h:'仁愛概念店調撥提醒',list:['有調撥務必更新盤點。','每月 5 號以前繳交盤點表。','業助會查門市盤點表回報老闆，老闆客戶也可能臨時來店，務必保持盤點更新。']}]},
+  r_inventory_flow:{tag:'盤點 ・ 流程',list:['每月定期盤點，分類抽籤；品項分 A、B 兩類，每人每月輪替 A 或 B。','點貨確認：型號、數量、定價、編號、出廠日期、商品狀況與瑕疵。','展品損壞：提供出廠貼紙與損壞位置拍照，Email 通報門市部、客服部、採購部協助申請原廠維修，更新盤點並備註報修日期。','當月 30 日前完成盤點。']},
+  r_inventory_cols:{tag:'盤點 ・ 盤點表欄位',list:['圖片、門市編號、數量、商品型號、商品說明、訂價、商品狀況、出廠日期、備註。']},
+  r_inventory_report:{tag:'盤點 ・ 回報原則',list:['訂價調漲：公司於原廠漲價後提供資料，門市依公檔換算價格並更新。','商品報修追蹤維修進度，瑕疵備註於盤點表。','有損壞、缺型號、缺價格、無調撥單，皆須回報公司。','收到停產資訊或盤點需更新訊息，當日仁愛值班人員立即更新盤點表敘述。']},
+  r_tag:{tag:'吊牌作業 ・ 分工',list:['門市：吊牌完成後吊掛到展品上。','產品部：提供商品說明、尺寸、材質設定、產地、價格等資料。','行銷部：協助排版列印、切割、製作吊牌。']},
+
+  r_open:{tag:'門市日常 ・ 開店檢查',list:['開啟所有電源、冷氣、空調、展示燈具，開電視播放影片。','檢查當天需調撥品項是否準備完成。','將前一日訂單正本提交會計部。','巡視門市環境有無髒污，桌椅排整齊。','茶水間、展區、廁所定期清潔消毒、換垃圾袋。']},
+  r_close:{tag:'門市日常 ・ 閉店檢查',list:['關閉所有電源、冷氣、空調、展示燈具，關電視。','檢查隔日需調撥品項是否準備完成。','巡視門市環境有無髒污，桌椅排整齊。']},
+  r_maint:{tag:'門市日常 ・ 環境維護',list:['展間：試坐區椅子歸位、桌子排正；展品陳列與立牌位置正確；酒精等耗材補充；電器使用控管。','零件備貨：輪子、頭枕、腳踏墊、散熱架、椅套；氣泡袋、空紙箱、裝箱袋、綑綁繩、膠帶。','茶水間：咖啡膠囊補充與回收、擦手紙與衛生紙補充、抹布定期替換、水槽與杯子清潔歸位。','留意展間散落的已售出價格牌，務必歸位。']},
+  r_admin:{tag:'門市日常 ・ 日常行政',list:['當日客戶參觀資訊填於動態，待辦留言門市群組方便交接。','協助簽收信件與收發包裹；收到公文或重要信件務必拍照通報會計部。']},
+  r_dress:{tag:'門市日常 ・ 服裝與班務',list:['穿著正式服裝，不可著拖鞋。','依排班時間各自到內湖及仁愛上班。','每月 25 日前完成下月排班表，更新於公檔排班資料區（路徑：S:\\部門資料夾\\5100-北區展售中心\\門市休假表）。']},
+
+  r_gift_person:{tag:'商品贈送 ・ 送個人朋友',steps:['開單前先向老闆要受贈人真實姓名、身分證字號、戶籍地址三項資料。','老闆無法提供完整資料：告知「依公司財會規範無法成立此單」，不省略個資。','拿到完整資料後，用門市訂購單成立贈品訂單（金額為 0 或標註贈品）。','訂單必須由老闆親自簽名才能成立。','Email 通知客服部、會計部、採購部、門市部，告知贈品訂單已成立並安排配送。']},
+  r_gift_company:{tag:'商品贈送 ・ 送公司行號',steps:['開單前先向老闆要受贈單位公司名稱、統一編號兩項資料。','老闆無法提供完整資料：同樣告知無法成立，不省略資料。','拿到完整資料後，用門市訂購單成立贈品訂單。','訂單必須由老闆親自簽名才能成立。','Email 通知客服部、會計部、採購部、門市部，安排配送。']},
+  r_gift_sign:{tag:'商品贈送 ・ 簽名與歸檔',list:['贈品訂單必須由老闆親自簽名才能成立。','簽名訂單保留正本給會計部，並掃描留底備查。','贈品訂單不需打文中，也不需成立訂單編號。'],
+    note:'一句話：拿不到受贈人完整資料就不能成立贈品訂單。'},
+
+  r_reserve_flow:{tag:'商品保留 ・ 依來源的流程',list:['新店倉、電商外站：提供型號數量、保留對象、期限，LINE 通知客服部。','官網：已成交於官網備註說明成交訂單；保留中於官網備註說明對象與期限並自行下單。現貨官網上架商品一律先下單為原則。','專案保留的現貨：先跟專案部確認釋放數量，再通知客服部，並說明挪哪個業務的。','仁愛概念店：自行於官網下單、官網備註對象期限、更新仁愛庫存表備註，再 Email 通知客服部扣庫存並通知行銷部下架。','內湖、白天鵝、其他：Email 通知客服部、門市部、行銷部對象與期限；已上架需 Email 通知避免重新上架。','已售出：Email 通知門市部、客服部、行銷部成交訂單編號；取消保留：Email 通知可重新上架。']},
+  r_reserve_notify:{tag:'商品保留 ・ 通知與期限',list:['保留通知以「雅浩-客服/倉儲/門市/訂單部」LINE 群組為主；涉及上下架才用 Email。','保留期限：現貨與預購 14 天，展品 7 天。','延長僅可一次、最長 14 天；已逾期後才申請延長者視為無效保留，優先釋放給下一位。']},
+  r_reserve_dispute:{tag:'商品保留 ・ 爭議判定',list:['未依流程先行保留就銷售，視同未保留完成。','相同商品保留依流程正確性與時間判定；流程有誤者，即使最早留言仍視為無效。','保留未於期限內取消或未發信延後，視同取消直接釋放。','延長保留依當初方式通知（LINE 就 LINE、MAIL 就 MAIL），避免影響上下架判斷。']},
+
+  a_basic:{tag:'業績歸屬 ・ 判定基準',sub:'客戶未綁定指定業務時的基本判定',
+    list:['業績歸屬以客戶「實際到店當天」值班業務為準，不是電話預約當天。','例：客人預約 3/5 到內湖，就算 3/5 當天內湖值班業務的。','一切以「動態」為主；動態要註明客戶姓名＋電話才具舉證效力。','動態當下就要打；成交當下沒打的最遲成交日起七日內補登（以檔案存檔紀錄為準），逾期未補登不得事後追討。','依公告制度執行，不以個人解讀為準。有疑慮當下在群組提出；事後才爭議，一律門市經理處理。'],
+    note:'最簡單自保：<b>每次服務完馬上寫動態</b>。有服務、有紀錄，什麼都不用怕。'},
+  a_bind:{tag:'業績歸屬 ・ 有效綁定',sub:'什麼情況客戶算你的',sub2:'算你的（至少符合一種）',
+    list:['動態有寫，姓名電話齊全，被問起講得出當時談了什麼。','跟客戶真的來回聊過，討論過尺寸／材質／顏色，拿得出對話截圖。','給過正式報價，且客戶有約好到店時間。','客戶到店是你接待的，客戶記得你。'],
+    sub3:'不算你的（到店成交歸現場接待）',
+    list2:['客戶說不認識你，你動態沒寫、對話紀錄也拿不出來。','只單方面傳訊息或丟報價，客戶從來沒回過。','系統上只登記名字電話，沒動態、沒任何講過話的證明。'],
+    note:'<b>掛名不代表擁有，有服務才算數。</b>'},
+  a_conflict:{tag:'業績歸屬 ・ 現場衝突',sub:'B 接待成交、才發現系統掛的是 A',
+    steps:['現場優先：先把客人服務完、把單成交，嚴禁在客戶面前爭執。','群組通報：成交後 B 在群組標記 A 說明狀況（建議發 Email 留紀錄，並同時讓門市經理與 A 都知道，不可只找單方）。','換 A 舉證：A 要拿出與客戶「雙向互動」的截圖或動態。','兩位業務先自行協調，協調完成才變更業務員；門市經理需看到完整協調過程。無法協調時才由門市經理介入裁定，該筆業績歸門市經理。'],
+    note:'判定：A 拿不出雙向互動證明，或客戶表示不認識 A → <b>歸現場 B</b>。'},
+  a_switch:{tag:'業績歸屬 ・ 客戶要換業務',sub:'客戶因不滿原業務服務，指定換人',
+    list:['客戶要求換人：須出示客戶截圖證明，訂單由門市經理處理（歸總公司業績）。','無法出示截圖，但公司直接了解到客戶的不滿：同樣由門市經理處理。']},
+  a_expiry:{tag:'業績歸屬 ・ 效期與追溯',sub:'綁定多久、爭議追溯多久',
+    list:['設計師綁定有效一年；一般客戶六個月（皆以動態為主）。','業績異議追溯期一個月。例：4 月業績結算後，5/25 為最後追溯期。','官網業績若因文中作業誤入他人，請私下結算。']},
+  a_shift:{tag:'業績歸屬 ・ 輪班與跨店',sub:'2026/03/02 統一規範（最新且優先）',
+    list:['公司認知的「門市」為仁愛 NORMANN 概念店；仁愛與內湖隔週輪班。','仁愛當天有排班者必須到店、嚴禁避店；仁愛休假由內湖支援。','休假視同放棄當日輪班，當日詢問與訊息由值班同仁承接。','加班／休假來加班不接電話、不接待客戶，以免影響歸屬判定。','電話各接各線：內湖接 02-2545-2382、仁愛接 02-2545-2383；內湖休假時由當天仁愛值班人員自行完成轉接設定。','跨店接待：仁愛當班若有自己客戶要去內湖試坐，需事先與內湖協調，或改約自己上班時間再前往。','每週連續工作不得超過六天，以五天為限。']},
+  a_line:{tag:'業績歸屬 ・ LINE 綁定分配',sub:'官方 LINE 與來電派單規則',
+    list:['門市動態紀錄優先認定；LINE 綁定僅在無動態紀錄時才適用。','動態須註明客戶姓名＋電話，才具舉證效力。','有爭議以時間先後為準，需截圖或紀錄佐證，由內勤協助改派。','客戶用官方 LINE 留言：內勤查綁定後派業務。','客戶來電：門市主動問是否已綁定 LINE 業務；已綁定則引導回 LINE 由該業務處理。']},
+
+  r_errors:{tag:'附錄C ・ 常見錯誤紅線',title:'對照表',table:{head:['常見錯誤','正確做法'],rows:[
+    ['調撥商品未及時更新盤點表，數量不符','調撥當下即更新盤點表'],
+    ['外借商品未依時間內取回','追蹤外借歸還時間並如期取回'],
+    ['保留商品未依流程保留或釋出','依附錄 A 流程通知，逾期未通知即釋放'],
+    ['銷售未看庫存導致超賣','下單前查新店倉與盤點庫存，低量先問客服部'],
+    ['客戶、送貨、商品資料與文中不符','成立文中逐欄核對，代入舊客戶資料時多次確認'],
+    ['更新銷售金額未通報相關部門','任何金額變動 Email 通知會計部'],
+    ['應繳資料遲繳（如盤點表）','盤點表 5 號前繳交'],
+    ['退換貨或更新出貨未依流程通報，未於訂單說明原因、未更新文中','依第七章流程，訂單寫明原因並同步更新文中'],
+    ['信用卡授權金額提供錯誤、與訂單不符','授權金額需與訂單金額一致'],
+    ['出貨時間未依流程，隨意指定時段配送','依客服部排程與訂單順序安排出貨'],
+    ['未收到款項未與會計部主管確認就安排出貨','未收款不出貨，需先確認入帳'],
+    ['上班期間整日未留意工作信件訊息','上班時間隨時留意 Email 與群組訊息'],
+    ['官網未出貨取消，未經經理簽核、未於文中備註、未通知客服會計','列印官網訂單經經理簽核後，文中備註取消原因，Email 通報客服勿出貨、會計留意'],
+    ['官網已出貨退貨，未列印訂單、未經經理簽核就走退貨','列印官網訂單註明退貨原因，經理簽核後依第七章辦理'],
+    ['官網未出貨取消誤走線下發票作廢與退款流程','官網後台退刷時系統自動處理退款與電子發票，門市不需另行作業'],
+    ['官網取消後將編號補回給下一筆訂單','已取消的官網編號不補號，後續訂單直接接續下一個編號'],
+    ['退貨誤以為要逐關等待，先等發票才改單、取貨，延誤時程','通報與取貨、改單、追發票同步進行；僅退款需等發票、商品、訂單三項完成'],
+    ['成交後未於七日內補登動態，事後才主張客戶歸屬','接待當下即登打動態；成交後最遲七日內補登，逾期不得追討'],
+    ['未成交客戶不打動態，隔日他人接待成交才主張歸屬','未成交客戶當日一樣登打動態，註明商品與有無報價；否則須出示接洽或報價證明']]}},
+
+  r_warranty:{tag:'商品知識 ・ 保固',list:['MADESK 升降桌（2024/01/17）：馬達一年、桌板三個月，銷售時務必告知客戶。','Herman Miller 椅款保固貼紙（訂單注意事項第 15 項）：請客戶收貨時確認貼紙完整，勿撕毀或遺失，否則原廠不提供保固；銷售當下明確告知。']},
+  r_wheels:{tag:'商品知識 ・ 木質輪規格',table:{head:['型號','說明','建議用途'],rows:[
+    ['BB','硬質雙輪，黑色尼龍輪及支架','地毯'],
+    ['C7','雙輪，軟質 PU 輪面','硬地板或地毯'],
+    ['DC1','雙輪含內建煞車，軟質 PU 靜音','硬地板或地毯'],
+    ['H9','透明聚碳酸酯輪、軟質 PU 輪面','只適用於地毯']]},
+    note:'C7、DC1、H9 為軟質 PU，對地板較友善；木地板種類多樣，說明用建議語氣，不做絕對不刮傷保證。'},
+  r_discont:{tag:'商品知識 ・ 停產與不再進貨',list:['M1 桌腳已停產且無保固。','台製富美家 8848NT 深灰尤加利（山）此色自 2026/03/02 起停產。']},
+  r_other:{tag:'商品知識 ・ 其他',list:['Celaeno 奈米隱形膜方向驗證工具卡：確認膜材安裝方向（0 度／90 度），方向錯誤影響隱形效果；工具卡建議重複使用不超過兩次。']},
+
+  r_depts:{tag:'通訊錄 ・ 部門對照',table:{head:['部門','主要職掌'],rows:[
+    ['董事長室','企業大單採購接洽（窗口 Stanley）；老闆贈送贈品的核准與簽名。'],
+    ['Stanley','企業大單接洽窗口；折扣詢價統一窗口（已固定折扣商品除外）。'],
+    ['門市部','接待、報價、訂單、結帳、文中 ERP、出貨協調；團購客戶到門市時門市先處理。'],
+    ['門市經理','橫跨門市、客服、倉儲；退換貨簽核；業績爭議轉總公司時由門市經理介入分配。'],
+    ['客服部','商品保留、出貨排程、維修收送、建檔、保固、調撥開單；DS 設計師個人名稱建檔協助。'],
+    ['工程部','商品問題判定；組裝、維修；退換貨商品回倉後的檢查作業。'],
+    ['採購部','商品採購；原廠交期與維修狀況；停產與保固異動。'],
+    ['產品部','Airtable 商品資訊、公檔型號與價格更新、停產與保固異動。'],
+    ['會計部/財會部','收款與授權、發票、退佣撥款；未收款先出貨或先開發票的簽核。'],
+    ['業務部','商品出借；設計師業主案件協助（總公司群組調度）。'],
+    ['專案部','商品出借；設計師業主案件協助；專案保留現貨的釋放確認。'],
+    ['行銷部','官網與電商上下架、價格更新、Banner、社群粉專回覆；吊牌排版列印製作。']]}},
+  r_sites:{tag:'通訊錄 ・ 據點與聯絡',table:{head:['據點','地址','電話'],rows:[
+    ['內湖總公司','台北市內湖區新湖一路 303 號 3 樓','02-2545-2382'],
+    ['仁愛 NORMANN 概念店','台北市大安區仁愛路三段 125 號 1 樓','02-2545-2383']]},
+    note:'官網 www.ystore.com.tw ・ 公司網站 www.yaho.com.tw ・ 客服信箱 info@yaho.com.tw'},
+  r_groups:{tag:'通訊錄 ・ LINE 群組用途',table:{head:['群組','用途'],rows:[
+    ['雅浩-客服/倉儲/門市/訂單部','商品保留、出貨問題通知；商品保留以此群為主要窗口。'],
+    ['門市小團體','公司客戶參觀預約、商品詢問的通知窗口。'],
+    ['雅浩門市工程部','商品問題判定窗口；退換貨單據張貼與商品檢查聯繫。'],
+    ['雅浩家具-專案','設計師業主到店時，確認由業務部或專案部哪位接洽。']]}},
+  r_tools:{tag:'通訊錄 ・ 查價工具順序',table:{head:['順序','工具','說明'],rows:[
+    ['1','Airtable','主要商品資料庫，由產品部教學上手。'],
+    ['2','公司協同作業資料夾','Airtable 查不到時，進公檔的價格表查詢。'],
+    ['3','採購部/產品部','公檔也查不到時，Email 產品部協助查詢。']]}}
+};
+
+/* =================== 導覽與繪製 =================== */
+let stack=['home'];
+const CRUMB={recept:'接待',quote:'報價',order:'訂單登打',cols:'三欄填法',cols_web:'官網',
+  designer:'設計師代訂',order_types:'各類商品',checkout:'結帳發票',post:'結單後',
+  return:'退換貨',ret_web:'官網取消',ret_return:'退貨',ret_exchange:'換貨',stock:'調撥盤點吊牌',
+  daily:'門市日常',gift:'商品贈送',reserve:'商品保留',attr:'業績歸屬',product:'商品知識',contacts:'通訊錄'};
+function labelOf(s){
+  if(s.startsWith('res:')) return RES[s.slice(4)]?RES[s.slice(4)].tag:'結果';
+  if(s.startsWith('search:')) return '搜尋「'+s.slice(7)+'」';
+  return CRUMB[s]||s;
+}
+function go(id){stack.push(id);draw();}
+function showRes(id){stack.push('res:'+id);draw();}
+function back(){if(stack.length>1){stack.pop();draw();}}
+function home(){stack=['home'];draw();}
+
+function draw(){
+  const cur=stack[stack.length-1];
+  const nav=document.getElementById('nav');
+  if(stack.length>1){
+    const crumbs=stack.slice(1).map(labelOf).join(' ／ ');
+    nav.innerHTML='<span class="navbtn" onclick="home()">⌂ 首頁</span>'
+      +'<span class="navbtn" onclick="back()">‹ 上一步</span>'
+      +'<span class="crumb">'+crumbs+'</span>';
+  } else nav.innerHTML='';
+  /* 同步搜尋框：離開搜尋狀態就清空；回到搜尋狀態且框是空的（例如按上一步回來）就把關鍵字帶回來 */
+  const sb=document.getElementById('search');
+  if(cur.startsWith('search:')){ if(!sb.value) sb.value=cur.slice(7); }
+  else if(sb.value) sb.value='';
+  if(cur.startsWith('res:')) drawResult(cur.slice(4));
+  else if(cur.startsWith('search:')) drawSearch(cur.slice(7));
+  else drawNode(cur);
+}
+function drawNode(id){
+  const n=NODES[id];let h='<div class="card">';
+  h+='<p class="q">'+(n.title||n.q)+'</p>';
+  if(n.hint) h+='<p class="hint">'+n.hint+'</p>';
+  h+='<div class="opts">';
+  n.opts.forEach(o=>{
+    const act=o.to?"go('"+o.to+"')":"showRes('"+o.res+"')";
+    h+='<div class="opt" onclick="'+act+'"><div class="k">'+o.k+'</div>'
+      +'<div class="col"><span class="t">'+o.t+'</span>'+(o.d?'<span class="d">'+o.d+'</span>':'')+'</div></div>';
+  });
+  h+='</div>';
+  if(n.rule) h+='<div class="rule">'+n.rule+'</div>';
+  h+='</div>';
+  document.getElementById('stage').innerHTML=h;
+}
+function blockHtml(b){
+  let h='';
+  if(b.h) h+='<div class="subh">'+b.h+'</div>';
+  if(b.fields){h+='<div class="fields">';b.fields.forEach(f=>{h+='<div class="frow"><div class="fk">'+f[0]+'</div><div class="fv">'+f[1]+(f[2]?'<small>'+f[2]+'</small>':'')+'</div></div>';});h+='</div>';}
+  if(b.steps){h+='<ol class="steps">';b.steps.forEach(s=>h+='<li>'+s+'</li>');h+='</ol>';}
+  if(b.list){h+='<ul class="plain">';b.list.forEach(s=>h+='<li>'+s+'</li>');h+='</ul>';}
+  if(b.table){h+='<table class="mini"><tr>';b.table.head.forEach(c=>h+='<th>'+c+'</th>');h+='</tr>';
+    b.table.rows.forEach(r=>{h+='<tr>';r.forEach(c=>h+='<td>'+c+'</td>');h+='</tr>';});h+='</table>';}
+  return h;
+}
+function drawResult(id){
+  const r=RES[id];let h='<div class="card result"><span class="rtag">'+r.tag+'</span>';
+  h+='<h2>'+(r.title||(r.fields?'照這樣填':r.steps?'照這樣做':'重點整理'))+'</h2>';
+  if(r.sub) h+='<p class="rsub">'+r.sub+'</p>';
+  if(r.fields) h+=blockHtml({fields:r.fields});
+  if(r.steps) h+=blockHtml({steps:r.steps});
+  if(r.sub2) h+='<div class="subh">'+r.sub2+'</div>';
+  if(r.list) h+=blockHtml({list:r.list});
+  if(r.sub3) h+='<div class="subh">'+r.sub3+'</div>';
+  if(r.list2) h+=blockHtml({list:r.list2});
+  if(r.table) h+=blockHtml({table:r.table});
+  if(r.blocks) r.blocks.forEach(b=>h+=blockHtml(b));
+  if(r.note) h+='<div class="note"><b>注意</b>　'+r.note+'</div>';
+  h+='</div>';
+  document.getElementById('stage').innerHTML=h;
+}
+
+/* =================== 搜尋 =================== */
+function textOf(r){
+  let t=(r.tag||'')+' '+(r.title||'')+' '+(r.sub||'')+' '+(r.sub2||'')+' '+(r.sub3||'');
+  if(r.fields)r.fields.forEach(f=>t+=' '+f.join(' '));
+  if(r.steps)t+=' '+r.steps.join(' ');
+  if(r.list)t+=' '+r.list.join(' ');
+  if(r.list2)t+=' '+r.list2.join(' ');
+  if(r.note)t+=' '+r.note;
+  if(r.table){t+=' '+r.table.head.join(' ');r.table.rows.forEach(row=>t+=' '+row.join(' '));}
+  if(r.blocks)r.blocks.forEach(b=>{t+=' '+(b.h||'');if(b.list)t+=' '+b.list.join(' ');if(b.steps)t+=' '+b.steps.join(' ');if(b.table){t+=' '+b.table.head.join(' ');b.table.rows.forEach(row=>t+=' '+row.join(' '));}if(b.fields)b.fields.forEach(f=>t+=' '+f.join(' '));});
+  return t;
+}
+/* 搜尋改為導覽堆疊的一個狀態（search:關鍵字），按上一步能回到搜尋結果、再回到原本選單 */
+function doSearch(q){
+  q=q.trim();
+  const top=stack[stack.length-1];
+  if(!q){
+    if(top.startsWith('search:'))stack.pop();
+    draw();return;
+  }
+  if(top.startsWith('search:'))stack[stack.length-1]='search:'+q;
+  else stack.push('search:'+q);
+  draw();
+}
+function drawSearch(q){
+  const hits=[];
+  for(const id in RES){if(textOf(RES[id]).indexOf(q)>=0)hits.push(id);}
+  let h='<div class="card"><p class="q">搜尋「'+q+'」</p>';
+  if(!hits.length){h+='<p class="empty">沒有找到，換個關鍵字試試（例如：退款、發票、盤點、綁定、贈送）。</p></div>';
+    document.getElementById('stage').innerHTML=h;return;}
+  h+='<p class="hint">找到 '+hits.length+' 筆，點進去看。</p><div class="opts">';
+  hits.forEach(id=>{h+='<div class="opt" onclick="showRes(\''+id+'\')"><div class="k">›</div>'
+    +'<div class="col"><span class="t">'+RES[id].tag+'</span>'+(RES[id].sub?'<span class="d">'+RES[id].sub+'</span>':'')+'</div></div>';});
+  h+='</div></div>';
+  document.getElementById('stage').innerHTML=h;
+}
+draw();
+</script>
+</body>
+</html>
