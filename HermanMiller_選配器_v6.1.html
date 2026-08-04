@@ -742,7 +742,7 @@
   <div class="header">
     <span class="header-brand">HermanMiller</span>
     <h1>選配計算器</h1>
-    <span class="header-version">v6.6 · PB_AEN 6/26 · 美亞雙線</span>
+    <span class="header-version">v6.7 · PB_AEN 6/26 · 美亞雙線</span>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
@@ -826,33 +826,32 @@
       <div class="alert alert-error" id="aeronAlertErrorM">
         <div id="aeronAlertErrorMMsg"></div>
       </div>
+      <div class="alert alert-warn" id="aeronAlertWarnM">
+        <div id="aeronAlertWarnMMsg"></div>
+      </div>
       <div class="result-block" id="aeronResultBlockM">
+        <!-- Dual line badges -->
+        <div class="line-badges">
+          <div class="line-badge us" id="aeronUsBadgeBoxM">
+            <span class="badge-tag" id="aeronUsTagM">美國線適用</span>
+            <div class="line-name">美國線 / PB_AEN</div>
+            <div class="line-price" id="aeronUsPriceM">—</div>
+            <div class="line-method">累加法（base + Step 加價）</div>
+          </div>
+          <div class="line-badge asia" id="aeronAsiaBadgeBoxM">
+            <span class="badge-tag" id="aeronAsiaTagM">亞洲線適用</span>
+            <div class="line-name">亞洲線 / 80-day Asia</div>
+            <div class="line-price" id="aeronAsiaPriceM">—</div>
+            <div class="line-method">查表法（5 碼 base + arm 組合）</div>
+          </div>
+        </div>
+
         <div class="model-badge">
           <span class="model-badge-label">型號</span>
           <span id="aeronBadgeModelM"></span>
         </div>
-        <div class="parse-card">
-          <div class="parse-header us-h"><span>美國線解析</span></div>
-          <table class="steps-table">
-            <thead><tr>
-              <th style="width:72px">Step</th>
-              <th style="width:90px">代碼</th>
-              <th>說明</th>
-              <th style="width:110px">加價 (USD)</th>
-            </tr></thead>
-            <tbody id="aeronStepsBodyM"></tbody>
-          </table>
-        </div>
-        <div class="total-bar">
-          <div>
-            <div class="total-label">美國線單張定價</div>
-            <div class="total-model" id="aeronTotalModelM"></div>
-          </div>
-          <div class="total-price">
-            <span class="total-currency">USD</span>
-            <span id="aeronTotalPriceM">—</span>
-          </div>
-        </div>
+
+        <div id="aeronParseAreaM"></div>
       </div>
     </div><!-- /aeron-tab-manual -->
 
@@ -2061,7 +2060,7 @@ function aeronParseModel() {
   if (!raw.trim()) { _aeronShowError('請輸入 Aeron 型號。', ''); return; }
   const result = _aeronParse(raw);
   if (result.error) { _aeronShowError(result.error, ''); return; }
-  _aeronRenderDualLine(result);
+  _aeronRenderDualLine(result, '');
 }
 
 function aeronClearAll() {
@@ -2314,43 +2313,45 @@ function _aeronBackDesc(c) {
 // =========================================================
 // AERON — RENDER (雙線並列)
 // =========================================================
-function _aeronRenderDualLine(parsed) {
+function _aeronRenderDualLine(parsed, suffix) {
+  const sfx = suffix === 'M' ? 'M' : '';
   const usResult = _aeronCalcUS(parsed);
   const asiaResult = _aeronCalcAsia(parsed);
 
-  document.getElementById('aeronBadgeModel').textContent = parsed.model;
+  document.getElementById('aeronBadgeModel' + sfx).textContent = parsed.model;
 
   // 線別 badges
-  document.getElementById('aeronUsPrice').textContent = usResult.total !== null ? `$${usResult.total.toLocaleString()}` : '—';
-  document.getElementById('aeronUsBadgeBox').classList.toggle('active', usResult.errors.length === 0);
+  document.getElementById('aeronUsPrice' + sfx).textContent = usResult.total !== null ? `$${usResult.total.toLocaleString()}` : '—';
+  document.getElementById('aeronUsBadgeBox' + sfx).classList.toggle('active', usResult.errors.length === 0);
 
+  const asiaPriceEl = document.getElementById('aeronAsiaPrice' + sfx);
+  const asiaBoxEl = document.getElementById('aeronAsiaBadgeBox' + sfx);
   if (asiaResult.total !== null) {
-    document.getElementById('aeronAsiaPrice').textContent = `$${asiaResult.total.toLocaleString()}`;
-    document.getElementById('aeronAsiaPrice').classList.remove('na');
-    document.getElementById('aeronAsiaBadgeBox').classList.toggle('active', asiaResult.errors.length === 0);
-    document.getElementById('aeronAsiaBadgeBox').classList.remove('unavailable');
+    asiaPriceEl.textContent = `$${asiaResult.total.toLocaleString()}`;
+    asiaPriceEl.classList.remove('na');
+    asiaBoxEl.classList.toggle('active', asiaResult.errors.length === 0);
+    asiaBoxEl.classList.remove('unavailable');
   } else {
-    document.getElementById('aeronAsiaPrice').textContent = '無對應料號';
-    document.getElementById('aeronAsiaPrice').classList.add('na');
-    document.getElementById('aeronAsiaBadgeBox').classList.add('unavailable');
-    document.getElementById('aeronAsiaBadgeBox').classList.remove('active');
+    asiaPriceEl.textContent = '無對應料號';
+    asiaPriceEl.classList.add('na');
+    asiaBoxEl.classList.add('unavailable');
+    asiaBoxEl.classList.remove('active');
   }
 
   // 雙線解析卡片
-  const area = document.getElementById('aeronParseArea');
+  const area = document.getElementById('aeronParseArea' + sfx);
   area.innerHTML = _aeronRenderCard('美國線解析（PB_AEN 累加法）', 'us', usResult)
                  + _aeronRenderCard('亞洲線解析（80-day Asia 查表法）', 'asia', asiaResult);
 
-  document.getElementById('aeronResultBlock').classList.add('show');
+  document.getElementById('aeronResultBlock' + sfx).classList.add('show');
 
   // 警告
   if (parsed.warnings.length > 0) {
-    const wEl = document.getElementById('aeronAlertWarn');
-    const mEl = document.getElementById('aeronAlertWarnMsg');
+    const wEl = document.getElementById('aeronAlertWarn' + sfx);
+    const mEl = document.getElementById('aeronAlertWarn' + sfx + 'Msg');
     if (wEl && mEl) { mEl.innerHTML = parsed.warnings.map(w => `• ${w}`).join('<br>'); wEl.classList.add('show'); }
   }
 }
-
 function _aeronRenderCard(title, lineClass, result) {
   const headerClass = lineClass === 'asia' ? 'parse-header asia-h' : 'parse-header us-h';
   const totalClass = lineClass === 'asia' ? 'total-row asia-total' : 'total-row us-total';
@@ -2404,7 +2405,7 @@ function _aeronClearAlerts(suffix) {
 }
 
 // =========================================================
-// AERON MANUAL TAB（保留原本，仍然只算美國線 — 給設計時組型號用）
+// AERON MANUAL TAB（v6.7：改為美亞雙線，與貼上料號分頁共用 _aeronRenderDualLine）
 // =========================================================
 function aeronBuildManualUI() {
   const grid = document.getElementById('aeronConfigGrid');
@@ -2563,20 +2564,15 @@ function aeronBuildFromSelects() {
   const modelStr = `AER1${values.size}${values.height}${values.tilt}${values.arms}${values.armpad} ${values.back} ${values.frame} ${values.chassis} ${values.base} ${values.caster} ${values.armpadFinish} ${values.pellicle}${values.leatherColor !== 'N/A' ? ' ' + values.leatherColor : ''}`;
   const cb = document.getElementById('aeronGeneratedCode'); cb.textContent = modelStr; cb.classList.add('show');
 
-  // 用模擬 parsed object 跑美國線計算
-  const fakeParsed = { assembly:'1', size:values.size, height:values.height, tilt:values.tilt, arm:values.arms, armpad:values.armpad, model:modelStr, values, warnings:[] };
-  const usResult = _aeronCalcUS(fakeParsed);
-  document.getElementById('aeronBadgeModelM').textContent = modelStr;
-  document.getElementById('aeronTotalModelM').textContent = modelStr;
-  document.getElementById('aeronTotalPriceM').textContent = usResult.total.toLocaleString();
-  const tbody = document.getElementById('aeronStepsBodyM');
-  tbody.innerHTML = usResult.rows.map(r => {
-    const pc = r.isBase ? 'price-base' : (r.price === null ? 'price-zero' : (r.price === 0 ? 'price-zero' : 'price-add'));
-    const ps = r.price === null ? '—' : (r.isBase ? `$${r.price.toLocaleString()}` : (r.price === 0 ? '+$0' : `+$${r.price.toLocaleString()}`));
-    const rc = r.isBase ? 'base-row' : '';
-    return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub||''}</small></td><td class="step-price ${pc}">${ps}</td></tr>`;
-  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">美國線單張定價合計</td><td class="amount">$${usResult.total.toLocaleString()}</td></tr>`;
-  document.getElementById('aeronResultBlockM').classList.add('show');
+  // 模擬 parsed object，走與貼上料號分頁完全相同的雙線渲染
+  const fakeParsed = {
+    assembly: '1', size: values.size, height: values.height, tilt: values.tilt,
+    arm: values.arms, armpad: values.armpad, armCombo: `${values.arms}${values.armpad}`,
+    mainCode: `AER1${values.size}${values.height}${values.tilt}`,
+    baseLookupKey: `AER1${values.size}${values.height}${values.tilt}${values.arms}${values.armpad}`,
+    model: modelStr, values, warnings: []
+  };
+  _aeronRenderDualLine(fakeParsed, 'M');
 }
 
 function switchAeronTab(id) {
