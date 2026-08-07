@@ -742,7 +742,7 @@
   <div class="header">
     <span class="header-brand">HermanMiller</span>
     <h1>選配計算器</h1>
-    <span class="header-version">v6.7 · PB_AEN 6/26 · 美亞雙線</span>
+    <span class="header-version">v6.1 · 2026-08-07 更新 · 美亞雙線 · 真皮扶手墊(F)防呆</span>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
@@ -2120,8 +2120,21 @@ function _aeronParse(raw) {
   if (!pellicleStr || !PELLICLE_CODES.includes(pellicleStr)) {
     return { error: `Step 14 網布代碼「${pellicleStr || '缺失'}」無效（應為 23101/23102/23103/23105/23120/23121）。` };
   }
-  if (!armpadFinishStr || !ARMPAD_FINISH_CODES.includes(armpadFinishStr)) armpadFinishStr = arm === 'N' ? 'N/A' : 'BK';
   if (!LEATHER_CODES.includes(leatherStr)) leatherStr = 'N/A';
+
+  // ── 扶手墊材質(W/F) 與 皮革色一致性防呆（依 PB_AEN Step 6/12/14）──
+  // F＝真皮：必帶皮革色、且無扶手墊 finish 色段；W/N＝非皮革：不可帶皮革色，改帶 finish 色。
+  if (armpad === 'F') {
+    if (leatherStr === 'N/A') {
+      return { error: `主碼第 6 碼為真皮扶手墊（F），但缺少皮革色代碼（2109/2118/2119）。請於尾端網布後補上，例如 …${casterStr} ${pellicleStr || '23105'} 2109。` };
+    }
+    armpadFinishStr = 'N/A';  // 真皮款無 finish 色段（PB_AEN Step 12 僅適用 W）
+  } else {
+    if (leatherStr !== 'N/A') {
+      return { error: `主碼第 6 碼為非皮革扶手墊（${armpad}），卻帶了皮革色「${leatherStr}」，前後矛盾。若要真皮請把第 6 碼改成 F；若非真皮請刪掉尾端皮革色。` };
+    }
+    if (!armpadFinishStr || !ARMPAD_FINISH_CODES.includes(armpadFinishStr)) armpadFinishStr = arm === 'N' ? 'N/A' : 'BK';
+  }
 
   // 主碼基底（用於亞洲線查表）
   const mainCode = `AER${assembly}${size}${height}${tilt}`;
@@ -2136,7 +2149,7 @@ function _aeronParse(raw) {
   return {
     raw: clean,
     assembly, size, height, tilt, arm, armpad, armCombo, mainCode, baseLookupKey,
-    model: `AER${assembly}${size}${height}${tilt}${arm}${armpad} ${back} ${frameStr} ${chassisStr} ${baseStr} ${casterStr} ${armpadFinishStr} ${pellicleStr}${leatherStr !== 'N/A' ? ' ' + leatherStr : ''}`,
+    model: `AER${assembly}${size}${height}${tilt}${arm}${armpad} ${back} ${frameStr} ${chassisStr} ${baseStr} ${casterStr}${armpadFinishStr !== 'N/A' ? ' ' + armpadFinishStr : ''} ${pellicleStr}${leatherStr !== 'N/A' ? ' ' + leatherStr : ''}`,
     values: { size, height, tilt, arms: arm, armpad, back, frame: frameStr, chassis: chassisStr, base: baseStr, caster: casterStr, armpadFinish: armpadFinishStr, pellicle: pellicleStr, leatherColor: leatherStr },
     warnings
   };
@@ -2181,7 +2194,7 @@ function _aeronCalcUS(parsed) {
   if (usCaster) { rows.push({step:'Step 12',code:v.caster,desc:usCaster.desc,sub:'輪子',price:usCaster.price}); total+=usCaster.price; }
   else errors.push(`Step 12 輪子代碼「${v.caster}」無效`);
 
-  if (v.arms !== 'N') {
+  if (v.arms !== 'N' && v.armpad === 'W') {
     const af = AERON_STEPS[10].options[v.armpadFinish];
     if (af) { rows.push({step:'Step 13',code:v.armpadFinish,desc:af.desc,sub:'扶手墊顏色',price:af.price}); total+=af.price; }
   }
@@ -2272,8 +2285,8 @@ function _aeronCalcAsia(parsed) {
     } else errors.push(`Step 12 輪子「${v.caster}」無效`);
   }
 
-  // Step 13 Armpad finish (僅 v.arms !== 'N')
-  if (v.arms !== 'N') {
+  // Step 13 Armpad finish (僅非皮革款 W 且有手臂；真皮款 F 無 finish 色段，改走 Step 15 皮革色)
+  if (v.arms !== 'N' && v.armpad === 'W') {
     const armpadTable = v.size === 'A' ? AERON_ASIA_ARMPAD_FINISH_A : AERON_ASIA_ARMPAD_FINISH_BC;
     const apInc = armpadTable[v.armpadFinish];
     if (apInc !== undefined) {
@@ -2420,6 +2433,8 @@ function aeronBuildManualUI() {
       onchange = `aeronApplyGroupLock();aeronUpdateSelPrice('${step.key}',${si})`;
     } else if (step.key === 'chassis') {
       onchange = `_aeronApplyBaseFromChassis();aeronUpdateSelPrice('${step.key}',${si})`;
+    } else if (step.key === 'armpad') {
+      onchange = `_aeronArmpadInterlock();aeronUpdateSelPrice('${step.key}',${si})`;
     } else {
       onchange = `aeronUpdateSelPrice('${step.key}',${si})`;
     }
@@ -2436,6 +2451,39 @@ function aeronBuildManualUI() {
   for (const [k, v] of Object.entries(defs)) { const el = document.getElementById('aeronSel_' + k); if (el) el.value = v; }
   // 依預設框架(G1 Graphite)套一次群組鎖，讓初始相依下拉就定位
   aeronApplyGroupLock();
+  // 依預設扶手墊材質(W)套一次連動，鎖住皮革色下拉
+  _aeronArmpadInterlock();
+}
+
+// 扶手墊材質(W/F) → 皮革色 / finish 連動（依 PB_AEN Step 6/12/14）
+// F＝真皮：皮革色可選且必選、finish 段不輸出；W/N：皮革色鎖成 N/A。
+function _aeronArmpadInterlock() {
+  const apSel = document.getElementById('aeronSel_armpad');
+  const leSel = document.getElementById('aeronSel_leatherColor');
+  const afSel = document.getElementById('aeronSel_armpadFinish');
+  if (!apSel) return;
+  const isLeather = apSel.value === 'F';
+  const LEATHER_IDX = AERON_STEPS.findIndex(s => s.key === 'leatherColor');
+  if (leSel) {
+    if (isLeather) {
+      const codes = Object.keys(AERON_STEPS[LEATHER_IDX].options).filter(c => c !== 'N/A');
+      const keep = leSel.value !== 'N/A' ? leSel.value : codes[0];
+      _aeronRebuildOption('aeronSel_leatherColor', codes, LEATHER_IDX, keep);
+      leSel.disabled = false;
+      leSel.title = '真皮扶手墊必選皮革色（隨框架材質群組）';
+    } else {
+      _aeronRebuildOption('aeronSel_leatherColor', ['N/A'], LEATHER_IDX, 'N/A');
+      leSel.value = 'N/A';
+      leSel.disabled = true;
+      leSel.title = '僅真皮扶手墊(F)適用';
+    }
+    aeronUpdateSelPrice('leatherColor', LEATHER_IDX);
+  }
+  if (afSel) {
+    afSel.title = isLeather
+      ? '真皮款無扶手墊 finish 色段（改用皮革色，型號不含此段）'
+      : '扶手墊顏色由框架顏色自動決定';
+  }
 }
 
 // 框架下拉 = 六群組框架色聯集（保群組順序、去重）
@@ -2561,7 +2609,20 @@ function aeronBuildFromSelects() {
   document.getElementById('aeronResultBlockM').classList.remove('show');
   const values = {};
   for (const step of AERON_STEPS) { const el = document.getElementById('aeronSel_' + step.key); values[step.key] = el ? el.value : ''; }
-  const modelStr = `AER1${values.size}${values.height}${values.tilt}${values.arms}${values.armpad} ${values.back} ${values.frame} ${values.chassis} ${values.base} ${values.caster} ${values.armpadFinish} ${values.pellicle}${values.leatherColor !== 'N/A' ? ' ' + values.leatherColor : ''}`;
+
+  // ── 扶手墊材質(W/F) 與 皮革色一致性防呆（依 PB_AEN Step 6/12/14）──
+  if (values.armpad === 'F') {
+    if (!values.leatherColor || values.leatherColor === 'N/A') {
+      _aeronShowError('已選真皮扶手墊（F），請於 Step 15 皮革扶手墊顏色選擇 2109 / 2118 / 2119。', 'M');
+      return;
+    }
+  } else {
+    values.leatherColor = 'N/A';  // 非皮革款不帶皮革色
+  }
+  // 真皮款無扶手墊 finish 色段（PB_AEN Step 12 僅適用 W）；W 款才輸出 finish 段
+  const finishSeg  = (values.armpad === 'W') ? ' ' + values.armpadFinish : '';
+  const leatherSeg = (values.armpad === 'F' && values.leatherColor !== 'N/A') ? ' ' + values.leatherColor : '';
+  const modelStr = `AER1${values.size}${values.height}${values.tilt}${values.arms}${values.armpad} ${values.back} ${values.frame} ${values.chassis} ${values.base} ${values.caster}${finishSeg} ${values.pellicle}${leatherSeg}`;
   const cb = document.getElementById('aeronGeneratedCode'); cb.textContent = modelStr; cb.classList.add('show');
 
   // 模擬 parsed object，走與貼上料號分頁完全相同的雙線渲染
