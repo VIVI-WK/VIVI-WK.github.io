@@ -469,6 +469,23 @@
   }
   .generated-code-box.show { display: block; }
 
+  /* ── EAMES 色票（精簡版）── */
+  .eames-swatch-grid{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start;}
+  .es-sw{cursor:pointer;position:relative;line-height:0;border-radius:3px;
+         outline:2px solid transparent;outline-offset:1px;transition:outline-color .1s;}
+  .es-sw:hover{outline-color:#bbb;}
+  .es-sw.active{outline-color:var(--accent);}
+  .es-sw .chip{width:26px;height:26px;border-radius:3px;border:1px solid rgba(0,0,0,.18);
+               background-size:cover;background-position:center;display:flex;align-items:center;
+               justify-content:center;font-size:10px;line-height:1;color:#aaa;}
+  .es-sw .chip.unknown{background:repeating-linear-gradient(45deg,#f4f4f4,#f4f4f4 3px,#e4e4e4 3px,#e4e4e4 6px);}
+  .es-sw.active .chip::after{content:'';position:absolute;inset:0;border-radius:3px;
+                             box-shadow:inset 0 0 0 2px #fff;}
+  .es-sw .cd{display:none;}
+  .es-fam{flex-basis:100%;font-size:11px;font-weight:700;color:#777;margin:6px 0 0;line-height:1.4;}
+  .es-link{display:block;font-size:13px;text-decoration:underline;margin-top:4px;}
+  .es-link-main{color:var(--accent);font-weight:700;}
+  .es-link-sub{color:#888;font-size:12px;}
   /* ── EAMES CONFIG WRAPPER ── */
   .config-wrapper {
     background: var(--surface); border: 1px solid var(--border);
@@ -1354,65 +1371,77 @@
       <div class="section-title">Step 1 — 選擇配置</div>
       <div class="eames-config-grid">
 
+        <!-- 版本 -->
+        <div class="eames-config-item" style="grid-column: 1 / -1;">
+          <div class="config-item-label">
+            版本 Edition
+            <span class="config-item-step">Step 1</span>
+          </div>
+          <select class="eames-select" id="eames_model" onchange="eamesOnModelChange()">
+            <option value="STD">標準飾面（可選木材）</option>
+            <option value="EN">黑梣木 Ebony（木色固定・全黑）</option>
+            <option value="RE">白梣木 White Ash（木色固定・白底座）</option>
+          </select>
+          <div class="config-price-display" id="eamesBaseNote" style="font-weight:400;">黑烤漆底座＋拋光鋁</div>
+        </div>
+
         <!-- 木材 -->
-        <div class="eames-config-item">
+        <div class="eames-config-item" id="eamesShellWrap">
           <div class="config-item-label">
             木材飾面 Shell Finish
             <span class="config-item-step">Step 3</span>
           </div>
-          <select class="eames-select" id="eames_shell" onchange="eamesOnShellChange()">
-            <option value="OU">胡桃木（OU / Walnut）— 標準 +$0</option>
-            <option value="WHN">白橡木（WHN / White Oak）— 標準 +$0</option>
-            <option value="5Q">油胡桃（5Q / Oiled Walnut）— +$979</option>
-            <option value="9N">桑托斯玫瑰木（9N / Santos Palisander）— +$1,014</option>
-            <option value="5D">油桑托斯玫瑰木（5D / Oiled Santos）— +$1,977</option>
-            <option value="1E">黑梣木（ES67071E，殼面固定）— 固定型號</option>
-            <option value="1R">白梣木（ES67071R，殼面固定）— 固定型號</option>
+          <select class="eames-select" id="eames_shell" onchange="eamesOnShellChange();eamesRecalc()">
+            <option value="OU">胡桃木 Walnut — +$0</option>
+            <option value="WHN">白橡木 White Oak — +$0</option>
+            <option value="5Q">油胡桃 Oiled Walnut — +$979</option>
+            <option value="9N">桑托斯玫瑰木 Santos Palisander — +$1,014</option>
+            <option value="5D">油桑托斯 Oiled Santos — +$1,977</option>
           </select>
           <div class="config-price-display" id="eamesPrice_shell">+$0</div>
         </div>
 
         <!-- 尺寸 -->
-        <div class="eames-config-item">
+        <div class="eames-config-item" id="eamesSizeWrap">
           <div class="config-item-label">
             尺寸 Chair Size
             <span class="config-item-step">Step 2</span>
           </div>
-          <select class="eames-select" id="eames_size" onchange="eamesOnSizeChange()">
-            <option value="classic">Classic 標準尺寸</option>
-            <option value="tall">Tall 高背尺寸 — +$366</option>
+          <select class="eames-select" id="eames_size" onchange="eamesOnSizeChange();eamesRecalc()">
+            <option value="classic">Classic 標準</option>
+            <option value="tall">Tall 高背 — +$366</option>
           </select>
           <div class="config-price-display" id="eamesPrice_size">+$0</div>
         </div>
 
-        <!-- 皮革等級 -->
+        <!-- 材質階 -->
         <div class="eames-config-item" style="grid-column: 1 / -1;">
           <div class="config-item-label">
-            皮革材質 Leather Category
-            <span class="config-item-step">Step 6</span>
+            材質階 Material Category
+            <span class="config-item-step">Step 4・必選</span>
           </div>
-          <select class="eames-select" id="eames_cat" onchange="eamesOnCatChange()">
-            <option value="std">標準布料（未含皮革，基本售價） — +$0</option>
-            <option value="cat9">Category 9 皮革 Leather（14 款）— 套組加價 +$734</option>
-            <option value="cat11">Category 11 皮革 Prone Leather（16 款）— 套組加價 +$1,072</option>
-          </select>
+          <select class="eames-select" id="eames_cat" onchange="eamesOnCatChange();eamesRecalc()"></select>
           <div class="config-price-display" id="eamesPrice_cat">+$0</div>
+          <div id="eamesCatNote" style="font-size:12px;color:#777;margin-top:6px;"></div>
+        </div>
 
-          <div class="leather-section" id="eamesLeather9" style="display:none;">
-            <div class="leather-sel-label">選擇皮革顏色：<span class="selected-leather-name" id="eamesLeather9Name">— 請選擇 —</span></div>
-            <div class="swatch-container" id="eamesSwatches9"></div>
+        <!-- 色號 -->
+        <div class="eames-config-item" id="eamesColorWrap" style="grid-column: 1 / -1; display:none;">
+          <div class="config-item-label">
+            色號 Colour
+            <span class="config-item-step">Step 4</span>
           </div>
-          <div class="leather-section" id="eamesLeather11" style="display:none;">
-            <div class="leather-sel-label">選擇皮革顏色：<span class="selected-leather-name" id="eamesLeather11Name">— 請選擇 —</span></div>
-            <div class="swatch-container" id="eamesSwatches11"></div>
-          </div>
+          <div id="eamesSelectedName" style="font-size:13px;font-weight:700;color:#222;margin:2px 0 8px;">— 請點選色號 —</div>
+          <div id="eamesSwatchGrid" class="eames-swatch-grid"></div>
+          <div id="eamesCardLink" style="display:none;margin-top:10px;"></div>
+          <div id="eamesSwatchDisclaimer" style="font-size:11px;color:#999;margin-top:8px;line-height:1.5;"></div>
         </div>
 
       </div><!-- /eames-config-grid -->
 
       <!-- 數量 -->
       <div class="qty-row">
-        <span class="qty-label">訂購數量（套組）</span>
+        <span class="qty-label" id="eamesQtyUnitLabel">訂購數量（套組）</span>
         <input type="number" class="qty-input" id="eames_qty" value="1" min="1" max="999" onchange="eamesRecalc()">
         <span class="qty-total" id="eamesQtyTotal"></span>
       </div>
@@ -1422,6 +1451,10 @@
 
     <div class="alert alert-warn" id="eamesAlertWarn">
       <div id="eamesAlertWarnMsg"></div>
+    </div>
+
+    <div class="alert alert-info" id="eamesAlertInfo">
+      <div id="eamesAlertInfoMsg"></div>
     </div>
 
     <!-- RESULT -->
@@ -3270,146 +3303,422 @@ function cosmSetExample(value) {
 // =========================================================
 // EAMES — DATA
 // =========================================================
-const EAMES_SHELLS = {
-  'OU':  {label:'胡桃木（OU / Walnut）',                    code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:0,    fixed:false},
-  'WHN': {label:'白橡木（WHN / White Oak）',                 code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:0,    fixed:false},
-  '5Q':  {label:'油胡桃（5Q / Oiled Walnut）',               code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:979,  fixed:false},
-  '9N':  {label:'桑托斯玫瑰木（9N / Santos Palisander）',    code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:1014, fixed:false},
-  '5D':  {label:'油桑托斯玫瑰木（5D / Oiled Santos）',       code:'ES6707 1',    tallCode:'ES6707 1T',  surcharge:1977, fixed:false},
-  '1E':  {label:'黑梣木（ES67071E，固定殼面）',              code:'ES67071E N',  surcharge:null, fixed:true,  tallCode:'ES67071E NT', classicBase:9273, tallBase:9602},
-  '1R':  {label:'白梣木（ES67071R，固定殼面）',              code:'ES67071R E',  surcharge:null, fixed:true,  tallCode:'ES67071R ET', classicBase:9273, tallBase:9602},
+/* =========================================================
+   EAMES LOUNGE — 依 PB_HCL 8/26 逐項抄錄
+   價格來源:HermanMiller Ancillary Price Book (8/26)
+     p.90  ES6707  套組・標準飾面
+     p.91  ES67071E 套組・黑梣木
+     p.92  ES67071R 套組・白梣木
+     p.94  ES67    單椅・標準飾面
+     p.95  ES670EN 單椅・黑梣木
+     p.96  ES670RE 單椅・白梣木
+     p.97  ES671   腳凳・標準飾面
+     p.98  ES671EN 腳凳・黑梣木
+     p.99  ES671RE 腳凳・白梣木
+   材質可用性:Textiles Application Chart, Ancillary Seating (June 2025)
+   色號色名:Textile Colors (June 2025) + hermanmiller.com 材質庫
+   ========================================================= */
+
+const EAMES_LINE = {
+  SET: {
+    label: '套組（椅＋腳凳）', unit: '套', hasSize: true,
+    ed: {
+      STD: { classic: { code: 'ES67071', price: 8462 }, tall: { code: 'ES67071T', price: 8828 },
+             shell: { OU: 0, WHN: 0, '5Q': 979, '9N': 1014, '5D': 1977 },
+             mats: { C9: 734, G10: 922, C10M: 1660, C11: 1072, G11: 1109 } },
+      EN:  { classic: { code: 'ES67071E N', price: 9273 }, tall: { code: 'ES67071E NT', price: 9602 },
+             shell: null,
+             mats: { C9: 734, C11: 1072 } },
+      RE:  { classic: { code: 'ES67071R E', price: 9273 }, tall: { code: 'ES67071R ET', price: 9602 },
+             shell: null,
+             mats: { C9: 734, C11: 1072 } }
+    }
+  },
 };
-const EAMES_BASE_CLASSIC = {'OU':8462,'WHN':8462,'5Q':9441,'9N':9476,'5D':10439,'1E':9273,'1R':9273};
-const EAMES_BASE_TALL    = {'OU':8828,'WHN':8828,'5Q':9807,'9N':9842,'5D':10805,'1E':9602,'1R':9602};
-const EAMES_TALL_ADDER=366, EAMES_CAT9=734, EAMES_CAT11=1072;
-const EAMES_CAT9_LEATHERS=[
-  {code:'2115',name:'Alpine',      desc:'淺米白 / 奶油',  color:'#f5ecd7'},
-  {code:'2109',name:'Black',       desc:'黑色',           color:'#1a1a1a'},
-  {code:'2120',name:'Cranberry',   desc:'深紅 / 蔓越莓',  color:'#7a1a2a'},
-  {code:'2119',name:'Dark Carbon', desc:'深炭灰',         color:'#2e2e2e'},
-  {code:'2118',name:'Dark Mineral',desc:'煙灰藍綠',       color:'#4a5a5c'},
-  {code:'2121',name:'Deep Sea',    desc:'深海藍綠',       color:'#1c3a42'},
-  {code:'2111',name:'Graphite',    desc:'橄欖炭綠',       color:'#3d3f30'},
-  {code:'2116',name:'Haze',        desc:'淺沙米',         color:'#d4c4a8'},
-  {code:'2101',name:'Ivory',       desc:'象牙白',         color:'#f0e8d0'},
-  {code:'2112',name:'Khaki',       desc:'卡其駝',         color:'#b09060'},
-  {code:'2113',name:'Rattan',      desc:'藤黃棕',         color:'#9a7040'},
-  {code:'2117',name:'Sable Grey',  desc:'灰藍岩',         color:'#7a8090'},
-  {code:'2110',name:'Smoke',       desc:'橄欖灰',         color:'#6a6a5a'},
-  {code:'2114',name:'Truffle',     desc:'深巧克力棕',     color:'#3a2a1a'},
-];
-const EAMES_CAT11_LEATHERS=[
-  {code:'1NX13',name:'Balsa',     desc:'淺杏膚',   color:'#e8c9a0'},
-  {code:'1NX15',name:'Bricolage', desc:'銅棕',     color:'#8a5a3a'},
-  {code:'1NX03',name:'Essence',   desc:'沙漠灰綠', color:'#8a9078'},
-  {code:'1NX05',name:'Gambit',    desc:'深炭灰',   color:'#303030'},
-  {code:'1NX20',name:'Java',      desc:'深咖啡',   color:'#2e1a0e'},
-  {code:'1NX17',name:'Ledge',     desc:'中棕',     color:'#7a5040'},
-  {code:'1NX01',name:'Lotus',     desc:'米白奶油', color:'#ede0c8'},
-  {code:'1NX21',name:'Lute',      desc:'淺玫瑰米', color:'#ddbaa0'},
-  {code:'1NX19',name:'Mantra',    desc:'深酒紅棕', color:'#4a1a18'},
-  {code:'1NX06',name:'Obsidian',  desc:'近黑炭',   color:'#161616'},
-  {code:'1NX07',name:'Sail',      desc:'深海軍藍', color:'#1a2a42'},
-  {code:'1NX04',name:'Script',    desc:'中性暖灰', color:'#8c8070'},
-  {code:'1NX14',name:'Shore',     desc:'焦糖沙棕', color:'#b07840'},
-  {code:'1NX02',name:'Timbre',    desc:'米白亞麻', color:'#ddd0b8'},
-  {code:'1NX09',name:'Vine',      desc:'深橄欖綠', color:'#2a3820'},
-  {code:'1NX10',name:'Yarrow',    desc:'芥末金',   color:'#c8a030'},
-];
-let eamesSelectedLeather9=null, eamesSelectedLeather11=null, eamesLastTotal=0;
 
-function eamesBuildSwatches(containerId,leathers,selVar,nameId){
-  const c=document.getElementById(containerId); c.innerHTML='';
-  leathers.forEach(l=>{
-    const s=document.createElement('div'); s.className='swatch';
-    s.style.background=l.color; s.title=`${l.code} ${l.name} — ${l.desc}`; s.dataset.code=l.code;
-    s.onclick=()=>{
-      c.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active')); s.classList.add('active');
-      if(selVar==='9'){eamesSelectedLeather9=l; document.getElementById(nameId).textContent=`${l.code} ${l.name} (${l.desc})`;}
-      if(selVar==='11'){eamesSelectedLeather11=l; document.getElementById(nameId).textContent=`${l.code} ${l.name} (${l.desc})`;}
-    };
-    c.appendChild(s);
-  });
+const EAMES_ED_LABEL = {
+  STD: { label: '標準飾面', base: '黑烤漆底座＋拋光鋁,木材飾面可選' },
+  EN:  { label: '黑梣木 Ebony', base: '黑梣木殼＋黑烤漆底座＋鋁飾。木色與底座皆固定,不可選配' },
+  RE:  { label: '白梣木 White Ash', base: '白梣木殼＋白烤漆底座＋鋁飾。木色與底座皆固定,底座為白色' }
+};
+
+const EAMES_SHELL_LABEL = {
+  OU:   '胡桃木 Walnut',
+  WHN:  '白橡木 White Oak',
+  '5Q': '油胡桃 Oiled Walnut',
+  '9N': '桑托斯玫瑰木 Santos Palisander',
+  '5D': '油桑托斯 Oiled Santos'
+};
+
+const EAMES_CAT_LABEL = {
+  C7:   { label: 'Category 7 布料',                 fams: [],                  note: '布料階,色號請查官方色卡' },
+  C8:   { label: 'Category 8 Bamboo／Luce',          fams: ['bamboo'],          note: 'Luce 羊毛布另有 35 色,請查官方色卡' },
+  C9:   { label: 'Category 9 皮革 Leather',          fams: ['leather'],         note: '' },
+  G10:  { label: 'Category 10（Geiger）',            fams: [],                  note: '含 Bristol Leather,色號請查官方色卡' },
+  C10M: { label: 'Category 10M Pace Leather',        fams: ['pace'],            note: '' },
+  C11:  { label: 'Category 11 皮革 Prone／Tenera',   fams: ['prone', 'tenera'], note: '' },
+  G11:  { label: 'Category 11（Geiger）',            fams: [],                  note: '布料階,色號請查官方色卡' },
+  CK:   { label: 'Category K（Maharam 圖紋）',       fams: [],                  note: '布料階,色號請查官方色卡' },
+  CP:   { label: 'Category P Mohair Supreme',        fams: ['mohair'],          note: '全系列 53 色,原廠僅對 Eames Lounge 開放 5 色' },
+  CR:   { label: 'Category R Stow Leather',          fams: ['stow'],            note: '' }
+};
+
+/* ── 官方色卡連結 ── */
+const EAMES_HM_BASE =
+  'https://www.hermanmiller.com/resources/materials/search/p/eames-lounge-chair-and-ottoman/';
+
+// 材質階 → 原廠色卡篩選參數
+const EAMES_PRICE_PARAM = { C9: '9', G10: '10', C10M: '10m', C11: '11', G11: '11' };
+
+// 單一色號頁（slug 已逐一對照原廠實際頁面）
+function eamesCardUrl(familySlug, name, code) {
+  const c = String(code).toLowerCase();
+  const n = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return `https://www.hermanmiller.com/resources/materials/textiles/${familySlug}/${n}/${c}/`;
 }
 
-function eamesOnShellChange(){
-  const v=document.getElementById('eames_shell').value;
-  const s=EAMES_SHELLS[v]; const disp=document.getElementById('eamesPrice_shell');
-  if(s.fixed){disp.textContent='固定殼面型號';disp.classList.remove('has-price');}
-  else if(s.surcharge>0){disp.textContent=`+$${s.surcharge.toLocaleString()}`;disp.classList.add('has-price');}
-  else{disp.textContent='+$0';disp.classList.remove('has-price');}
-}
-function eamesOnSizeChange(){
-  const v=document.getElementById('eames_size').value; const disp=document.getElementById('eamesPrice_size');
-  if(v==='tall'){disp.textContent='+$366';disp.classList.add('has-price');}
-  else{disp.textContent='+$0';disp.classList.remove('has-price');}
-}
-function eamesOnCatChange(){
-  const v=document.getElementById('eames_cat').value; const disp=document.getElementById('eamesPrice_cat');
-  document.getElementById('eamesLeather9').style.display=v==='cat9'?'block':'none';
-  document.getElementById('eamesLeather11').style.display=v==='cat11'?'block':'none';
-  if(v==='cat9'){disp.textContent='+$734';disp.classList.add('has-price');}
-  else if(v==='cat11'){disp.textContent='+$1,072';disp.classList.add('has-price');}
-  else{disp.textContent='+$0';disp.classList.remove('has-price');}
+// 單一材質階在 Eames Lounge 上的可選色
+function eamesCatCardUrl(catKey) {
+  const p = EAMES_PRICE_PARAM[catKey];
+  return p ? `${EAMES_HM_BASE}?price=${p}` : EAMES_HM_BASE;
 }
 
-function eamesCalcAll(){
-  const shellKey=document.getElementById('eames_shell').value;
-  const size=document.getElementById('eames_size').value;
-  const cat=document.getElementById('eames_cat').value;
-  const qty=parseInt(document.getElementById('eames_qty').value)||1;
-  const shell=EAMES_SHELLS[shellKey]; const warnings=[];
-  if(cat==='cat9'&&!eamesSelectedLeather9) warnings.push('您選擇了 Category 9 皮革，但尚未指定皮革顏色，建議選擇色碼後再報價。');
-  if(cat==='cat11'&&!eamesSelectedLeather11) warnings.push('您選擇了 Category 11 皮革，但尚未指定皮革顏色，建議選擇色碼後再報價。');
-  const wEl=document.getElementById('eamesAlertWarn'); const wMsg=document.getElementById('eamesAlertWarnMsg');
-  if(warnings.length>0){wMsg.innerHTML=warnings.map(w=>`• ${w}`).join('<br>');wEl.classList.add('show');}
-  else wEl.classList.remove('show');
+// 9／10／11 三階一次看完
+function eamesAllLeatherUrl() {
+  return `${EAMES_HM_BASE}?price=9&price=10&price=11`;
+}
 
-  const rows=[]; let total=0;
-  const isTall = size==='tall';
-  const base = isTall ? EAMES_BASE_TALL[shellKey] : EAMES_BASE_CLASSIC[shellKey];
-  const displayCode = isTall ? (shell.tallCode || shell.code) : shell.code;
-  rows.push({step:'Step 1–2',code:displayCode,desc:'基礎定價（套組：椅＋腳凳）',sub:`${shell.label} · ${isTall?'Tall':'Classic'} 尺寸（Tall 加價已內含）`,price:base,isBase:true}); total+=base;
-  if(!shell.fixed&&shell.surcharge>0){rows.push({step:'Step 3',code:shellKey,desc:'殼面加價 Shell Finish',sub:shell.label,price:shell.surcharge}); total+=shell.surcharge;}
-  if(cat==='cat9'){
-    const lName=eamesSelectedLeather9?`${eamesSelectedLeather9.code} ${eamesSelectedLeather9.name}（${eamesSelectedLeather9.desc}）`:'— 顏色待定 —';
-    rows.push({step:'Step 6',code:eamesSelectedLeather9?.code||'Cat.9',desc:'Category 9 皮革加價',sub:lName,price:EAMES_CAT9}); total+=EAMES_CAT9;
-  } else if(cat==='cat11'){
-    const lName=eamesSelectedLeather11?`${eamesSelectedLeather11.code} ${eamesSelectedLeather11.name}（${eamesSelectedLeather11.desc}）`:'— 顏色待定 —';
-    rows.push({step:'Step 6',code:eamesSelectedLeather11?.code||'Cat.11',desc:'Category 11 Prone 皮革加價',sub:lName,price:EAMES_CAT11}); total+=EAMES_CAT11;
+/* ── 色卡資料(僅收錄官方明列色號,未列者不補) ── */
+const EAMES_FAMILIES = {
+  leather: {
+    slug: '2100-series-leather', name: '2100 Series Leather 皮革',
+    colors: [
+      ['2101','Ivory','象牙白','#f0e8d0'], ['2109','Black','黑色','#1a1a1a'], ['2110','Smoke','橄欖灰','#6a6a5a'],
+      ['2111','Graphite','橄欖炭綠','#3d3f30'], ['2112','Khaki','卡其駝','#b09060'], ['2113','Rattan','藤黃棕','#9a7040'],
+      ['2114','Truffle','深巧克力棕','#3a2a1a'], ['2115','Alpine','淺米白','#f5ecd7'], ['2116','Haze','淺沙米','#d4c4a8'],
+      ['2117','Sable Grey','灰藍岩','#7a8090'], ['2118','Dark Mineral','煙灰藍綠','#4a5a5c'],
+      ['2119','Dark Carbon','深炭灰','#2e2e2e'], ['2120','Cranberry','深紅蔓越莓','#7a1a2a'], ['2121','Deep Sea','深海藍綠','#1c3a42']
+    ]
+  },
+  prone: {
+    slug: 'prone-leather', name: 'Prone Leather 皮革（Maharam）',
+    colors: [
+      ['1NX01','Lotus','米白奶油','#ede0c8'], ['1NX02','Timbre','米白亞麻','#ddd0b8'], ['1NX03','Essence','沙漠灰綠','#8a9078'],
+      ['1NX04','Script','中性暖灰','#8c8070'], ['1NX05','Gambit','深炭灰','#303030'], ['1NX06','Obsidian','近黑炭','#161616'],
+      ['1NX07','Sail','深海軍藍','#1a2a42'], ['1NX09','Vine','深橄欖綠','#2a3820'], ['1NX10','Yarrow','芥末金','#c8a030'],
+      ['1NX13','Balsa','淺杏膚','#e8c9a0'], ['1NX14','Shore','焦糖沙棕','#b07840'], ['1NX15','Bricolage','銅棕','#8a5a3a'],
+      ['1NX17','Ledge','中棕','#7a5040'], ['1NX19','Mantra','深酒紅棕','#4a1a18'], ['1NX20','Java','深咖啡','#2e1a0e'],
+      ['1NX21','Lute','淺玫瑰米','#ddbaa0'], ['1NX22','Glow',''], ['1NX23','Hickory','']
+    ]
+  },
+  tenera: {
+    slug: 'tenera-leather', name: 'Tenera Leather 皮革（Geiger）',
+    colors: [
+      ['17501','Cement',''], ['17502','Marzipan',''], ['17504','Raw Sienna',''],
+      ['17505','Maple',''], ['17508','Cranberry',''], ['17510','Dark Chocolate',''],
+      ['17511','Black',''], ['17512','Carbon',''], ['17513','Sapphire','']
+    ]
+  },
+  pace: {
+    slug: 'pace-leather', name: 'Pace Leather 皮革（Maharam）',
+    colors: [
+      ['ZPA01','Whisper',''], ['ZPA02','Shy',''], ['ZPA03','Granite',''], ['ZPA04','Misty',''],
+      ['ZPA05','Studio',''], ['ZPA06','Throne',''], ['ZPA07','Proper',''], ['ZPA08','Huron',''],
+      ['ZPA09','Darkroom',''], ['ZPA10','Bark',''], ['ZPA11','Raspberry',''], ['ZPA12','Sangria',''],
+      ['ZPA13','Admiral',''], ['ZPA14','Juniper',''], ['ZPA15','Regal',''], ['ZPA16','Vapor',''],
+      ['ZPA17','Valley',''], ['ZPA18','Bushel',''], ['ZPA19','Heirloom',''], ['ZPA20','Palomino',''],
+      ['ZPA21','Bamboo',''], ['ZPA22','Saffron',''], ['ZPA23','Tearose',''], ['ZPA24','Canyon',''],
+      ['ZPA25','Bistro',''], ['ZPA26','Toffee',''], ['ZPA27','Rodeo',''], ['ZPA28','Mudslide',''],
+      ['ZPA29','Greige',''], ['ZPA30','Reflection',''], ['ZPA31','Pure',''], ['ZPA32','Desert',''],
+      ['ZPA33','Griffin',''], ['ZPA34','Urbane',''], ['ZPA35','Woodrose','']
+    ]
+  },
+  stow: {
+    slug: 'stow-leather', name: 'Stow Leather 皮革（Maharam）',
+    colors: [
+      ['ZSV01','Opera',''], ['ZSV02','Japonica',''], ['ZSV03','Masquerade',''], ['ZSV04','Laguna',''],
+      ['ZSV05','Jettison',''], ['ZSV06','Razor',''], ['ZSV07','Holiday',''], ['ZSV08','Patchouli',''],
+      ['ZSV09','Macrame',''], ['ZSV10','Grace',''], ['ZSV11','Seraphim',''], ['ZSV12','Ricotta',''],
+      ['ZSV13','Neroli',''], ['ZSV14','Sultana',''], ['ZSV15','Sundance',''], ['ZSV16','Quince',''],
+      ['ZSV17','Babka',''], ['ZSV18','Maitake',''], ['ZSV19','Mercer',''], ['ZSV20','Gaucho',''],
+      ['ZSV21','Chia',''], ['ZSV22','Vanguard',''], ['ZSV23','Zone',''], ['ZSV24','Zeppelin',''],
+      ['ZSV25','Clandestine',''], ['ZSV26','Raven',''], ['ZSV27','Cabana',''], ['ZSV28','Rime',''],
+      ['ZSV29','Forsythia',''], ['ZSV30','Panthera',''], ['ZSV31','Dune',''], ['ZSV32','Madera',''],
+      ['ZSV33','Russet',''], ['ZSV34','Gala',''], ['ZSV35','Heron','']
+    ]
+  },
+  bamboo: {
+    slug: 'bamboo', name: 'Bamboo 竹纖維植物皮（非皮革）',
+    colors: [
+      ['1BB01','Ivory','象牙白','img:https://images.hermanmiller.group/asset/d8fff443-8b16-420e-8f94-1a113b50d6b5/W/HM_1BB01_Bamboo_Ivory.png.rendition.1BB01_233.jpg'],
+      ['1BB02','Russet','焦糖棕','img:https://images.hermanmiller.group/asset/240c6384-dc65-4d4b-af9e-2096cad7d26e/W/HM_1BB02_Bamboo_Russet.png.rendition.1BB02_233.jpg'],
+      ['1BB03','Black','黑色','img:https://images.hermanmiller.group/asset/56dc5321-c40a-44c1-9ac8-33c2333ab5f4/W/HM_1BB03_Bamboo_Black.png.rendition.1BB03_233.jpg']
+    ]
+  },
+  mohair: {
+    slug: 'mohair-supreme', name: 'Mohair Supreme 馬海毛（全系列 53 色,ELO 僅開放 5 色）',
+    colors: [
+      ['ZMS06','Slate',''], ['ZMS07','Rich Chocolate',''], ['ZMS12','Peat',''],
+      ['ZMS18','Lupine',''], ['ZMS29','Armory','']
+    ]
+  }
+};
+
+
+let eamesLastTotal = 0;
+let eamesSelectedColor = null;
+
+function eamesCur() {
+  const p = 'SET';                       // 台灣通路僅供應套組，不單賣椅或腳凳
+  const e = document.getElementById('eames_model').value;
+  return { pk: p, ek: e, prod: EAMES_LINE[p], ed: EAMES_LINE[p].ed[e] };
+}
+
+function eamesOnModelChange() {
+  const { pk, ek, prod, ed } = eamesCur();
+
+  document.getElementById('eamesBaseNote').textContent = EAMES_ED_LABEL[ek].base;
+  document.getElementById('eamesQtyUnitLabel').textContent = `訂購數量（${prod.unit}）`;
+
+  // 木材飾面:只有標準飾面有
+  document.getElementById('eamesShellWrap').style.display = ed.shell ? '' : 'none';
+  if (ed.shell) {
+    const sel = document.getElementById('eames_shell');
+    const keep = sel.value;
+    sel.innerHTML = Object.entries(ed.shell)
+      .map(([k, v]) => `<option value="${k}">${EAMES_SHELL_LABEL[k]} — ${v ? '+$' + v.toLocaleString() : '+$0'}</option>`)
+      .join('');
+    sel.value = (keep in ed.shell) ? keep : 'OU';
   }
 
-  let fullModel = displayCode;
-  if(!shell.fixed) fullModel += ' ' + shellKey;
-  if(cat==='cat9' && eamesSelectedLeather9) fullModel += ' ' + eamesSelectedLeather9.code;
-  else if(cat==='cat9') fullModel += ' \u2014';
-  if(cat==='cat11' && eamesSelectedLeather11) fullModel += ' ' + eamesSelectedLeather11.code;
-  else if(cat==='cat11') fullModel += ' \u2014';
+  // 尺寸:腳凳沒有這一步
+  document.getElementById('eamesSizeWrap').style.display = prod.hasSize ? '' : 'none';
+  if (prod.hasSize) {
+    const diff = ed.tall.price - ed.classic.price;
+    document.getElementById('eames_size').options[1].textContent = `Tall 高背 — +$${diff.toLocaleString()}`;
+  } else {
+    document.getElementById('eames_size').value = 'classic';
+  }
 
-  document.getElementById('eamesBadgeModel').textContent=fullModel;
-  document.getElementById('eamesFullModel').textContent=fullModel;
-  document.getElementById('eamesTotalPrice').textContent=total.toLocaleString();
-  document.getElementById('eamesUsBadgePrice').textContent='$'+total.toLocaleString();
+  // 材質階:只長出該型號合法的階
+  const cs = document.getElementById('eames_cat');
+  const keepCat = cs.value;
+  const keys = Object.keys(ed.mats);
+  cs.innerHTML = '<option value="">— 請選擇材質階（必選）—</option>' +
+    keys.map(k => `<option value="${k}">${EAMES_CAT_LABEL[k].label} — +$${ed.mats[k].toLocaleString()}</option>`).join('');
+  cs.value = keys.includes(keepCat) ? keepCat : '';
 
-  const tbody=document.getElementById('eamesStepsBody');
-  tbody.innerHTML=rows.map(r=>{
-    const pc=r.isBase?'price-base':r.price===0?'price-zero':'price-add';
-    const ps=r.isBase?`$${r.price.toLocaleString()}`:r.price===0?'+$0':`+$${r.price.toLocaleString()}`;
-    const rc=r.isBase?'base-row':'';
-    return `<tr class="${rc}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub}</small></td><td class="step-price ${pc}">${ps}</td></tr>`;
-  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">美國線單套定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>`;
+  eamesOnCatChange();
+  eamesOnShellChange();
+  eamesOnSizeChange();
+}
 
-  eamesLastTotal=total;
+function eamesOnShellChange() {
+  const { ed } = eamesCur();
+  const d = document.getElementById('eamesPrice_shell');
+  if (!ed.shell) { d.textContent = '木色固定'; d.classList.remove('has-price'); return; }
+  const v = ed.shell[document.getElementById('eames_shell').value] || 0;
+  d.textContent = v > 0 ? `+$${v.toLocaleString()}` : '+$0';
+  d.classList.toggle('has-price', v > 0);
+}
+
+function eamesOnSizeChange() {
+  const { prod, ed } = eamesCur();
+  const d = document.getElementById('eamesPrice_size');
+  if (!prod.hasSize) { d.textContent = '—'; d.classList.remove('has-price'); return; }
+  const isTall = document.getElementById('eames_size').value === 'tall';
+  const diff = ed.tall.price - ed.classic.price;
+  d.textContent = isTall ? `+$${diff.toLocaleString()}` : '+$0';
+  d.classList.toggle('has-price', isTall);
+}
+
+function eamesOnCatChange() {
+  const { ed } = eamesCur();
+  const k = document.getElementById('eames_cat').value;
+  const d = document.getElementById('eamesPrice_cat');
+  const wrap = document.getElementById('eamesColorWrap');
+  const grid = document.getElementById('eamesSwatchGrid');
+  const noteEl = document.getElementById('eamesCatNote');
+
+  eamesSelectedColor = null;
+  document.getElementById('eamesSelectedName').textContent = '— 請點選色號 —';
+  document.getElementById('eamesCardLink').style.display = 'none';
+
+  if (!k) {
+    d.textContent = '+$0'; d.classList.remove('has-price');
+    wrap.style.display = 'none'; noteEl.textContent = '';
+    return;
+  }
+  const meta = EAMES_CAT_LABEL[k];
+  d.textContent = `+$${ed.mats[k].toLocaleString()}`; d.classList.add('has-price');
+  noteEl.textContent = meta.note;
+
+  if (meta.fams.length === 0) {
+    // 布料階:不列色票,但仍給原廠色卡連結
+    grid.innerHTML = '';
+    document.getElementById('eamesSelectedName').textContent = '此階為布料,色號請直接查原廠色卡';
+    document.getElementById('eamesSwatchDisclaimer').textContent = '';
+    wrap.style.display = '';
+    eamesUpdateCardLink();
+    return;
+  }
+  wrap.style.display = '';
+
+  let hasApprox = false, hasUnknown = false;
+  grid.innerHTML = '';
+  meta.fams.forEach(fk => {
+    const f = EAMES_FAMILIES[fk];
+    if (meta.fams.length > 1) {
+      const h = document.createElement('div');
+      h.className = 'es-fam'; h.textContent = f.name;
+      grid.appendChild(h);
+    }
+    f.colors.forEach(col => {
+      const [code, en, zh, swatch] = col;
+      const el = document.createElement('div');
+      el.className = 'es-sw';
+      el.title = `${code} ${en}${zh ? '（' + zh + '）' : ''}`;
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      if (swatch && swatch.startsWith('img:')) { chip.style.backgroundImage = `url("${swatch.slice(4)}")`; }
+      else if (swatch) { chip.style.background = swatch; hasApprox = true; }
+      else { chip.classList.add('unknown'); chip.textContent = '?'; hasUnknown = true; }
+      const cd = document.createElement('div');
+      cd.className = 'cd'; cd.textContent = code;
+      el.appendChild(chip); el.appendChild(cd);
+      el.onclick = () => {
+        grid.querySelectorAll('.es-sw').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+        eamesSelectedColor = { fam: fk, code, en, zh };
+        document.getElementById('eamesSelectedName').textContent =
+          `${code} ${en}${zh ? '（' + zh + '）' : ''} · ${f.name}`;
+        eamesUpdateCardLink();
+        eamesRecalc();
+      };
+      grid.appendChild(el);
+    });
+  });
+
+  const msgs = [];
+  if (hasApprox) msgs.push('色塊為參考示意,非原廠色票數值。實際顏色請點下方連結看原廠色卡,或以實體色卡為準。');
+  if (hasUnknown) msgs.push('斜線格代表原廠僅公布色號與色名、未提供色塊資料,請點連結查看官方色卡。');
+  
+  document.getElementById('eamesSwatchDisclaimer').textContent = msgs.join('　');
+  eamesUpdateCardLink();
+}
+
+function eamesUpdateCardLink() {
+  const box = document.getElementById('eamesCardLink');
+  const catKey = document.getElementById('eames_cat').value;
+  if (!catKey) { box.style.display = 'none'; return; }
+  const label = EAMES_CAT_LABEL[catKey] ? EAMES_CAT_LABEL[catKey].label : catKey;
+  let html = '';
+  if (eamesSelectedColor) {
+    const { fam, code, en } = eamesSelectedColor;
+    html += `<a href="${eamesCardUrl(EAMES_FAMILIES[fam].slug, en, code)}" target="_blank" rel="noopener" class="es-link es-link-main">`
+          + `原廠色卡 ${code} ${en}</a>`;
+  }
+  html += `<a href="${eamesCatCardUrl(catKey)}" target="_blank" rel="noopener" class="es-link es-link-sub">`
+        + `${label} 在 Eames Lounge 的全部可選色</a>`;
+  box.innerHTML = html;
+  box.style.display = 'block';
+}
+
+/* ── 計算 ── */
+function eamesCalcAll() {
+  const { pk, ek, prod, ed } = eamesCur();
+  const isTall = prod.hasSize && document.getElementById('eames_size').value === 'tall';
+  const shellKey = document.getElementById('eames_shell').value;
+  const catKey = document.getElementById('eames_cat').value;
+  const color = eamesSelectedColor;
+  const qty = parseInt(document.getElementById('eames_qty').value) || 1;
+
+  const warn = [];   // 黃色:會擋單或必須注意
+  const info = [];   // 藍色:待確認、資料來源有出入
+
+  if (!catKey) {
+    warn.push('尚未選擇材質階。原廠 Step 4 為必選,沒有「不含材質」的可成交價。');
+  } else if (EAMES_CAT_LABEL[catKey].fams.length > 0 && !color) {
+    warn.push('尚未指定色號,型號不完整,無法送單。');
+  }
+
+  if (ek !== 'STD') {
+    warn.push(`${EAMES_ED_LABEL[ek].label}為固定殼面型號,木材飾面與底座顏色皆不可選配。面料顏色不受限,9 級／11 級全色皆可搭配。`);
+    info.push('Category 10M 已封鎖:價格書列有此階,但 Application Chart 註 4 載明 Pace Leather 不適用 Ebony／White Ash Edition。若原廠窗口確認可下單,請告知我解除。');
+  }
+
+
+
+
+
+  info.push('本表已依貴司需求限定為套組（ES67071 系列），不提供單椅 ES670 與單腳凳 ES671；材質階亦隱藏 Category 7／8／K／P／R／V。價格書仍列有上述品項與階別,若客戶另有需求請告知我恢復。');
+  info.push('材質可用性與色號依據為 June 2025 版 Application Chart／Textile Colors,價格書為 8/26 版,兩者有 14 個月時間差,新色可能未收錄。官網另有 Category 15M（Loam,8 色）標示可用於 Eames Lounge,但價格書無此階加價,故未列入。');
+
+  const wEl = document.getElementById('eamesAlertWarn');
+  document.getElementById('eamesAlertWarnMsg').innerHTML = warn.map(x => `• ${x}`).join('<br>');
+  wEl.classList.toggle('show', warn.length > 0);
+
+  const iEl = document.getElementById('eamesAlertInfo');
+  document.getElementById('eamesAlertInfoMsg').innerHTML =
+    '<strong>待確認／資料來源說明</strong><br>' + info.map(x => `• ${x}`).join('<br>');
+  iEl.classList.add('show');
+
+  const rows = [];
+  let total = 0;
+  const base = isTall ? ed.tall : ed.classic;
+  rows.push({ step: prod.hasSize ? 'Step 1–2' : 'Step 1', code: base.code,
+    desc: `基礎定價 — ${prod.label}`,
+    sub: `${EAMES_ED_LABEL[ek].label}${prod.hasSize ? ' · ' + (isTall ? 'Tall 高背' : 'Classic 標準') : ' · 單一尺寸'}`,
+    price: base.price, isBase: true });
+  total += base.price;
+
+  let model = base.code;
+
+  if (ed.shell) {
+    const v = ed.shell[shellKey] || 0;
+    rows.push({ step: pk === 'OTT' ? 'Step 2' : 'Step 3', code: shellKey,
+      desc: '木材飾面 Shell Finish', sub: EAMES_SHELL_LABEL[shellKey], price: v });
+    total += v;
+    model += ' ' + shellKey;
+  }
+
+  if (catKey) {
+    const add = ed.mats[catKey];
+    const meta = EAMES_CAT_LABEL[catKey];
+    let sub = meta.label, code = catKey;
+    if (color) {
+      sub = `${EAMES_FAMILIES[color.fam].name} ${color.code} ${color.en}`;
+      code = color.code;
+      model += ' ' + color.code;
+    } else if (meta.fams.length > 0) { model += ' —'; }
+    const stepNo = pk === 'OTT' ? (ed.shell ? 'Step 3' : 'Step 2') : (ed.shell ? 'Step 4' : 'Step 3');
+    rows.push({ step: stepNo, code: code, desc: '材質 Material', sub: sub, price: add });
+    total += add;
+  }
+
+  document.getElementById('eamesBadgeModel').textContent = model;
+  document.getElementById('eamesFullModel').textContent = model;
+  document.getElementById('eamesTotalPrice').textContent = total.toLocaleString();
+  document.getElementById('eamesUsBadgePrice').textContent = '$' + total.toLocaleString();
+
+  document.getElementById('eamesStepsBody').innerHTML = rows.map(r => {
+    const pc = r.isBase ? 'price-base' : r.price === 0 ? 'price-zero' : 'price-add';
+    const ps = r.isBase ? `$${r.price.toLocaleString()}` : r.price === 0 ? '+$0' : `+$${r.price.toLocaleString()}`;
+    return `<tr class="${r.isBase ? 'base-row' : ''}"><td class="step-num">${r.step}</td><td><span class="step-code">${r.code}</span></td><td class="step-desc">${r.desc}<small>${r.sub}</small></td><td class="step-price ${pc}">${ps}</td></tr>`;
+  }).join('') + `<tr class="total-row us-total"><td colspan="3" class="label">美國線單${prod.unit}定價合計</td><td class="amount">$${total.toLocaleString()}</td></tr>`;
+
+  eamesLastTotal = total;
   document.getElementById('eamesResultBlock').classList.add('show');
-  const multiBar=document.getElementById('eamesMultiBar');
-  if(qty>1){
-    document.getElementById('eamesMultiQtyLabel').textContent=qty;
-    document.getElementById('eamesMultiPrice').textContent=(total*qty).toLocaleString();
-    multiBar.style.display='flex';
-  } else multiBar.style.display='none';
-  document.getElementById('eamesQtyLabel').textContent=qty;
+  const mb = document.getElementById('eamesMultiBar');
+  if (qty > 1) {
+    document.getElementById('eamesMultiQtyLabel').textContent = qty;
+    document.getElementById('eamesMultiPrice').textContent = (total * qty).toLocaleString();
+    mb.style.display = 'flex';
+  } else mb.style.display = 'none';
+  document.getElementById('eamesQtyLabel').textContent = qty;
   eamesRecalcTWD();
-  document.getElementById('eamesQtyTotal').textContent=qty>1?`× ${qty} 套 ＝ USD ${(total*qty).toLocaleString()}`:'';
+  document.getElementById('eamesQtyTotal').textContent =
+    qty > 1 ? `× ${qty} ${prod.unit} ＝ USD ${(total * qty).toLocaleString()}` : '';
 }
 
 function eamesRecalc(){ if(document.getElementById('eamesResultBlock').classList.contains('show')) eamesCalcAll(); }
@@ -4404,9 +4713,7 @@ function mirraClearAll() {
 // INIT
 // =========================================================
 aeronBuildManualUI();
-eamesBuildSwatches('eamesSwatches9', EAMES_CAT9_LEATHERS, '9', 'eamesLeather9Name');
-eamesBuildSwatches('eamesSwatches11', EAMES_CAT11_LEATHERS, '11', 'eamesLeather11Name');
-eamesOnShellChange(); eamesOnSizeChange(); eamesOnCatChange();
+eamesOnModelChange();
 
 // Build Sayl swatches
 saylBuildSwatches('saylFrameSwatches',  SAYL_FRAME,      'frame',  'saylFrameName');
@@ -4425,8 +4732,7 @@ aeronParseModel();
 document.getElementById('cosmInput').value='FLC162SFH G1 G1 G1 SC8 BK 84501';
 cosmRender();
 
-// Pre-calc Eames (silent)
-eamesCalcAll();
+// Eames: 只初始化選項連動,不預先出價（未選材質階時不應顯示可成交價）
 
 // Pre-calc Sayl: 預貼一個範例料號示範
 document.getElementById('saylModelInput').value='AS1YA22HA N2 65 BB 98 63 9105';
