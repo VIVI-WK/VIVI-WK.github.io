@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Herman Miller 選配計算器 v6｜Aeron · Cosm · Sayl · Mirra 2 · Eames</title>
+<title>Herman Miller 選配計算器 v6｜Aeron · Cosm · Sayl · Mirra 2 · Setu · Eames</title>
 <style>
   :root {
     --bg: #f5f4f2;
@@ -181,6 +181,27 @@
     font-size: 13px; cursor: pointer; transition: all 0.15s;
   }
   .btn-clear:hover { background: var(--accent-light); color: var(--accent); }
+
+  .floor-note {
+    max-width: 860px; margin: 0 auto 14px; padding: 0 4px;
+    font-family: inherit;
+  }
+  .floor-note summary {
+    cursor: pointer; font-size: 12px; font-weight: 600;
+    color: var(--text-muted); padding: 6px 10px;
+    border: 1px solid var(--border); border-radius: 5px;
+    list-style: none;
+  }
+  .floor-note summary::-webkit-details-marker { display: none; }
+  .floor-note summary::before { content: '＋ '; }
+  .floor-note[open] summary::before { content: '－ '; }
+  .floor-note summary:hover { color: var(--text); }
+  .floor-note .fn-body {
+    font-size: 12px; line-height: 1.75; color: var(--text-muted);
+    padding: 10px 12px; margin-top: 6px;
+    border: 1px solid var(--border); border-radius: 5px;
+  }
+  .floor-note .fn-body b { color: var(--text); }
 
   .input-hint { margin-top: 8px; font-size: 11px; color: var(--text-muted); }
   .input-hint code {
@@ -759,7 +780,7 @@
   <div class="header">
     <span class="header-brand">HermanMiller</span>
     <h1>選配計算器</h1>
-    <span class="header-version">v6.2 · 2026-08-13 更新 · 新增 Verus（Asia 快交 20/30/45天）雙模式</span>
+    <span class="header-version">v6.4 · 2026-08-22 更新 · 新增 Setu 全機種（美國線／亞洲線雙線＋織網色卡）· 輪子適用地面依原廠附錄 2024/10</span>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
@@ -773,7 +794,20 @@
     <button class="product-tab-btn" onclick="switchProduct('eamesstool')">Turned Stool</button>
     <button class="product-tab-btn" onclick="switchProduct('eamesChairs')">Eames Aluminum</button>
     <button class="product-tab-btn" onclick="switchProduct('verus')">Verus</button>
+    <button class="product-tab-btn" onclick="switchProduct('setu')">Setu</button>
   </div>
+
+  <!-- ── 地面適用說明（全域） ── -->
+  <details class="floor-note">
+    <summary>地面適用說明｜選輪子前先看（木質地板請點開）</summary>
+    <div class="fn-body">
+      原廠把地面分成兩類。<b>硬地板</b>指磁磚、大理石、超耐磨與木質地板；<b>地毯</b>就是地毯。<br>
+      標示<b>「硬地板或地毯」</b>的輪子（C7、C9、DC1、SC8、O2、OC 與 GF 腳墊）可用於木質地板。原廠未針對實木地板單獨背書，實際刮傷風險受地板硬度與砂粒異物影響，實木地板仍建議搭配地墊。<br>
+      標示<b>「僅地毯」</b>的輪子（BB、BKS、H9、U4）不可用於硬地板。裝在磁磚或木地板不只會刮傷地面，使用者坐下或起身時椅子也可能意外滑動。<br>
+      注意 <b>H9 透明輪為僅地毯</b>，不因輪面為軟質 PU 而可用於硬地板；<b>DC1 為無輪面設計</b>，靜音來自 quiet roll 技術而非軟輪。<br>
+      資料來源：Herman Miller 原廠附錄 Casters and Glides，2024 年 10 月版。
+    </div>
+  </details>
 
   <!-- ══════════════════════════════════════════
        PRODUCT PANEL A: AERON
@@ -1039,8 +1073,8 @@
           <div class="config-item-label">輪子 Castors
             <span class="config-item-step">Step 10</span></div>
           <select class="eames-select" id="sayl_caster" onchange="saylRecalc()">
-            <option value="BB" selected>BB — Carpet only</option>
-            <option value="C7">C7 — Hard/Carpet +$51</option>
+            <option value="BB" selected>BB — 僅地毯 Carpet only</option>
+            <option value="C7">C7 — 硬地板或地毯 Hard/Carpet +$51</option>
           </select>
         </div>
       </div>
@@ -1248,11 +1282,11 @@
           <div class="config-item-label">輪子 Castors
             <span class="config-item-step">Step 17</span></div>
           <select class="eames-select" id="mirra_caster" onchange="mirraRecalc()">
-            <option value="BB" selected>BB — Carpet only 地毯專用</option>
-            <option value="GF">GF — Glide 滑墊 +$25</option>
-            <option value="C7">C7 — Hard/Carpet +$50</option>
-            <option value="C9">C9 — Braking 煞車 +$50</option>
-            <option value="SC8">SC8 — Quiet roll 靜音 +$50</option>
+            <option value="BB" selected>BB — 僅地毯 Carpet only</option>
+            <option value="GF">GF — Glide 腳墊（硬地板或地毯）+$25</option>
+            <option value="C7">C7 — 軟輪（硬地板或地毯）+$50</option>
+            <option value="C9">C9 — 煞車輪（硬地板或地毯）+$50</option>
+            <option value="SC8">SC8 — 靜音輪（硬地板或地毯）+$50</option>
           </select>
         </div>
       </div>
@@ -1774,7 +1808,7 @@
         <button class="btn-primary" onclick="embPaste()">計算價格</button>
         <button class="btn-clear" onclick="document.getElementById('embPaste').value=''">清除</button>
       </div>
-      <div class="input-hint">固定主碼 <code>CN122AWAA</code>。可加底座 <code>G1/XT/CD</code>、骨架 <code>G1/91/MG1/M91</code>、滑輪 <code>BB/C7/C9/H9</code>、布階 <code>CAT1/CAT2/CAT4</code>。</div>
+      <div class="input-hint">固定主碼 <code>CN122AWAA</code>。可加底座 <code>G1/XT/CD</code>、骨架 <code>G1/91/MG1/M91</code>、滑輪 <code>BB/C7/C9/H9</code>、布階 <code>CAT1/CAT2/CAT4</code>。<br>⚠ <b>BB 與 H9 僅限地毯</b>，木質地板請選 C7 或 C9。</div>
     </div>
     <div class="alert alert-error" id="embErr"><div id="embErrMsg"></div></div>
     <div class="alert alert-info" id="embInfo"><div id="embInfoMsg"></div></div>
@@ -1888,6 +1922,171 @@
 
   </div><!-- /product-verus -->
 
+
+  <!-- ══════════════════════════════════════════
+       PRODUCT PANEL: SETU（美國線 PB_SET 4/26 ＋ 亞洲線 80-day Asia 2026）
+  ══════════════════════════════════════════ -->
+  <style>
+  #product-setu .setu-head{ display:flex; gap:16px; align-items:flex-start; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:14px; flex-wrap:wrap; }
+  #product-setu .setu-meta h2{ font-size:18px; font-weight:700; letter-spacing:-0.01em; }
+  #product-setu .setu-en{ font-size:12px; color:var(--text-muted); font-family:'Consolas',monospace; }
+  #product-setu .setu-fam{ display:inline-block; font-family:'Consolas',monospace; font-size:11px; background:var(--accent-light); border:1px solid var(--border); padding:2px 8px; border-radius:4px; margin-top:5px; }
+  #product-setu .setu-desc{ font-size:12px; line-height:1.65; color:var(--text); margin-top:7px; max-width:640px; }
+  #product-setu .line-switch{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
+  #product-setu .line-pill{ font-family:inherit; font-size:13px; font-weight:700; padding:8px 18px; border-radius:20px; border:1.5px solid var(--border-strong); background:var(--surface); color:var(--text-muted); cursor:pointer; transition:all .15s; }
+  #product-setu .line-pill.active.us{ background:var(--us-light); border-color:var(--us-line); color:var(--us-line); }
+  #product-setu .line-pill.active.asia{ background:var(--asia-light); border-color:var(--asia-line); color:var(--asia-line); }
+  #product-setu .line-switch-note{ font-size:11px; color:var(--text-muted); }
+  #product-setu .sw-box{ grid-column:1 / -1; }
+  #product-setu .sw-grid{ display:flex; flex-wrap:wrap; gap:8px; margin-top:7px; padding:11px; background:var(--step-bg); border:1px solid var(--border); border-radius:8px; }
+  #product-setu .sw-chip{ width:126px; cursor:pointer; text-align:left; border:1.5px solid transparent; border-radius:7px; padding:5px; transition:all .12s; }
+  #product-setu .sw-chip:hover{ background:var(--surface); border-color:var(--border-strong); }
+  #product-setu .sw-chip.active{ background:var(--surface); border-color:var(--accent); box-shadow:0 0 0 2px rgba(26,25,23,0.12); }
+  #product-setu .sw-chip .dot{ display:block; width:100%; height:40px; border-radius:5px; border:1px solid rgba(0,0,0,0.22); }
+  #product-setu .sw-chip .cd{ display:block; font-family:'Consolas',monospace; font-size:11px; font-weight:700; margin-top:5px; color:var(--text); }
+  #product-setu .sw-chip .nm{ display:block; font-size:11px; color:var(--text); line-height:1.3; }
+  #product-setu .sw-chip .ds{ display:block; font-size:10px; color:var(--text-muted); line-height:1.35; margin-top:3px; }
+  #product-setu .grade{ display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:9px; margin-left:6px; letter-spacing:.03em; vertical-align:middle; }
+  #product-setu .grade-fact{ background:#e3f2e8; color:#1f7a3d; }
+  #product-setu .grade-inf{ background:#fef3d9; color:#8a6100; }
+  #product-setu .config-item.locked{ opacity:.55; }
+  #product-setu .config-item.locked select{ background:var(--step-bg); cursor:not-allowed; }
+  #product-setu .setu-hint{ background:var(--accent-light); border:1px solid var(--border); border-radius:8px; padding:11px 16px; margin-bottom:14px; font-size:12px; line-height:1.7; }
+  #product-setu .swatch-mini{ display:inline-block; width:13px; height:13px; border-radius:3px; border:1px solid rgba(0,0,0,.25); vertical-align:-2px; margin-right:5px; }
+  </style>
+  <div id="product-setu" class="product-panel">
+
+    <div class="setu-head">
+      <div class="setu-meta">
+        <h2>Setu 多用途椅／高腳椅</h2>
+        <div class="setu-en">Setu&reg; Multipurpose Chair &amp; Stool, Refresh / Dipped in Color</div>
+        <span class="setu-fam">CQN5 · CQND5 · CQN7 · CQND7</span>
+        <div class="setu-desc">
+          Studio 7.5 設計，2009 年推出。單片 Intercept 懸吊材料夾在兩片複合聚合物外框之間，Kinematic Spine 脊骨結構讓椅背隨身體後仰連續支撐，全機只有一項調整（座高），自重約 18-19 磅，承重 300 磅／136 公斤。座深 15 吋固定、扶手為固定式 Ribbon Arms。
+          <br><b>兩線差異：</b>美國線（PB_SET 4/26）有 F 包覆布面版與 OC 腳輪；亞洲線（80-day Asia 2026 新加坡 USD）只有 M 懸吊材料版，但多了 LSC 腳輪與包裝碼（雙入箱／KD）。
+        </div>
+        <div style="margin-top:7px;"><a class="setu-en" style="color:var(--us-line);" href="https://www.hermanmiller.com/products/seating/office-chairs/setu-chairs/" target="_blank">官網 Setu 產品頁</a></div>
+      </div>
+    </div>
+
+    <details class="feature-details" style="margin-bottom:14px;" open>
+      <summary>門市常賣款與現有庫存對照（舊碼 → 現行碼）</summary>
+      <div class="feature-body">
+        <table class="steps-table" style="margin-top:4px;">
+          <thead><tr><th style="width:96px">用途</th><th style="width:210px">料號</th><th>配置說明</th><th style="width:180px">現行碼對應</th></tr></thead>
+          <tbody>
+            <tr><td class="step-desc"><b>常賣款</b><small>白框</small></td>
+              <td><span class="step-code">CQ51MA 98 L7 HCC NNN 4W21</span></td>
+              <td class="step-desc"><span class="swatch-mini" style="background:#eceae5"></span>98 純白框架　<span class="swatch-mini" style="background:#c4c7ca"></span>L7 銀合金五星腳　HCC 腳輪　含 Ribbon 扶手　灰色織網<small>4W21 為改版前 Lyris 色號</small></td>
+              <td class="step-desc"><span class="step-code">CQN51MA 98 L7 HCC</span> ＋織網色<small>色號需向原廠對照</small></td></tr>
+            <tr><td class="step-desc"><b>常賣款</b><small>WFH 款</small></td>
+              <td><span class="step-code">CQ51MA G1 L7 HCC NNN 4W31</span></td>
+              <td class="step-desc"><span class="swatch-mini" style="background:#3f4043"></span>G1 石墨灰框架　<span class="swatch-mini" style="background:#c4c7ca"></span>L7 銀合金五星腳　HCC 腳輪　含 Ribbon 扶手<small>4W31 為改版前 Lyris 色號</small></td>
+              <td class="step-desc"><span class="step-code">CQN51MA G1 L7 HCC</span> ＋織網色<small>色號需向原廠對照</small></td></tr>
+            <tr style="background:var(--yellow-light);"><td class="step-desc"><b>現有庫存</b></td>
+              <td><span class="step-code">CQN51MA G1 G1 HCC 84501</span></td>
+              <td class="step-desc"><span class="swatch-mini" style="background:#3f4043"></span>G1 石墨灰框架　<span class="swatch-mini" style="background:#3f4043"></span><b>G1 石墨灰五星腳</b>　HCC 腳輪　含 Ribbon 扶手　<span class="swatch-mini" style="background:#3f4043"></span>84501 石墨灰織網<small>已是 Refresh 現行碼，可直接下單</small></td>
+              <td class="step-desc">本身即現行碼</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:9px;font-size:12px;line-height:1.75;">
+          <b>庫存這台跟兩款常賣款差在哪，對客怎麼講</b><span class="grade grade-fact">確定事實</span><br>
+          差別只有底座：常賣款是 <b>L7 銀合金</b>（價目書加價 ＋$0，Setu 的標準值），庫存這台是 <b>G1 石墨灰</b>（＋$50）。也就是庫存款是<b>整台深灰同色調</b>的全黑視覺，框架、底座、織網三個部位都是石墨灰，比常賣的銀腳款更沉穩、更不挑空間，成本結構上也比較高。<br>
+          <b>白框常賣款</b>要記得先提醒客戶：純白框架視覺最輕，但深色衣物摩擦容易留痕，且原廠明文說明染色轉移（dye transfer）不在保固範圍內。<br>
+          <b>舊碼不能直接下單</b><span class="grade grade-fact">確定事實</span>　CQ51／CQ52／CQ53／CQ79 是 Refresh 改版前的型號，現行碼為 CQN51／CQN52／CQN53／CQN79。舊碼裡的 NNN 段落在新結構已取消，Lyris 色號（4W 開頭）也換成 Intercept 的 84501-84507，<b>新舊色號對照本頁未收錄，補貨或補件前務必先跟原廠確認</b><span class="grade grade-inf">推論</span>。
+        </div>
+      </div>
+    </details>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchSetuTab('manual')">下拉手動選配</button>
+      <button class="tab-btn" onclick="switchSetuTab('paste')">貼上型號計算</button>
+      <button class="tab-btn" onclick="switchSetuTab('mesh')">織網色卡總表</button>
+    </div>
+
+    <!-- ── TAB 1: MANUAL ── -->
+    <div id="setu-tab-manual" class="tab-panel active">
+
+      <div class="line-switch">
+        <button class="line-pill us active" id="setuPillUs" onclick="setuSetLine('us')">美國線 PB_SET (4/26)</button>
+        <button class="line-pill asia" id="setuPillAsia" onclick="setuSetLine('asia')">亞洲線 80-day Asia (2026)</button>
+        <span class="line-switch-note">切換線別會重建可選項目；兩線都算得出來時，下方會同時顯示雙線價格供比較。</span>
+      </div>
+
+      <div class="setu-hint">
+        <b>Setu 怎麼配</b>　先選機種，系統會依機種自動開關下面該填的欄位（四星固定高度版只能配滑座、高腳椅才有柱身色、全身同色版的底座與柱身必須跟框架同色）。織網色請在下方色卡直接點選。
+      </div>
+
+      <div class="config-grid" id="setuConfigGrid"></div>
+      <button class="btn-build" onclick="setuCalcManual()">產生型號並計算價格</button>
+      <div class="generated-code-box" id="setuGenCode"></div>
+      <div class="alert alert-warn" id="setuWarnM"><div id="setuWarnMMsg"></div></div>
+      <div id="setuResultM"></div>
+    </div>
+
+    <!-- ── TAB 2: PASTE ── -->
+    <div id="setu-tab-paste" class="tab-panel">
+      <div class="input-section">
+        <label class="input-label">輸入或貼上 Setu 型號</label>
+        <div class="input-row">
+          <input type="text" class="model-input" id="setuPasteInput"
+            placeholder="例：CQN51MA G1 L7 HCC 84501" onkeydown="if(event.key==='Enter') setuParsePaste()">
+          <button class="btn-primary" onclick="setuParsePaste()">計算價格</button>
+          <button class="btn-clear" onclick="setuClearPaste()">清除</button>
+        </div>
+        <div class="input-hint">
+          主碼＝<code>CQN5</code>／<code>CQND5</code>／<code>CQN7</code>／<code>CQND7</code>＋底座型式（1／2／3，高腳椅為 9）＋座背材料（M／F）＋扶手（N／A）。<br>
+          後面依序接：框架色、<b>柱身色（限高腳椅）</b>、底座色、腳輪、織網色號。系統會自動判斷是美國線還是亞洲線，兩線都成立時雙線並列。
+        </div>
+        <div class="examples">
+          <span class="examples-label">快速範例：</span>
+          <button class="example-btn" onclick="setuSetExample('CQN51MA G1 L7 HCC 84501')">CQN51 標準</button>
+          <button class="example-btn" onclick="setuSetExample('CQN53MN VPR L7 X8 84503')">CQN53 四星</button>
+          <button class="example-btn" onclick="setuSetExample('CQND51MA DR1 DR1 O2R 84506')">CQND5 同色</button>
+          <button class="example-btn" onclick="setuSetExample('CQN79MA G1 G1 L7 HCC 84501')">CQN79 高腳椅</button>
+          <button class="example-btn" onclick="setuSetExample('CQND79MA DN2 DN2 DN2 O2N 84504')">CQND7 同色高腳</button>
+          <button class="example-btn" onclick="setuSetExample('CQN51FA 98 5Y OC')">CQN51 布面版（美國線）</button>
+        </div>
+        <div class="examples" style="margin-top:8px;">
+          <span class="examples-label">門市實際料號：</span>
+          <button class="example-btn" onclick="setuSetExample('CQ51MA 98 L7 HCC NNN 4W21')">常賣款 白框（舊碼）</button>
+          <button class="example-btn" onclick="setuSetExample('CQ51MA G1 L7 HCC NNN 4W31')">常賣款 WFH（舊碼）</button>
+          <button class="example-btn" onclick="setuSetExample('CQN51MA G1 G1 HCC 84501')">現有庫存款</button>
+        </div>
+      </div>
+      <div class="alert alert-error" id="setuErrP"><div id="setuErrPMsg"></div></div>
+      <div class="alert alert-warn" id="setuWarnP"><div id="setuWarnPMsg"></div></div>
+      <div id="setuResultP"></div>
+    </div>
+
+    <!-- ── TAB 3: MESH CHART ── -->
+    <div id="setu-tab-mesh" class="tab-panel">
+      <div class="setu-hint">
+        <b>先分清楚兩組色號，這是 Setu 最容易被問倒的地方</b><br>
+        <b>84501-84507</b> 是<b>織網（Intercept 懸吊材料）</b>的色號，六款主力椅裡 Cosm 也是用這一組編號體系。標準版 CQN5、CQN7 與全身同色版 CQND5、CQND7 都可以任選這七色，原廠明文寫「任一織網色可搭配任一框架色」。<br>
+        <b>DR1／DN2／DB3</b> 是<b>全身同色版的框架色</b>，只有三色，且限 CQND5、CQND7 這兩個獨立型號，不是加購選項。<br>
+        <span class="grade grade-fact">確定事實</span> 色號與名稱取自 80-day Asia Seating (2026) Setu 規格頁與 PB_SET (4/26)。
+        <span class="grade grade-inf">推論</span> 下方色塊為螢幕近似色，非原廠色票；對客戶確認顏色請一律以實體色卡為準。
+      </div>
+      <div id="setuMeshChart"></div>
+    </div>
+
+    <details class="footer-fold"><summary>規格附註與下單須知</summary><div class="footer-fold-body">
+      ※ 來源：Herman Miller <b>Setu&reg; Chairs Price Book (PB_SET, 4/26，美國線 USD 列價)</b> ＋ <b>80-day HM Asia Seating - 2026 Singapore - US Dollar 列價（未含 VAT）</b>。<br>
+      ※ <b>美國線採累加法</b>：基價（Step 2 底座型式）＋座背材料＋扶手＋框架色＋底座色＋腳輪＋材料級距。<br>
+      ※ <b>亞洲線採查表法</b>：主碼（含扶手 N／A）直接查列價，再加框架色、底座色、腳輪的增額。亞洲線列價已內含扶手，與美國線的加價結構不同，兩線價格不能互相推算。<br>
+      ※ <b>亞洲線主碼多一位包裝碼</b>：CQN <u>5</u>1MA 的 5＝已組裝、<u>6</u>＝KD 自行組裝、<u>2</u>＝雙入箱（兩張一箱）。美國線主碼沒有這一位，CQN51 的 5 是產品家族碼。高腳椅（CQN79／CQND79）兩線都沒有包裝碼。<br>
+      ※ <b>Setu 的底座加價邏輯跟其他款相反</b>：L7 銀合金是加價零元的標準值，G1 石墨灰反而 +$50、5Y 半拋光 +$90。報價時可以強調標準配置就已經是金屬底座。<br>
+      ※ <b>全身同色版的腳輪加價是負的</b>：CQND5／CQND7 的 HCC 與 X8 顯示 -$45，代表同色機種基準價已內含較高階腳輪，報價結構與標準版不同。<br>
+      ※ <b>Bumper 緩衝件只能裝懸吊材料版（M）</b>，包覆布面版（F）不能裝；緩衝件顏色跟著織網色走。<br>
+      ※ <b>抗菌做在框架色代碼裡</b>（MG1／MCR／MVR／M98，同色版 MR1／MN2／MB3），不是獨立加購項目。<br>
+      ※ <b>F 包覆布面版僅美國線供應</b>，加 $393 起再依布料級距加價（多用途椅最高 J 級 +$468、Cat 10 +$656）；高腳椅的 B、C 兩級距價格與多用途椅不同（B $82／C $112，多用途椅為 $108／$126）。實際布號請另查 textiles 清單對應級距。<br>
+      ※ <b>包裝方式</b>：Setu 是兩張一箱的雙入包裝，這在 Herman Miller 所有椅款裡是唯一的。訂奇數才會多出一箱 KD 自行組裝版，倉儲估位與配送務必先確認。<br>
+      ※ 定價皆為美金 USD、未稅、未含運費；台幣換算僅供內部參考（500 進位），不得直接對客報價。
+    </div></details>
+
+  </div><!-- /product-setu -->
+
 </div><!-- /container -->
 
 <script>
@@ -1927,7 +2126,7 @@ const AERON_STEPS = [
   { key:'base',   step:'Step 11', label:'底座顏色 Base Finish',
     options:{ 'G1':{desc:'Graphite (CP) 石墨黑',price:0},'CD':{desc:'Polished aluminum 拋光鋁',price:250},'DCR':{desc:'Dark carbon 深碳黑',price:0},'SNC':{desc:'Satin carbon 緞面碳黑',price:80},'DVP':{desc:'Dark mineral 深礦石灰',price:0},'SNA':{desc:'Satin aluminum 緞面鋁',price:150},'BK':{desc:'Black 黑色',price:0},'BLX':{desc:'Onyx ultra matte 極黑啞光',price:150},'DN2':{desc:'Nightfall 暮藍',price:150},'DJ2':{desc:'Jasper 碧玉綠',price:150} } },
   { key:'caster', step:'Step 12', label:'輪子 Casters/Glides',
-    options:{ 'BB':{desc:'2½" Hard caster, carpet only 硬輪（地毯專用）',price:0},'GF':{desc:'2½" Glide 腳墊（硬地/地毯）',price:25},'C7':{desc:'2½" Soft caster, hard floors or carpet 軟輪（硬地/地毯）',price:50},'DC1':{desc:'2½" Braking caster 制動軟輪（靜音）',price:75} } },
+    options:{ 'BB':{desc:'2½" Hard caster 硬質尼龍輪（僅地毯）',price:0},'GF':{desc:'2½" Glide 腳墊（硬地板或地毯）',price:25},'C7':{desc:'2½" Soft caster 軟質 PU 輪面（硬地板或地毯）',price:50},'DC1':{desc:'2½" Braking caster 煞車輪・靜音滾動（硬地板或地毯）',price:75} } },
   { key:'armpadFinish', step:'Step 13', label:'扶手墊顏色 Armpad Finish',
     options:{
       'BK':{desc:'Black 黑色 — 隨 Graphite(G1) / Onyx(BK) 框架',price:0},
@@ -2827,19 +3026,19 @@ const COSM_US_PRICING = {
     "5Y":  { name: "semi-polished 拋光（通用）", price: 160, allowedFrames: "ANY" }
   },
   castersStandard: {
-    "BKS": { name: "65mm 靜音腳輪（地毯專用）", price: 0 },
-    "GF":  { name: "65mm glides（硬地或地毯）", price: 25 },
-    "SC8": { name: "65mm 靜音腳輪（硬地或地毯）", price: 50 },
-    "OC":  { name: "65mm 中阻力靜音腳輪", price: 55 }
+    "BKS": { name: "65mm 靜音腳輪（僅地毯）", price: 0 },
+    "GF":  { name: "65mm Glide 腳墊（硬地板或地毯）", price: 25 },
+    "SC8": { name: "65mm 靜音腳輪（硬地板或地毯）", price: 50 },
+    "OC":  { name: "65mm 中阻力靜音腳輪（硬地板或地毯）", price: 55 }
   },
   castersDIC: {
-    "BKS": { name: "65mm 靜音腳輪（地毯專用）", price: -55 },
-    "GF":  { name: "65mm glides（硬地或地毯）", price: -30 },
-    "SC8": { name: "65mm 靜音腳輪（硬地或地毯）", price: -5 },
-    "OC":  { name: "65mm 中阻力靜音腳輪", price: 0 },
-    "O2N": { name: "65mm nightfall 色腳輪", price: 0 },
-    "O2B": { name: "65mm glacier 色腳輪", price: 0 },
-    "O2R": { name: "65mm canyon 色腳輪", price: 0 }
+    "BKS": { name: "65mm 靜音腳輪（僅地毯）", price: -55 },
+    "GF":  { name: "65mm Glide 腳墊（硬地板或地毯）", price: -30 },
+    "SC8": { name: "65mm 靜音腳輪（硬地板或地毯）", price: -5 },
+    "OC":  { name: "65mm 中阻力靜音腳輪（硬地板或地毯）", price: 0 },
+    "O2N": { name: "65mm Nightfall 色靜音腳輪（硬地板或地毯）", price: 0 },
+    "O2B": { name: "65mm Glacier 色靜音腳輪（硬地板或地毯）", price: 0 },
+    "O2R": { name: "65mm Canyon 色靜音腳輪（硬地板或地毯）", price: 0 }
   },
   armpadStandard: {
     "BK":  { name: "black（黑色扶墊）", price: 0 },
@@ -3994,10 +4193,10 @@ function saylRecalc() {
 
   // Step 10: Castors
   if (caster === 'C7') {
-    rows.push({step:'Step 10', code:'C7', desc:'65mm castors hard floor/carpet 硬地或地毯', sub:'輪子', price:51});
+    rows.push({step:'Step 10', code:'C7', desc:'65mm castors 軟質 PU 輪面（硬地板或地毯）', sub:'輪子', price:51});
     total += 51;
   } else {
-    rows.push({step:'Step 10', code:'BB', desc:'65mm castors carpet 地毯專用（標準）', sub:'輪子', price:0});
+    rows.push({step:'Step 10', code:'BB', desc:'65mm castors 硬質尼龍輪（僅地毯・標準）', sub:'輪子', price:0});
   }
 
   // Step 11: Suspension finish
@@ -4083,8 +4282,8 @@ function saylRenderFeatureDetails(cfg) {
     : 'No additional support — 標準 PostureFit® 骨盆支撐（直接內建於網背強度結構，提供下背低點針對性支撐）';
 
   const casterDesc = cfg.caster === 'C7'
-    ? 'C7 — 65mm 軟質聚氨酯腳輪，適用硬地板與地毯（混合地材辦公空間）'
-    : 'BB — 65mm 硬質尼龍腳輪，地毯專用（純地毯空間）';
+    ? 'C7 — 65mm 軟質聚氨酯輪面，硬地板或地毯均可（含木質地板，實木建議搭配地墊）'
+    : 'BB — 65mm 硬質尼龍輪，僅限地毯，不可用於硬地板與木質地板';
 
   const frameDesc = `${saylSelectedFrame.code} — ${saylSelectedFrame.name}（${saylSelectedFrame.desc}）`;
   const suspDesc = `${saylSelectedSusp.code} — ${saylSelectedSusp.name}（${saylSelectedSusp.desc}）`;
@@ -4401,11 +4600,11 @@ function mirraCalc() {
 
   // === 11. Step 17 Castors / glides ===
   const casterLabel = {
-    'BB':'BB 65mm 地毯專用',
-    'GF':'GF 65mm Glide 滑墊',
-    'C7':'C7 65mm 硬地/地毯',
-    'C9':'C9 65mm 煞車',
-    'SC8':'SC8 65mm 靜音'
+    'BB':'BB 65mm 硬輪（僅地毯）',
+    'GF':'GF 65mm Glide 腳墊（硬地板或地毯）',
+    'C7':'C7 65mm 軟輪（硬地板或地毯）',
+    'C9':'C9 65mm 煞車輪（硬地板或地毯）',
+    'SC8':'SC8 65mm 靜音輪（硬地板或地毯）'
   }[caster];
   const casterPrice = MIRRA_CASTER_INCR[caster];
   rows.push({ step:'Step 17', code:caster, desc:`輪子 Castors: ${casterLabel}`, price:casterPrice });
@@ -4469,11 +4668,11 @@ function mirraRenderFeatureList() {
   const backDesc = back === 'F' ? 'Butterfly™ 蝴蝶背（聚合物殼+布料融合，最高舒適度）' : 'TriFlex™ 100% 聚合物背（無布料、易清潔，符合嚴格清潔規範）';
   const supportDesc = { 'SZS':'Basic back support 基本支撐（含 PostureFit® 骶部支撐）', 'N2':'Non-adjustable 固定腰靠（含 PostureFit）', 'AJ':'Adjustable lumbar 可調腰靠（高度 114mm／深度 25mm 範圍）' }[support];
   const casterDesc = {
-    'BB':'BB 65mm 硬輪／地毯專用',
-    'GF':'GF 65mm Glide 滑墊／硬地或地毯',
-    'C7':'C7 65mm 軟輪／硬地或地毯',
-    'C9':'C9 65mm 煞車輪／硬地或地毯',
-    'SC8':'SC8 65mm 靜音輪／硬地或地毯（quiet roll technology）'
+    'BB':'BB 65mm 硬質尼龍輪／僅地毯，不可用於硬地板與木質地板',
+    'GF':'GF 65mm Glide 腳墊／硬地板或地毯',
+    'C7':'C7 65mm 軟質 PU 輪面／硬地板或地毯（含木質地板）',
+    'C9':'C9 65mm 煞車輪／硬地板或地毯（含木質地板）',
+    'SC8':'SC8 65mm 靜音輪／硬地板或地毯（quiet roll technology）'
   }[caster];
 
   document.getElementById('mirraFeatureBody').innerHTML = `
@@ -4961,8 +5160,8 @@ function renderChairChips(){
 
 function chairBreakdown(c){
   var glideTxt = c.hasGlide
-    ? '滑輪(硬地/地毯)或腳墊 GD 二選一,均 +$0;選 4／42 系列即為腳墊版。<small> Casters or 1/2" glides, both +$0.</small>'
-    : '軟/硬雙輪滑輪,硬地或地毯適用,均 +$0。<small> Double-wheel casters, hard floor or carpet, +$0.</small>';
+    ? '滑輪或腳墊 GD 二選一,均 +$0;選 4／42 系列即為腳墊版。軟輪 BSC／MD 硬地板或地毯皆可,硬輪 UD／VD 僅限地毯;腳墊 GD 硬地板或地毯皆可。<small> Casters or 1/2" glides, both +$0.</small>'
+    : '雙輪滑輪,均 +$0。軟輪 BSC／MD 硬地板或地毯皆可,硬輪 UD／VD 僅限地毯,不可用於磁磚或木質地板。<small> Double-wheel casters, +$0.</small>';
   var apRow = (c.armpad && c.armpad.length)
     ? '<div class="bk-row"><div class="bk-part">扶手墊布<small>Arm Pad Fabric</small></div><div class="bk-desc">僅「扶手含墊」版需選,皮革材質。Cat 11 +$0、Cat R +$10。<small> Leather only; not COM/COL.</small></div></div>'
     : '';
@@ -5248,7 +5447,7 @@ function chairPasteEx(x){ var e=document.getElementById("chPasteInput"); e.value
 const EMB_BASE=2361, EMB_MODEL="CN122AWAA", EMB_FAB_ADD=147;
 const EMB_BF=[["G1","石墨灰 Graphite (CP)",0],["XT","鈦金 Titanium",40],["CD","拋光鋁 Polished Aluminum",300]];
 const EMB_FF=[["G1","石墨灰 Graphite (CP)",0],["91","白 White (CP)",45],["MG1","石墨灰＋MicrobeCare 抗菌",70],["M91","白＋MicrobeCare 抗菌",115]];
-const EMB_CA=[["BB","2.5吋 硬輪・黑軛・僅地毯",0],["C7","2.5吋 輪・黑軛・硬地或地毯",50],["C9","2.5吋 煞車輪・黑軛・硬地或地毯",50],["H9","2.5吋 透明輪・硬地或地毯",70]];
+const EMB_CA=[["BB","2.5吋 硬質尼龍輪・黑軛・僅地毯",0],["C7","2.5吋 軟質 PU 輪面・黑軛・硬地板或地毯",50],["C9","2.5吋 煞車輪・黑軛・硬地板或地毯",50],["H9","2.5吋 透明聚碳酸酯輪・僅地毯（不可用於硬地板）",70]];
 const EMB_SYNC=[["3SY12","Black","102f854c-e0a6-4bb1-83b4-4706f4e4ae93"],["3SY03","Canyon","3c58bc22-26f2-46ae-83a3-1df7343fa3d3"],["3SY11","Dark Carbon","b94ed8cc-8870-448d-ba60-9f9a09abfd9c"],["3SY09","Dark Mineral","81d139d4-051d-4576-bb32-03ac649cc4a4"],["3SY06","Everglade","80016b90-f128-4e2d-9417-afa550966560"],["3SY08","Nightfall","529a48e2-75db-408a-8778-fdcdf9a053d9"],["3SY01","Pine Cone","1ab365c6-60e7-4a40-992d-c636b1ab1c3c"],["3SY10","Slate Grey","f464658a-8a65-4717-a7ea-8d013b17cda2"],["3SY04","Truffle","17b9385b-86f3-4796-852e-bd56bc755664"]];
 let embSyncIdx=0;
 function embF(n){ return "$"+n.toLocaleString("en-US"); }
@@ -5364,10 +5563,10 @@ const VERUS_TRIFLEX = {
   '98':{desc:'Studio white 白', lead:30, hex:'#ededea'}, DVP:{desc:'Dark mineral 深礦灰', lead:30, hex:'#6a6a68'}, DCR:{desc:'Dark carbon 深碳黑', lead:30, hex:'#333336'}
 };
 const VERUS_CASTER = {
-  BB:{desc:'2½" 硬輪，僅地毯 Hard caster, carpet only', inc:0, lead:20},
-  GF:{desc:'2½" 腳墊，硬地/地毯 Glide', inc:13, lead:20},
-  C7:{desc:'2½" 軟輪，硬地/地毯 Caster', inc:10, lead:20},
-  C9:{desc:'2½" 制動輪，硬地/地毯 Braking caster', inc:23, lead:20}
+  BB:{desc:'2½" 硬質尼龍輪，僅地毯 Hard caster, carpet only', inc:0, lead:20},
+  GF:{desc:'2½" Glide 腳墊，硬地板或地毯', inc:13, lead:20},
+  C7:{desc:'2½" 軟質 PU 輪面，硬地板或地毯', inc:10, lead:20},
+  C9:{desc:'2½" 煞車輪，硬地板或地毯', inc:23, lead:20}
 };
 const VERUS_FABRIC = {
   '1HA':{name:'Medley', lead:20, band:2, colors:{
@@ -5686,6 +5885,458 @@ function verusClearPaste(){ document.getElementById('verusModelInput').value='';
 
 // ---- init ----
 verusBuildManualUI();
+
+// =========================================================
+// SETU — 美國線 PB_SET (4/26) 累加法 ＋ 亞洲線 80-day Asia (2026) 查表法
+// =========================================================
+function switchSetuTab(id){
+  document.querySelectorAll('#product-setu .tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#product-setu .tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('setu-tab-'+id).classList.add('active');
+  document.querySelectorAll('#product-setu .tab-btn').forEach(b=>{ if(b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active'); });
+}
+
+// ---- 機種 ----
+const SETU_MODELS = {
+  'CQN5' :{n:'Setu 多用途椅（標準版）', en:'Setu Multipurpose Chair, Refresh', stool:false, dic:false},
+  'CQND5':{n:'Setu 多用途椅（全身同色）', en:'Setu Multipurpose Chair, Dipped in Color', stool:false, dic:true},
+  'CQN7' :{n:'Setu 高腳椅（標準版）', en:'Setu Stool, Refresh', stool:true, dic:false},
+  'CQND7':{n:'Setu 高腳椅（全身同色）', en:'Setu Stool, Dipped in Color', stool:true, dic:true}
+};
+const SETU_BASETYPE = {
+  '1':'5 星底座／標準行程（座高 15.7"-21.7"）',
+  '2':'5 星底座／高行程',
+  '3':'4 星底座／可旋轉、高度固定（座高不可調）',
+  '9':'5 星底座／高腳椅行程（座高 26.1"-33.6"）'
+};
+const SETU_PKG = { '5':'5 已組裝出貨', '6':'6 KD 自行組裝', '2':'2 雙入箱（兩張一箱）' };
+
+// ---- 美國線基價（Step 2）----
+const SETU_US_BASE = {
+  'CQN5' :{'1':1307,'2':1307,'3':1263},
+  'CQND5':{'1':1462,'2':1462,'3':1420},
+  'CQN7' :{'9':1901},
+  'CQND7':{'9':2056}
+};
+// ---- 亞洲線列價（含扶手，查表）----
+const SETU_ASIA_LIST = {
+  'CQN5' :{'1':{A:1397,N:1285},'2':{A:1397,N:1285},'3':{A:1354,N:1242}},
+  'CQND5':{'1':{A:1550,N:1438},'2':{A:1550,N:1438},'3':{A:1508,N:1396}},
+  'CQN7' :{'9':{A:1981,N:1870}},
+  'CQND7':{'9':{A:2134,N:2022}}
+};
+
+const SETU_MAT = {
+  'M':{n:'M　Intercept 懸吊材料座背（標準，附 Bumper 緩衝邊）', p:0},
+  'F':{n:'F　包覆布面座背（底層加 C-Layer 支撐，不可裝 Bumper）', p:393}
+};
+const SETU_ARMS = { 'N':{n:'N　無扶手（整體寬 19"）', p:0}, 'A':{n:'A　Ribbon Arms 緞帶扶手（固定式，整體寬 25.1"）', p:114} };
+
+const SETU_FRAME_STD = {
+  'G1' :{n:'G1　Graphite 石墨灰', p:0,   hex:'#3f4043'},
+  'CRB':{n:'CRB　Carbon 碳灰',    p:30,  hex:'#2a2c2e'},
+  'VPR':{n:'VPR　Mineral 礦石灰', p:30,  hex:'#b9b3a6'},
+  '98' :{n:'98　Studio White 純白',p:85, hex:'#eceae5'},
+  'MG1':{n:'MG1　石墨灰＋MicrobeCare 抗菌', p:70,  hex:'#3f4043'},
+  'MCR':{n:'MCR　碳灰＋MicrobeCare 抗菌',   p:100, hex:'#2a2c2e'},
+  'MVR':{n:'MVR　礦石灰＋MicrobeCare 抗菌', p:100, hex:'#b9b3a6'},
+  'M98':{n:'M98　純白＋MicrobeCare 抗菌',   p:155, hex:'#eceae5'}
+};
+const SETU_FRAME_DIC = {
+  'DR1':{n:'DR1　Canyon 峽谷橘',   p:0,  hex:'#b5563a'},
+  'DN2':{n:'DN2　Nightfall 午夜藍',p:0,  hex:'#2e3a4d'},
+  'DB3':{n:'DB3　Glacier 冰河藍',  p:0,  hex:'#a8bcc7'},
+  'MR1':{n:'MR1　峽谷橘＋MicrobeCare 抗菌',  p:70, hex:'#b5563a'},
+  'MN2':{n:'MN2　午夜藍＋MicrobeCare 抗菌',  p:70, hex:'#2e3a4d'},
+  'MB3':{n:'MB3　冰河藍＋MicrobeCare 抗菌',  p:70, hex:'#a8bcc7'}
+};
+const SETU_FRAME_ROOT = {MG1:'G1',MCR:'CRB',MVR:'VPR',M98:'98',MR1:'DR1',MN2:'DN2',MB3:'DB3'};
+function _setuRoot(f){ return SETU_FRAME_ROOT[f] || f; }
+
+// ---- 織網（Intercept 懸吊材料）色卡 ----
+const SETU_MESH = {
+  '84501':{en:'Graphite',  zh:'石墨灰', hex:'#3f4043', d:'最耐髒、最百搭的一色，門市主力。深灰帶暖調，不像純黑那麼硬。'},
+  '84502':{en:'Carbon',    zh:'碳灰',   hex:'#2a2c2e', d:'比石墨灰再深一階，接近純黑。深色系空間或想低調時用。'},
+  '84503':{en:'Mineral',   zh:'礦石灰', hex:'#b9b3a6', d:'淺暖灰。空間顯亮，但淺色最容易看到髒污與染色轉移，深色牛仔褲客戶要先提醒。'},
+  '84504':{en:'Nightfall', zh:'午夜藍', hex:'#2e3a4d', d:'深藍。標準版就可以選，不必買全身同色版；與 DN2 框架同色系。'},
+  '84505':{en:'Glacier',   zh:'冰河藍', hex:'#a8bcc7', d:'淺藍灰。清爽但屬淺色系，染色轉移風險與 Mineral 同級。'},
+  '84506':{en:'Canyon',    zh:'峽谷橘', hex:'#b5563a', d:'磚橘色，跳色首選。想要一點顏色又不想整台換色時，只換織網最划算。'},
+  '84507':{en:'Cocoa',     zh:'可可棕', hex:'#6b5347', d:'棕色。織網有這色，但全身同色框架沒有對應色，只能配標準框架色。'}
+};
+
+// ---- 布料價格級距（僅美國線 F 版）----
+const SETU_FAB_CHAIR = {'1':0,'2':24,'3':54,'4':78,'5':102,'7':222,'8':293,'9':545,'10':656,'B':108,'C':126,'D':153,'F':180,'H':324,'I':390,'J':468};
+const SETU_FAB_STOOL = {'1':0,'2':24,'3':54,'4':78,'5':102,'7':222,'8':293,'9':545,'10':656,'B':82, 'C':112,'D':153,'F':180,'H':324,'I':390,'J':468};
+
+// ---- 腳輪／滑座 ----
+const SETU_CASTER_NAME = {
+  HCC:'HCC　2 1/2" 低滾動阻力腳輪、黑輪架（硬地板／地毯皆可）',
+  OC :'OC　2 1/2" 中滾動阻力靜音腳輪、黑輪架（硬地板／地毯皆可）',
+  C9 :'C9　2 1/2" 煞車腳輪、黑輪架（人離座時制動，硬地板／地毯皆可）',
+  X8 :'X8　低背式滑座（硬地板／地毯皆可，四星底座專用）',
+  LSC:'LSC　低滾動阻力＋內建煞車腳輪（硬地板／地毯皆可）',
+  O2R:'O2R　2 1/2" 靜音腳輪、峽谷橘同色',
+  O2N:'O2N　2 1/2" 靜音腳輪、午夜藍同色',
+  O2B:'O2B　2 1/2" 靜音腳輪、冰河藍同色'
+};
+function setuCasters(line, model, bt, frameRoot){
+  const M=SETU_MODELS[model], out={}, add=(c,p)=>{ out[c]={n:SETU_CASTER_NAME[c], p:p}; };
+  const dicMatch=()=>{ if(frameRoot==='DR1')add('O2R',0); if(frameRoot==='DN2')add('O2N',0); if(frameRoot==='DB3')add('O2B',0); };
+  const fourStar = (!M.stool && bt==='3');
+  if(line==='us'){
+    if(!M.dic){
+      if(M.stool){ add('HCC',0); add('OC',45); add('C9',50); add('X8',0); }
+      else if(fourStar){ add('X8',0); }
+      else { add('HCC',0); add('OC',45); add('C9',50); }
+    } else {
+      if(fourStar){ add('X8',-45); }
+      else { add('HCC',-45); add('OC',0); dicMatch(); add('C9',5); if(M.stool) add('X8',-45); }
+    }
+  } else {
+    if(!M.dic){
+      if(M.stool){ add('HCC',0); add('C9',50); add('X8',0); }
+      else if(fourStar){ add('X8',0); }
+      else { add('HCC',0); add('C9',50); add('LSC',0); }
+    } else {
+      if(fourStar){ add('X8',-45); }
+      else { add('HCC',-45); dicMatch(); add('C9',5); add('LSC',-45); if(M.stool) add('X8',-45); }
+    }
+  }
+  return out;
+}
+// ---- 底座色 ----
+function setuBases(model, frameRoot){
+  if(!SETU_MODELS[model].dic) return {
+    'L7':{n:'L7　Silver Alloy 銀合金（Setu 標準底座，加價 0）', p:0},
+    'G1':{n:'G1　Graphite 石墨灰', p:50},
+    '5Y':{n:'5Y　Semi-Polished 半拋光', p:90}
+  };
+  const nm={DR1:'DR1　Canyon 峽谷橘',DN2:'DN2　Nightfall 午夜藍',DB3:'DB3　Glacier 冰河藍'};
+  const o={}; o[frameRoot]={n:nm[frameRoot]+'（必須同框架色）', p:0}; o['5Y']={n:'5Y　Semi-Polished 半拋光', p:90};
+  return o;
+}
+// ---- 柱身色（限高腳椅）----
+function setuColumns(line, model, frameRoot){
+  if(model==='CQND7'){ const nm={DR1:'DR1　Canyon 峽谷橘',DN2:'DN2　Nightfall 午夜藍',DB3:'DB3　Glacier 冰河藍'};
+    const o={}; o[frameRoot]={n:nm[frameRoot]+'（必須同框架色）', p:0}; return o; }
+  const nm={'G1':'G1　Graphite 石墨灰','98':'98　Studio White 純白','BK':'BK　Black 黑'};
+  if(line==='us'){ const map={'G1':'G1','98':'98','CRB':'BK','VPR':'BK'}; const c=map[frameRoot]||'BK';
+    const o={}; o[c]={n:nm[c]+'（美國線規定：柱身色須對應框架色）', p:0}; return o; }
+  return {'98':{n:nm['98'],p:0},'G1':{n:nm['G1'],p:0},'BK':{n:nm['BK'],p:0}};
+}
+
+// ---- 狀態 ----
+const SETU_S = { line:'us', model:'CQN5', pkg:'5', bt:'1', mat:'M', arms:'A',
+                 frame:'G1', column:'', base:'L7', caster:'HCC', mesh:'84501', fab:'1' };
+
+function setuSetLine(l){ SETU_S.line=l;
+  document.getElementById('setuPillUs').classList.toggle('active', l==='us');
+  document.getElementById('setuPillAsia').classList.toggle('active', l==='asia');
+  setuBuildUI(); setuCalcManual(); }
+
+function _setuFrameTable(model){ return SETU_MODELS[model].dic ? SETU_FRAME_DIC : SETU_FRAME_STD; }
+
+// 依目前狀態把不合法的值收斂回合法值
+function setuNormalize(){
+  const S=SETU_S, M=SETU_MODELS[S.model];
+  if(M.stool) S.bt='9'; else if(S.bt==='9') S.bt='1';
+  if(M.dic || S.line==='asia') S.mat='M';
+  const FT=_setuFrameTable(S.model); if(!FT[S.frame]) S.frame = M.dic?'DR1':'G1';
+  const root=_setuRoot(S.frame);
+  const BS=setuBases(S.model, root); if(!BS[S.base]) S.base=Object.keys(BS)[0];
+  if(M.stool){ const CO=setuColumns(S.line,S.model,root); if(!CO[S.column]) S.column=Object.keys(CO)[0]; } else S.column='';
+  const CA=setuCasters(S.line,S.model,S.bt,root); if(!CA[S.caster]) S.caster=Object.keys(CA)[0];
+  if(M.stool) S.pkg='5';
+  if(!SETU_MESH[S.mesh]) S.mesh='84501';
+}
+
+const SETU_FRAME_ORD_STD=['G1','CRB','VPR','98','MG1','MCR','MVR','M98'];
+const SETU_FRAME_ORD_DIC=['DR1','DN2','DB3','MR1','MN2','MB3'];
+function _setuOrder(opts){
+  const k=Object.keys(opts);
+  if(k.indexOf('MG1')>=0) return SETU_FRAME_ORD_STD.filter(x=>opts[x]);
+  if(k.indexOf('MR1')>=0) return SETU_FRAME_ORD_DIC.filter(x=>opts[x]);
+  return k;
+}
+function _setuSel(id,label,step,opts,cur,fmt){
+  let h='<div class="config-item"><div class="config-item-label">'+label+' <span class="config-item-step">'+step+'</span></div><select class="config-select" id="'+id+'" onchange="setuOnChange()">';
+  _setuOrder(opts).forEach(k=>{ const o=opts[k]; const inc=(typeof o.p==='number')?(o.p===0?'　＋$0':(o.p>0?'　＋$'+o.p:'　－$'+Math.abs(o.p))):'';
+    h+='<option value="'+k+'"'+(k===cur?' selected':'')+'>'+(fmt?fmt(k,o):o.n)+(fmt?'':inc)+'</option>'; });
+  return h+'</select></div>';
+}
+
+function setuBuildUI(){
+  setuNormalize();
+  const S=SETU_S, M=SETU_MODELS[S.model], root=_setuRoot(S.frame), us=(S.line==='us');
+  let h='';
+  // 機種
+  const mo={}; Object.keys(SETU_MODELS).forEach(k=>{ mo[k]={n:k+'　'+SETU_MODELS[k].n}; });
+  h+=_setuSel('setuModel','機種 Model','Step 1',mo,S.model,(k,o)=>o.n);
+  // 底座型式
+  const bo={}; (M.stool?['9']:['1','2','3']).forEach(k=>{ bo[k]={n:k+'　'+SETU_BASETYPE[k]}; });
+  h+=_setuSel('setuBt','底座型式／高度 Base Type','Step 2',bo,S.bt,(k,o)=>o.n);
+  // 包裝（亞洲線、非高腳椅）
+  if(!us && !M.stool){ const po={}; Object.keys(SETU_PKG).forEach(k=>{ po[k]={n:SETU_PKG[k]}; });
+    h+=_setuSel('setuPkg','包裝碼 Packaging（亞洲線專有）','Step 2b',po,S.pkg,(k,o)=>o.n); }
+  // 座背材料
+  const mt={}; mt['M']=SETU_MAT['M']; if(us && !M.dic) mt['F']=SETU_MAT['F'];
+  h+=_setuSel('setuMat','座背材料 Seat／Back','Step 3',mt,S.mat);
+  // 扶手
+  h+=_setuSel('setuArms','扶手 Arms','Step 4',SETU_ARMS,S.arms);
+  // 框架色
+  h+=_setuSel('setuFrame','框架色 Frame Finish','Step 5',_setuFrameTable(S.model),S.frame);
+  // 柱身色
+  if(M.stool) h+=_setuSel('setuColumn','柱身色 Column Finish','Step 6',setuColumns(S.line,S.model,root),S.column);
+  // 底座色
+  h+=_setuSel('setuBase','底座色 Base Finish',M.stool?'Step 7':'Step 6',setuBases(S.model,root),S.base);
+  // 腳輪
+  h+=_setuSel('setuCaster','腳輪／滑座 Casters / Glides',M.stool?'Step 8':'Step 7',setuCasters(S.line,S.model,S.bt,root),S.caster);
+  // 織網 or 布料
+  if(S.mat==='M'){
+    h+='<div class="config-item sw-box"><div class="config-item-label">織網色 Intercept 懸吊材料 <span class="config-item-step">'+(M.stool?'Step 9':'Step 8')+'</span>　<span style="font-weight:400;color:var(--text-muted);font-size:11px;">全部 ＋$0，任一色可搭任一框架色</span></div><div class="sw-grid">';
+    Object.keys(SETU_MESH).forEach(c=>{ const d=SETU_MESH[c];
+      h+='<div class="sw-chip'+(c===S.mesh?' active':'')+'" onclick="setuPickMesh(\''+c+'\')"><span class="dot" style="background:'+d.hex+'"></span><span class="cd">'+c+'</span><span class="nm">'+d.en+'　'+d.zh+'</span><span class="ds">'+d.d+'</span></div>'; });
+    h+='</div><div style="font-size:11px;color:var(--text-muted);margin-top:5px;">色塊為螢幕近似色<span class="grade grade-inf">推論</span>，對客確認顏色請以實體色卡為準。</div></div>';
+  } else {
+    const tbl = M.stool?SETU_FAB_STOOL:SETU_FAB_CHAIR; const fo={};
+    Object.keys(tbl).forEach(k=>{ fo[k]={n:'Price Category '+k, p:tbl[k]}; });
+    h+='<div class="config-item sw-box">'+_setuSel('setuFab','包覆布料價格級距 Upholstery Price Category',(M.stool?'Step 9':'Step 8'),fo,S.fab)
+      +'<div style="font-size:11px;color:var(--text-muted);margin-top:5px;">F 版本身已加 $393，這裡再依布料級距加價。實際布號請另查 textiles 清單對應級距後填入型號末碼。</div></div>';
+  }
+  document.getElementById('setuConfigGrid').innerHTML=h;
+}
+function setuPickMesh(c){ SETU_S.mesh=c; setuBuildUI(); setuCalcManual(); }
+function setuOnChange(){
+  const g=id=>{ const e=document.getElementById(id); return e?e.value:null; };
+  const S=SETU_S;
+  S.model=g('setuModel')||S.model; S.bt=g('setuBt')||S.bt; S.pkg=g('setuPkg')||S.pkg;
+  S.mat=g('setuMat')||S.mat; S.arms=g('setuArms')||S.arms; S.frame=g('setuFrame')||S.frame;
+  const c=g('setuColumn'); if(c) S.column=c;
+  S.base=g('setuBase')||S.base; S.caster=g('setuCaster')||S.caster; S.fab=g('setuFab')||S.fab;
+  setuBuildUI(); setuCalcManual();
+}
+
+// ---- 核心計算 ----
+function setuCompute(line, v){
+  const M=SETU_MODELS[v.model]; if(!M) return {err:'機種代碼無法辨識'};
+  const notes=[], rows=[]; let total=0;
+  const root=_setuRoot(v.frame);
+  const bt = M.stool?'9':v.bt;
+  const push=(step,code,desc,sub,price)=>{ rows.push({step:step,code:code,desc:desc,sub:sub,price:price}); total+=price; };
+
+  if(line==='asia' && v.mat==='F') return {err:'亞洲線 80-day Asia 目錄的 Setu 只供應 M 懸吊材料版，沒有 F 包覆布面版。布面版需走美國線進口。'};
+
+  // 基價
+  if(line==='us'){
+    const bp=(SETU_US_BASE[v.model]||{})[bt];
+    if(bp===undefined) return {err:'美國線查無此底座型式：'+bt};
+    push('Step 2', v.model+bt, SETU_BASETYPE[bt], '基價 Base Price', bp);
+    push('Step 3', v.mat, SETU_MAT[v.mat].n, '座背材料', SETU_MAT[v.mat].p);
+    push('Step 4', v.arms, SETU_ARMS[v.arms].n, '扶手', SETU_ARMS[v.arms].p);
+  } else {
+    const rec=(SETU_ASIA_LIST[v.model]||{})[bt];
+    if(!rec) return {err:'亞洲線查無此底座型式：'+bt};
+    const lp=rec[v.arms];
+    push('列價', v.model+bt+'M'+v.arms, SETU_BASETYPE[bt]+'　'+SETU_ARMS[v.arms].n, '亞洲線列價（已含扶手與懸吊材料）', lp);
+  }
+  // 框架
+  const FT=_setuFrameTable(v.model); const fo=FT[v.frame];
+  if(!fo) return {err:'框架色代碼「'+v.frame+'」不適用於 '+v.model};
+  push('Step 5', v.frame, fo.n, '框架色', fo.p);
+  // 柱身
+  if(M.stool){
+    const CO=setuColumns(line,v.model,root); let col=v.column;
+    if(!CO[col]){ const fb=Object.keys(CO)[0]; notes.push('柱身色「'+(col||'未指定')+'」在'+(line==='us'?'美國線':'亞洲線')+'不適用，已改用 '+fb+'。'); col=fb; }
+    push('Step 6', col, CO[col].n, '柱身色', CO[col].p);
+    v._col=col;
+  }
+  // 底座
+  const BS=setuBases(v.model, root); let bs=v.base;
+  if(!BS[bs]){ const fb=Object.keys(BS)[0]; notes.push('底座色「'+bs+'」不適用於此框架色，已改用 '+fb+'。'); bs=fb; }
+  push(M.stool?'Step 7':'Step 6', bs, BS[bs].n, '底座色', BS[bs].p);
+  v._base=bs;
+  // 腳輪
+  const CA=setuCasters(line, v.model, bt, root); let ca=v.caster;
+  if(!CA[ca]){ const fb=Object.keys(CA)[0];
+    notes.push('腳輪／滑座「'+ca+'」在'+(line==='us'?'美國線 PB_SET':'亞洲線 80-day')+'的此機種不供應，已改用 '+fb+'。'); ca=fb; }
+  push(M.stool?'Step 8':'Step 7', ca, CA[ca].n, '腳輪／滑座', CA[ca].p);
+  v._caster=ca;
+  // 材料
+  if(v.mat==='M'){
+    const d=SETU_MESH[v.mesh]||SETU_MESH['84501'];
+    push(M.stool?'Step 9':'Step 8', v.mesh, d.en+'　'+d.zh+'（Intercept 懸吊材料 Price Category 1）', '織網色', 0);
+  } else {
+    const tbl=M.stool?SETU_FAB_STOOL:SETU_FAB_CHAIR; const p=tbl[v.fab];
+    if(p===undefined) return {err:'布料級距「'+v.fab+'」無效'};
+    push(M.stool?'Step 9':'Step 8', 'Cat '+v.fab, '包覆布料 Price Category '+v.fab+'（布號待填）', '布料級距', p);
+  }
+  // 型號
+  let main;
+  if(line==='us') main = v.model + bt + v.mat + v.arms;
+  else main = (M.dic?'CQND':'CQN') + (M.stool ? '7'+bt : v.pkg+bt) + 'M' + v.arms;
+  const tail=[v.frame]; if(M.stool) tail.push(v._col); tail.push(v._base, v._caster);
+  tail.push(v.mat==='M' ? v.mesh : '[布號 Cat'+v.fab+']');
+  if(line==='asia') rows.forEach((r,i)=>{ if(i>0) r.step='增額'; });
+  return {ok:true, total:total, rows:rows, notes:notes, code:(main+' '+tail.join(' '))};
+}
+
+// ---- 結果渲染 ----
+function setuFmtPrice(p){
+  if(p===0) return '<span class="price-zero">＋$0</span>';
+  if(p>0)   return '<span class="price-add">＋$'+p.toLocaleString()+'</span>';
+  return '<span class="price-minus">－$'+Math.abs(p).toLocaleString()+'</span>';
+}
+function setuTable(res, line){
+  const cls = line==='us'?'us-h':'asia-h', tcls = line==='us'?'us-total':'asia-total';
+  const ttl = line==='us'?'美國線解析　PB_SET (4/26)　累加法':'亞洲線解析　80-day Asia (2026)　查表法';
+  let h='<div class="parse-card"><div class="parse-header '+cls+'"><span>'+ttl+'</span></div>'
+    +'<table class="steps-table"><thead><tr><th style="width:76px">Step</th><th style="width:92px">代碼</th><th>說明</th><th style="width:120px">金額 (USD)</th></tr></thead><tbody>';
+  res.rows.forEach((r,i)=>{
+    h+='<tr'+(i===0?' class="base-row"':'')+'><td class="step-num">'+r.step+'</td><td><span class="step-code">'+r.code+'</span></td>'
+      +'<td class="step-desc">'+r.desc+'<small>'+r.sub+'</small></td>'
+      +'<td class="step-price">'+(i===0?'<span class="price-base">$'+r.price.toLocaleString()+'</span>':setuFmtPrice(r.price))+'</td></tr>';
+  });
+  h+='<tr class="total-row '+tcls+'"><td colspan="3" class="label">單張定價合計</td><td class="amount">$'+res.total.toLocaleString()+'</td></tr>';
+  return h+'</tbody></table></div>';
+}
+function setuRender(targetId, sfx, resUs, resAsia, code){
+  let h='<div class="line-badges">';
+  h+= resUs.ok
+    ? '<div class="line-badge us active"><div class="line-name">美國線 / PB_SET</div><div class="line-price">$'+resUs.total.toLocaleString()+'</div><div class="line-method">累加法</div></div>'
+    : '<div class="line-badge us unavailable"><div class="line-name">美國線 / PB_SET</div><div class="line-price na">此配置不適用</div><div class="line-method">'+resUs.err+'</div></div>';
+  h+= resAsia.ok
+    ? '<div class="line-badge asia active"><div class="line-name">亞洲線 / 80-day Asia</div><div class="line-price">$'+resAsia.total.toLocaleString()+'</div><div class="line-method">查表法</div></div>'
+    : '<div class="line-badge asia unavailable"><div class="line-name">亞洲線 / 80-day Asia</div><div class="line-price na">此配置不適用</div><div class="line-method">'+resAsia.err+'</div></div>';
+  h+='</div>';
+  if(resUs.ok&&resAsia.ok){
+    const d=resAsia.total-resUs.total;
+    h+='<div class="model-badge"><span class="model-badge-label">兩線價差</span>'
+      +(d===0?'兩線同價':('亞洲線'+(d>0?'高':'低')+' $'+Math.abs(d).toLocaleString()+'（'+(d>0?'+':'-')+(Math.abs(d)/resUs.total*100).toFixed(1)+'%）'))
+      +'　　美國線主碼 '+resUs.code.split(' ')[0]+'　亞洲線主碼 '+resAsia.code.split(' ')[0]+'</div>';
+  }
+  const notes=[].concat(resUs.ok?resUs.notes:[], resAsia.ok?resAsia.notes:[]);
+  if(notes.length){ h+='<div class="alert alert-warn show" style="margin-bottom:12px;"><div>'+[...new Set(notes)].map(n=>'· '+n).join('<br>')+'</div></div>'; }
+  if(resUs.ok)   h+='<div class="model-badge"><span class="model-badge-label">美國線型號</span>'+resUs.code+'</div>'+setuTable(resUs,'us');
+  if(resAsia.ok) h+='<div class="model-badge"><span class="model-badge-label">亞洲線型號</span>'+resAsia.code+'</div>'+setuTable(resAsia,'asia');
+  const prim = (SETU_S.line==='asia'&&resAsia.ok)?resAsia:(resUs.ok?resUs:resAsia);
+  if(prim.ok){
+    h+='<div class="twd-bar"><div><div class="twd-label">台幣換算（'+((prim===resAsia)?'亞洲線':'美國線')+'）</div>'
+      +'<div class="twd-rate">匯率 1 USD ＝ <span id="setuRateDisp'+sfx+'">40</span> TWD，無條件進位至 500</div></div>'
+      +'<div style="text-align:right;"><div class="twd-price">NT$ <span id="setuTwd'+sfx+'">'+setuTwd(prim.total,40).toLocaleString()+'</span></div>'
+      +'<div class="twd-input-row" style="justify-content:flex-end;margin-top:6px;"><span style="font-size:11px;color:var(--text-muted);">匯率</span>'
+      +'<input type="number" class="twd-input" id="setuRate'+sfx+'" value="40" step="0.5" min="1" onchange="setuRecalcTWD(\''+sfx+'\','+prim.total+')"><span style="font-size:11px;color:var(--text-muted);">TWD</span></div></div></div>';
+  }
+  document.getElementById(targetId).innerHTML=h;
+}
+function setuTwd(usd,rate){ return Math.ceil(usd*rate/500)*500; }
+function setuRecalcTWD(sfx,total){
+  const r=parseFloat(document.getElementById('setuRate'+sfx).value)||40;
+  document.getElementById('setuRateDisp'+sfx).textContent=r;
+  document.getElementById('setuTwd'+sfx).textContent=setuTwd(total,r).toLocaleString();
+}
+
+// ---- 手動選配 ----
+function setuCalcManual(){
+  setuNormalize();
+  const S=SETU_S;
+  const mk=()=>({model:S.model,pkg:S.pkg,bt:S.bt,mat:S.mat,arms:S.arms,frame:S.frame,column:S.column,base:S.base,caster:S.caster,mesh:S.mesh,fab:S.fab});
+  const rU=setuCompute('us',mk()), rA=setuCompute('asia',mk());
+  const box=document.getElementById('setuGenCode');
+  const prim=(S.line==='asia'&&rA.ok)?rA:rU;
+  box.className='generated-code-box show';
+  box.textContent = prim.ok ? ((S.line==='asia'?'亞洲線型號：':'美國線型號：')+prim.code) : '此配置在目前線別不成立';
+  setuRender('setuResultM','M',rU,rA);
+}
+
+// ---- 貼上型號 ----
+function setuSetExample(s){ document.getElementById('setuPasteInput').value=s; setuParsePaste(); }
+function setuClearPaste(){ document.getElementById('setuPasteInput').value='';
+  ['setuErrP','setuWarnP'].forEach(i=>document.getElementById(i).classList.remove('show'));
+  document.getElementById('setuResultP').innerHTML=''; }
+function setuParsePaste(){
+  const raw=(document.getElementById('setuPasteInput').value||'').trim().toUpperCase();
+  const err=m=>{ const a=document.getElementById('setuErrP'); a.classList.add('show'); document.getElementById('setuErrPMsg').innerHTML=m; document.getElementById('setuResultP').innerHTML=''; };
+  document.getElementById('setuErrP').classList.remove('show');
+  document.getElementById('setuWarnP').classList.remove('show');
+  if(!raw) return err('請先輸入型號。');
+  const toks=raw.split(/\s+/).filter(Boolean);
+  let mainTok=toks.shift();
+  const m=mainTok.match(/^(CQND|CQN|CQD|CQ)(\d)(\d)([MF])([NA])$/);
+  if(!m) return err('主碼格式無法辨識。應為 CQN／CQND ＋ 兩位數字 ＋ 座背材料（M／F）＋ 扶手（N／A），例如 <code>CQN51MA</code>、<code>CQND79MN</code>。');
+  const legacy=(m[1]==='CQ'||m[1]==='CQD');
+  const dic=(m[1]==='CQND'||m[1]==='CQD'), d1=m[2], d2=m[3], mat=m[4], arms=m[5];
+  let model, bt, pkg='5';
+  if(d1==='7'&&d2==='9'){ model=dic?'CQND7':'CQN7'; bt='9'; }
+  else if(['5','6','2'].indexOf(d1)>=0 && ['1','2','3'].indexOf(d2)>=0){ model=dic?'CQND5':'CQN5'; bt=d2; pkg=d1; }
+  else return err('主碼數字「'+d1+d2+'」無法對應到已知機種。多用途椅為 51／52／53（亞洲線首位可為 5／6／2），高腳椅為 79。');
+  const M=SETU_MODELS[model];
+  const v={model:model,pkg:pkg,bt:bt,mat:mat,arms:arms,frame:null,column:null,base:null,caster:null,mesh:null,fab:null};
+  const FT=_setuFrameTable(model), warns=[];
+  toks.forEach(t=>{
+    if(FT[t] && !v.frame) v.frame=t;
+    else if(SETU_MESH[t]) v.mesh=t;
+    else if(SETU_CASTER_NAME[t]) v.caster=t;
+    else if(/^CAT?([0-9]{1,2}|[B-J])$/.test(t)) v.fab=t.replace(/^CAT?/,'');
+    else if(/^4W\d{2}$/.test(t)) { v._legacyMesh=t; }
+    else if(t==='NNN') { v._legacyNNN=true; }
+    else if(M.stool && !v.column && ['98','G1','BK','DR1','DN2','DB3'].indexOf(t)>=0) v.column=t;
+    else if(['L7','G1','5Y','DR1','DN2','DB3'].indexOf(t)>=0 && !v.base) v.base=t;
+    else warns.push('無法辨識的代碼：'+t);
+  });
+  if(!v.frame){ v.frame=dic?'DR1':'G1'; warns.push('未指定框架色，預設 '+v.frame+'。'); }
+  const root=_setuRoot(v.frame);
+  if(!v.base){ v.base=dic?root:'L7'; warns.push('未指定底座色，預設 '+v.base+'。'); }
+  if(M.stool && !v.column){ v.column=dic?root:(root==='98'?'98':(root==='G1'?'G1':'BK')); warns.push('未指定柱身色，依框架色帶入 '+v.column+'。'); }
+  if(!v.caster){ v.caster=(!M.stool&&bt==='3')?'X8':'HCC'; warns.push('未指定腳輪／滑座，預設 '+v.caster+'。'); }
+  if(legacy) warns.push('偵測到<b>舊版型號</b> '+mainTok+'（改版前碼）。改版後對應碼為 '+(model==='CQN5'?'CQN5':(model==='CQND5'?'CQND5':(model==='CQN7'?'CQN7':'CQND7')))+bt+mat+arms+'，本頁已改用新碼計算。舊碼不能直接下單。');
+  if(v._legacyNNN) warns.push('代碼 <b>NNN</b> 是改版前價目書的附加碼，Refresh 改版後的型號結構已取消這一段，新碼不需要填。');
+  if(v._legacyMesh) warns.push('代碼 <b>'+v._legacyMesh+'</b> 是改版前 Lyris 懸吊材料的色號。改版後織網改名 Intercept、色號改為 84501-84507，本頁未收錄新舊色號對照表，<b>需向原廠或 MillerKnoll Omni 確認對應色</b>，請勿自行推測。<span class="grade grade-inf">推論</span>');
+  if(mat==='M'&&!v.mesh&&!v._legacyMesh){ v.mesh='84501'; warns.push('未指定織網色，預設 84501 Graphite 石墨灰。'); }
+  if(mat==='M'&&!v.mesh&&v._legacyMesh){ v.mesh='84501'; warns.push('舊色號無法直接換算，計算時暫以 84501 帶入（織網色一律 ＋$0，不影響總價）。'); }
+  if(mat==='F'&&!v.fab){ v.fab='1'; warns.push('未指定布料價格級距，預設 Price Category 1。'); }
+  if(mat==='F'&&dic) return err('全身同色版（CQND5／CQND7）只供應 M 懸吊材料版，沒有 F 包覆布面版。');
+  if(d1!=='5'&&!M.stool) warns.push('主碼首位為「'+d1+'」（'+SETU_PKG[d1]+'），這是亞洲線才有的包裝碼；美國線主碼沒有這一位。');
+  if(warns.length){ document.getElementById('setuWarnP').classList.add('show');
+    document.getElementById('setuWarnPMsg').innerHTML=warns.map(w=>'· '+w).join('<br>'); }
+  const cp=()=>Object.assign({},v);
+  setuRender('setuResultP','P', setuCompute('us',cp()), setuCompute('asia',cp()));
+}
+
+// ---- 織網色卡總表 ----
+function setuBuildMesh(){
+  let h='<div class="parse-card"><div class="parse-header asia-h"><span>Intercept 懸吊材料（織網）色卡　84501-84507　全部加價 ＋$0</span></div>'
+   +'<table class="steps-table"><thead><tr><th style="width:74px">色塊</th><th style="width:82px">色號</th><th style="width:150px">色名</th><th>選色說明與對客提醒</th></tr></thead><tbody>';
+  Object.keys(SETU_MESH).forEach(c=>{ const d=SETU_MESH[c];
+    h+='<tr><td><span style="display:block;width:52px;height:30px;border-radius:5px;border:1px solid rgba(0,0,0,.25);background:'+d.hex+';"></span></td>'
+      +'<td><span class="step-code">'+c+'</span></td><td class="step-desc"><b>'+d.en+'</b><small>'+d.zh+'</small></td>'
+      +'<td class="step-desc">'+d.d+'</td></tr>'; });
+  h+='</tbody></table></div>';
+  h+='<div class="parse-card" style="margin-top:14px;"><div class="parse-header us-h"><span>全身同色框架色 DR1／DN2／DB3　限 CQND5、CQND7</span></div>'
+   +'<table class="steps-table"><thead><tr><th style="width:74px">色塊</th><th style="width:82px">代碼</th><th style="width:150px">色名</th><th>說明</th></tr></thead><tbody>';
+  const DIC={'DR1':['Canyon','峽谷橘','#b5563a','框架、底座、扶手（高腳椅另含柱身與腳踏）全部同色。對應同色腳輪 O2R、織網可選 84506 Canyon 做全同色。'],
+             'DN2':['Nightfall','午夜藍','#2e3a4d','對應同色腳輪 O2N、織網 84504 Nightfall。'],
+             'DB3':['Glacier','冰河藍','#a8bcc7','對應同色腳輪 O2B、織網 84505 Glacier。'] };
+  Object.keys(DIC).forEach(c=>{ const d=DIC[c];
+    h+='<tr><td><span style="display:block;width:52px;height:30px;border-radius:5px;border:1px solid rgba(0,0,0,.25);background:'+d[2]+';"></span></td>'
+      +'<td><span class="step-code">'+c+'</span></td><td class="step-desc"><b>'+d[0]+'</b><small>'+d[1]+'</small></td><td class="step-desc">'+d[3]+'</td></tr>'; });
+  h+='</tbody></table></div>';
+  h+='<div class="parse-card" style="margin-top:14px;"><div class="parse-header"><span>標準框架色 G1／CRB／VPR／98（兩線共通）</span></div>'
+   +'<table class="steps-table"><thead><tr><th style="width:74px">色塊</th><th style="width:82px">代碼</th><th style="width:150px">色名</th><th style="width:110px">加價</th><th>說明</th></tr></thead><tbody>';
+  const STD={'G1':['Graphite','石墨灰','#3f4043',0,'標準色，最耐髒也最好搭，門市主推。'],
+             'CRB':['Carbon','碳灰','#2a2c2e',30,'比石墨灰再深一階。'],
+             'VPR':['Mineral','礦石灰','#b9b3a6',30,'淺色系空間用；淺色較易看見染色轉移。'],
+             '98':['Studio White','純白','#eceae5',85,'視覺最輕，但深色衣物摩擦容易留痕，要先跟客戶講。']};
+  ['G1','CRB','VPR','98'].forEach(c=>{ const d=STD[c];
+    h+='<tr><td><span style="display:block;width:52px;height:30px;border-radius:5px;border:1px solid rgba(0,0,0,.25);background:'+d[2]+';"></span></td>'
+      +'<td><span class="step-code">'+c+'</span></td><td class="step-desc"><b>'+d[0]+'</b><small>'+d[1]+'</small></td>'
+      +'<td class="step-price">'+setuFmtPrice(d[3])+'</td><td class="step-desc">'+d[4]+'　抗菌版代碼為 M'+(c==='98'?'98':(c==='G1'?'G1':(c==='CRB'?'CR':'VR')))+'。</td></tr>'; });
+  h+='</tbody></table></div>';
+  document.getElementById('setuMeshChart').innerHTML=h;
+}
+
+// ---- init ----
+setuBuildUI(); setuCalcManual(); setuBuildMesh();
+
 </script>
 </body>
 </html>
