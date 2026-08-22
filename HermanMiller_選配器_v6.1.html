@@ -780,7 +780,7 @@
   <div class="header">
     <span class="header-brand">HermanMiller</span>
     <h1>選配計算器</h1>
-    <span class="header-version">v6.4 · 2026-08-22 更新 · 新增 Setu 全機種（美國線／亞洲線雙線＋織網色卡）· 輪子適用地面依原廠附錄 2024/10</span>
+    <span class="header-version">v6.4 · 2026-08-22 更新 · 新增 Setu 全機種（雙線＋織網色卡＋Lyris 舊色號對照）· 輪子適用地面依原廠附錄 2024/10</span>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
@@ -1945,7 +1945,20 @@
   #product-setu .sw-chip .dot{ display:block; width:100%; height:40px; border-radius:5px; border:1px solid rgba(0,0,0,0.22); }
   #product-setu .sw-chip .cd{ display:block; font-family:'Consolas',monospace; font-size:11px; font-weight:700; margin-top:5px; color:var(--text); }
   #product-setu .sw-chip .nm{ display:block; font-size:11px; color:var(--text); line-height:1.3; }
-  #product-setu .sw-chip .ds{ display:block; font-size:10px; color:var(--text-muted); line-height:1.35; margin-top:3px; }
+  #product-setu .sw-chip{ width:100px; }
+  #product-setu .sw-chip .nm{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #product-setu .sw-chip .nm.zh{ color:var(--text-muted); }
+  #product-setu .mesh-note{ font-size:11px; color:var(--text-muted); line-height:1.6; margin-top:6px; }
+  #product-setu .mesh-note b{ color:var(--text); }
+  #product-setu .setu-fold{ margin-top:7px; border-top:1px dashed var(--border); padding-top:6px; }
+  #product-setu .setu-fold summary{ list-style:none; cursor:pointer; font-size:12px; font-weight:700; color:var(--text-muted); padding:2px 0; }
+  #product-setu .setu-fold summary::-webkit-details-marker{ display:none; }
+  #product-setu .setu-fold summary::before{ content:'＋ '; }
+  #product-setu .setu-fold[open] summary::before{ content:'－ '; }
+  #product-setu .setu-fold summary:hover{ color:var(--text); }
+  #product-setu .setu-fold-body{ font-size:12px; line-height:1.7; color:var(--text); padding:6px 0 2px; }
+  #product-setu .setu-links{ margin-top:8px; display:flex; gap:14px; flex-wrap:wrap; }
+  #product-setu .setu-links a{ font-size:12px; color:var(--us-line); font-family:'Consolas','Microsoft JhengHei',monospace; }
   #product-setu .grade{ display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:9px; margin-left:6px; letter-spacing:.03em; vertical-align:middle; }
   #product-setu .grade-fact{ background:#e3f2e8; color:#1f7a3d; }
   #product-setu .grade-inf{ background:#fef3d9; color:#8a6100; }
@@ -1961,15 +1974,19 @@
         <h2>Setu 多用途椅／高腳椅</h2>
         <div class="setu-en">Setu&reg; Multipurpose Chair &amp; Stool, Refresh / Dipped in Color</div>
         <span class="setu-fam">CQN5 · CQND5 · CQN7 · CQND7</span>
-        <div class="setu-desc">
-          Studio 7.5 設計，2009 年推出。單片 Intercept 懸吊材料夾在兩片複合聚合物外框之間，Kinematic Spine 脊骨結構讓椅背隨身體後仰連續支撐，全機只有一項調整（座高），自重約 18-19 磅，承重 300 磅／136 公斤。座深 15 吋固定、扶手為固定式 Ribbon Arms。
-          <br><b>兩線差異：</b>美國線（PB_SET 4/26）有 F 包覆布面版與 OC 腳輪；亞洲線（80-day Asia 2026 新加坡 USD）只有 M 懸吊材料版，但多了 LSC 腳輪與包裝碼（雙入箱／KD）。
+        <div class="setu-desc">Studio 7.5 設計，2009 年推出。全機只有座高一項調整，承重 300 磅／136 公斤。</div>
+        <details class="setu-fold"><summary>產品說明與兩線差異</summary><div class="setu-fold-body">
+          單片 Intercept 懸吊材料夾在兩片複合聚合物外框之間，Kinematic Spine 脊骨結構讓椅背隨身體後仰連續支撐。自重約 18-19 磅，座深 15 吋固定，扶手為固定式 Ribbon Arms。<br>
+          <b>兩線差異：</b>美國線（PB_SET 4/26）有 F 包覆布面版與 OC 腳輪；亞洲線（80-day Asia 2026 新加坡 USD）只有 M 懸吊材料版，但多了 LSC 腳輪與包裝碼（雙入箱／KD）。
+        </div></details>
+        <div class="setu-links">
+          <a href="https://www.hermanmiller.com/products/seating/office-chairs/setu-chair/" target="_blank">官網 Setu 產品頁</a>
+          <a href="https://store.hermanmiller.com/search?q=SETU&amp;search-button=&amp;lang=en_US" target="_blank">官方賣場 Setu 搜尋</a>
         </div>
-        <div style="margin-top:7px;"><a class="setu-en" style="color:var(--us-line);" href="https://www.hermanmiller.com/products/seating/office-chairs/setu-chairs/" target="_blank">官網 Setu 產品頁</a></div>
       </div>
     </div>
 
-    <details class="feature-details" style="margin-bottom:14px;" open>
+    <details class="feature-details" style="margin-bottom:14px;">
       <summary>門市常賣款與現有庫存對照（舊碼 → 現行碼）</summary>
       <div class="feature-body">
         <table class="steps-table" style="margin-top:4px;">
@@ -1977,12 +1994,12 @@
           <tbody>
             <tr><td class="step-desc"><b>常賣款</b><small>白框</small></td>
               <td><span class="step-code">CQ51MA 98 L7 HCC NNN 4W21</span></td>
-              <td class="step-desc"><span class="swatch-mini" style="background:#eceae5"></span>98 純白框架　<span class="swatch-mini" style="background:#c4c7ca"></span>L7 銀合金五星腳　HCC 腳輪　含 Ribbon 扶手　灰色織網<small>4W21 為改版前 Lyris 色號</small></td>
-              <td class="step-desc"><span class="step-code">CQN51MA 98 L7 HCC</span> ＋織網色<small>色號需向原廠對照</small></td></tr>
+              <td class="step-desc"><span class="swatch-mini" style="background:#eceae5"></span>98 純白框架　<span class="swatch-mini" style="background:#c4c7ca"></span>L7 銀合金五星腳　HCC 腳輪　含 Ribbon 扶手　<span class="swatch-mini" style="background:#b9b3a6"></span>4W21 Alpine 淺灰網<small>Alpine 於 Refresh 改版後停產</small></td>
+              <td class="step-desc"><span class="step-code">CQN51MA 98 L7 HCC 84503</span><small>改帶 84503 Mineral 礦石灰（最接近 Alpine）</small></td></tr>
             <tr><td class="step-desc"><b>常賣款</b><small>WFH 款</small></td>
               <td><span class="step-code">CQ51MA G1 L7 HCC NNN 4W31</span></td>
-              <td class="step-desc"><span class="swatch-mini" style="background:#3f4043"></span>G1 石墨灰框架　<span class="swatch-mini" style="background:#c4c7ca"></span>L7 銀合金五星腳　HCC 腳輪　含 Ribbon 扶手<small>4W31 為改版前 Lyris 色號</small></td>
-              <td class="step-desc"><span class="step-code">CQN51MA G1 L7 HCC</span> ＋織網色<small>色號需向原廠對照</small></td></tr>
+              <td class="step-desc"><span class="swatch-mini" style="background:#3f4043"></span>G1 石墨灰框架　<span class="swatch-mini" style="background:#c4c7ca"></span>L7 銀合金五星腳　HCC 腳輪　含 Ribbon 扶手　<span class="swatch-mini" style="background:#3f4043"></span>4W31 Graphite 石墨灰網<small>Lyris 舊色號</small></td>
+              <td class="step-desc"><span class="step-code">CQN51MA G1 L7 HCC 84501</span><small>84501 Graphite 同名直接對應</small></td></tr>
             <tr style="background:var(--yellow-light);"><td class="step-desc"><b>現有庫存</b></td>
               <td><span class="step-code">CQN51MA G1 G1 HCC 84501</span></td>
               <td class="step-desc"><span class="swatch-mini" style="background:#3f4043"></span>G1 石墨灰框架　<span class="swatch-mini" style="background:#3f4043"></span><b>G1 石墨灰五星腳</b>　HCC 腳輪　含 Ribbon 扶手　<span class="swatch-mini" style="background:#3f4043"></span>84501 石墨灰織網<small>已是 Refresh 現行碼，可直接下單</small></td>
@@ -1993,7 +2010,7 @@
           <b>庫存這台跟兩款常賣款差在哪，對客怎麼講</b><span class="grade grade-fact">確定事實</span><br>
           差別只有底座：常賣款是 <b>L7 銀合金</b>（價目書加價 ＋$0，Setu 的標準值），庫存這台是 <b>G1 石墨灰</b>（＋$50）。也就是庫存款是<b>整台深灰同色調</b>的全黑視覺，框架、底座、織網三個部位都是石墨灰，比常賣的銀腳款更沉穩、更不挑空間，成本結構上也比較高。<br>
           <b>白框常賣款</b>要記得先提醒客戶：純白框架視覺最輕，但深色衣物摩擦容易留痕，且原廠明文說明染色轉移（dye transfer）不在保固範圍內。<br>
-          <b>舊碼不能直接下單</b><span class="grade grade-fact">確定事實</span>　CQ51／CQ52／CQ53／CQ79 是 Refresh 改版前的型號，現行碼為 CQN51／CQN52／CQN53／CQN79。舊碼裡的 NNN 段落在新結構已取消，Lyris 色號（4W 開頭）也換成 Intercept 的 84501-84507，<b>新舊色號對照本頁未收錄，補貨或補件前務必先跟原廠確認</b><span class="grade grade-inf">推論</span>。
+          <b>舊碼不能直接下單</b><span class="grade grade-fact">確定事實</span>　CQ51／CQ52／CQ53／CQ79 是 Refresh 改版前的型號，現行碼為 CQN51／CQN52／CQN53／CQN79。舊碼裡的 NNN 段落在新結構已取消，Lyris 2 色號（4W 開頭）也換成 Intercept 的 84501-84507。新舊色號對照見下方「織網色卡總表」分頁，<b>同名色（如 4W31 Graphite → 84501 Graphite）可直接對應，停產色的替代建議屬推論，補件前仍請跟原廠確認</b>。
         </div>
       </div>
     </details>
@@ -2013,9 +2030,9 @@
         <span class="line-switch-note">切換線別會重建可選項目；兩線都算得出來時，下方會同時顯示雙線價格供比較。</span>
       </div>
 
-      <div class="setu-hint">
-        <b>Setu 怎麼配</b>　先選機種，系統會依機種自動開關下面該填的欄位（四星固定高度版只能配滑座、高腳椅才有柱身色、全身同色版的底座與柱身必須跟框架同色）。織網色請在下方色卡直接點選。
-      </div>
+      <details class="setu-fold" style="margin-bottom:12px;"><summary>Setu 怎麼配</summary><div class="setu-fold-body">
+        先選機種，系統會依機種自動開關下面該填的欄位：四星固定高度版只能配滑座、高腳椅才有柱身色、全身同色版的底座與柱身必須跟框架同色。織網色在下方色卡直接點選，滑鼠停在色塊上會顯示該色的挑選提醒。
+      </div></details>
 
       <div class="config-grid" id="setuConfigGrid"></div>
       <button class="btn-build" onclick="setuCalcManual()">產生型號並計算價格</button>
@@ -2061,13 +2078,12 @@
 
     <!-- ── TAB 3: MESH CHART ── -->
     <div id="setu-tab-mesh" class="tab-panel">
-      <div class="setu-hint">
-        <b>先分清楚兩組色號，這是 Setu 最容易被問倒的地方</b><br>
+      <details class="setu-fold" style="margin-bottom:12px;"><summary>先分清楚兩組色號，這是 Setu 最容易被問倒的地方</summary><div class="setu-fold-body">
         <b>84501-84507</b> 是<b>織網（Intercept 懸吊材料）</b>的色號，六款主力椅裡 Cosm 也是用這一組編號體系。標準版 CQN5、CQN7 與全身同色版 CQND5、CQND7 都可以任選這七色，原廠明文寫「任一織網色可搭配任一框架色」。<br>
         <b>DR1／DN2／DB3</b> 是<b>全身同色版的框架色</b>，只有三色，且限 CQND5、CQND7 這兩個獨立型號，不是加購選項。<br>
         <span class="grade grade-fact">確定事實</span> 色號與名稱取自 80-day Asia Seating (2026) Setu 規格頁與 PB_SET (4/26)。
         <span class="grade grade-inf">推論</span> 下方色塊為螢幕近似色，非原廠色票；對客戶確認顏色請一律以實體色卡為準。
-      </div>
+      </div></details>
       <div id="setuMeshChart"></div>
     </div>
 
@@ -5964,6 +5980,19 @@ const SETU_MESH = {
   '84507':{en:'Cocoa',     zh:'可可棕', hex:'#6b5347', d:'棕色。織網有這色，但全身同色框架沒有對應色，只能配標準框架色。'}
 };
 
+// ---- 改版前 Lyris 2 懸吊材料色號（來源：Setu Chairs Price Book 1/20）----
+const SETU_LYRIS = {
+  '4W21':{en:'Alpine',     zh:'淺灰', hex:'#b9b3a6', map:'Refresh 改版後 Intercept <b>已無 Alpine</b>，現行最接近的是 <b>84503 Mineral 礦石灰</b>。<span class="grade grade-inf">推論</span>'},
+  '4W22':{en:'Mango',      zh:'芒果黃', hex:'#d8912f', map:'Refresh 改版後已無此色，現行七色無對應。<span class="grade grade-fact">確定事實</span>'},
+  '4W23':{en:'Chartreuse', zh:'黃綠', hex:'#9aa63a', map:'Refresh 改版後已無此色。<span class="grade grade-fact">確定事實</span>'},
+  '4W25':{en:'Berry Blue', zh:'莓果藍', hex:'#3a5f8a', map:'Refresh 改版後已無此色，色調最接近的是 <b>84504 Nightfall 午夜藍</b>。<span class="grade grade-inf">推論</span>'},
+  '4W26':{en:'Slate Grey', zh:'石板灰', hex:'#6b6f73', map:'Refresh 改版後已無此色，現行最接近的是 <b>84501 Graphite 石墨灰</b>。<span class="grade grade-inf">推論</span>'},
+  '4W28':{en:'Chino',      zh:'卡其', hex:'#b09b74', map:'Refresh 改版後已無此色。<span class="grade grade-fact">確定事實</span>'},
+  '4W29':{en:'Rattan',     zh:'藤黃', hex:'#c2a45c', map:'Refresh 改版後已無此色。<span class="grade grade-fact">確定事實</span>'},
+  '4W30':{en:'Java',       zh:'咖啡棕', hex:'#5a463a', map:'Refresh 改版後最接近的是 <b>84507 Cocoa 可可棕</b>。<span class="grade grade-inf">推論</span>'},
+  '4W31':{en:'Graphite',   zh:'石墨灰', hex:'#3f4043', map:'Refresh 改版後對應 <b>84501 Graphite 石墨灰</b>，同名直接對應。<span class="grade grade-fact">確定事實</span>'}
+};
+
 // ---- 布料價格級距（僅美國線 F 版）----
 const SETU_FAB_CHAIR = {'1':0,'2':24,'3':54,'4':78,'5':102,'7':222,'8':293,'9':545,'10':656,'B':108,'C':126,'D':153,'F':180,'H':324,'I':390,'J':468};
 const SETU_FAB_STOOL = {'1':0,'2':24,'3':54,'4':78,'5':102,'7':222,'8':293,'9':545,'10':656,'B':82, 'C':112,'D':153,'F':180,'H':324,'I':390,'J':468};
@@ -6095,8 +6124,9 @@ function setuBuildUI(){
   if(S.mat==='M'){
     h+='<div class="config-item sw-box"><div class="config-item-label">織網色 Intercept 懸吊材料 <span class="config-item-step">'+(M.stool?'Step 9':'Step 8')+'</span>　<span style="font-weight:400;color:var(--text-muted);font-size:11px;">全部 ＋$0，任一色可搭任一框架色</span></div><div class="sw-grid">';
     Object.keys(SETU_MESH).forEach(c=>{ const d=SETU_MESH[c];
-      h+='<div class="sw-chip'+(c===S.mesh?' active':'')+'" onclick="setuPickMesh(\''+c+'\')"><span class="dot" style="background:'+d.hex+'"></span><span class="cd">'+c+'</span><span class="nm">'+d.en+'　'+d.zh+'</span><span class="ds">'+d.d+'</span></div>'; });
-    h+='</div><div style="font-size:11px;color:var(--text-muted);margin-top:5px;">色塊為螢幕近似色<span class="grade grade-inf">推論</span>，對客確認顏色請以實體色卡為準。</div></div>';
+      h+='<div class="sw-chip'+(c===S.mesh?' active':'')+'" title="'+d.en+'　'+d.zh+'：'+d.d+'" onclick="setuPickMesh(\''+c+'\')"><span class="dot" style="background:'+d.hex+'"></span><span class="cd">'+c+'</span><span class="nm">'+d.en+'</span><span class="nm zh">'+d.zh+'</span></div>'; });
+    const dsel=SETU_MESH[S.mesh];
+    h+='</div><div class="mesh-note"><b>'+S.mesh+'　'+dsel.en+'　'+dsel.zh+'</b>　'+dsel.d+'<br>色塊為螢幕近似色<span class="grade grade-inf">推論</span>，對客確認顏色請以實體色卡為準；七色完整說明見「織網色卡總表」分頁。</div></div>';
   } else {
     const tbl = M.stool?SETU_FAB_STOOL:SETU_FAB_CHAIR; const fo={};
     Object.keys(tbl).forEach(k=>{ fo[k]={n:'Price Category '+k, p:tbl[k]}; });
@@ -6290,7 +6320,11 @@ function setuParsePaste(){
   if(!v.caster){ v.caster=(!M.stool&&bt==='3')?'X8':'HCC'; warns.push('未指定腳輪／滑座，預設 '+v.caster+'。'); }
   if(legacy) warns.push('偵測到<b>舊版型號</b> '+mainTok+'（改版前碼）。改版後對應碼為 '+(model==='CQN5'?'CQN5':(model==='CQND5'?'CQND5':(model==='CQN7'?'CQN7':'CQND7')))+bt+mat+arms+'，本頁已改用新碼計算。舊碼不能直接下單。');
   if(v._legacyNNN) warns.push('代碼 <b>NNN</b> 是改版前價目書的附加碼，Refresh 改版後的型號結構已取消這一段，新碼不需要填。');
-  if(v._legacyMesh) warns.push('代碼 <b>'+v._legacyMesh+'</b> 是改版前 Lyris 懸吊材料的色號。改版後織網改名 Intercept、色號改為 84501-84507，本頁未收錄新舊色號對照表，<b>需向原廠或 MillerKnoll Omni 確認對應色</b>，請勿自行推測。<span class="grade grade-inf">推論</span>');
+  if(v._legacyMesh){
+    const L=SETU_LYRIS[v._legacyMesh];
+    if(L) warns.push('代碼 <b>'+v._legacyMesh+'</b> 是改版前 Lyris 2 懸吊材料色號，色名為 <b>'+L.en+'　'+L.zh+'</b>。'+L.map);
+    else warns.push('代碼 <b>'+v._legacyMesh+'</b> 是改版前 Lyris 2 懸吊材料色號，本表未收錄此色，請向原廠確認。');
+  }
   if(mat==='M'&&!v.mesh&&!v._legacyMesh){ v.mesh='84501'; warns.push('未指定織網色，預設 84501 Graphite 石墨灰。'); }
   if(mat==='M'&&!v.mesh&&v._legacyMesh){ v.mesh='84501'; warns.push('舊色號無法直接換算，計算時暫以 84501 帶入（織網色一律 ＋$0，不影響總價）。'); }
   if(mat==='F'&&!v.fab){ v.fab='1'; warns.push('未指定布料價格級距，預設 Price Category 1。'); }
@@ -6331,6 +6365,13 @@ function setuBuildMesh(){
       +'<td><span class="step-code">'+c+'</span></td><td class="step-desc"><b>'+d[0]+'</b><small>'+d[1]+'</small></td>'
       +'<td class="step-price">'+setuFmtPrice(d[3])+'</td><td class="step-desc">'+d[4]+'　抗菌版代碼為 M'+(c==='98'?'98':(c==='G1'?'G1':(c==='CRB'?'CR':'VR')))+'。</td></tr>'; });
   h+='</tbody></table></div>';
+  h+='<div class="parse-card" style="margin-top:14px;"><div class="parse-header"><span>改版前 Lyris 2 舊色號對照　4W21-4W31（查舊椅、補件時用）</span></div>'
+   +'<table class="steps-table"><thead><tr><th style="width:74px">色塊</th><th style="width:82px">舊色號</th><th style="width:150px">色名</th><th>改版後對應</th></tr></thead><tbody>';
+  Object.keys(SETU_LYRIS).forEach(c=>{ const d=SETU_LYRIS[c];
+    h+='<tr><td><span style="display:block;width:52px;height:30px;border-radius:5px;border:1px solid rgba(0,0,0,.25);background:'+d.hex+';"></span></td>'
+      +'<td><span class="step-code">'+c+'</span></td><td class="step-desc"><b>'+d.en+'</b><small>'+d.zh+'</small></td>'
+      +'<td class="step-desc">'+d.map+'</td></tr>'; });
+  h+='</tbody></table><div style="font-size:11px;color:var(--text-muted);padding:9px 12px;">舊色號與色名來源：Herman Miller Setu Chairs Price Book (1/20)，Proprietary Textile Colors 附錄 Lyris 2 段落。色塊為螢幕近似色<span class="grade grade-inf">推論</span>。</div></div>';
   document.getElementById('setuMeshChart').innerHTML=h;
 }
 
