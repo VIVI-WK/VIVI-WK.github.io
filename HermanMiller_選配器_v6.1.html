@@ -370,11 +370,59 @@
   .result-block.show { display: block; }
 
   .model-badge {
-    display: inline-flex; align-items: center; gap: 10px;
+    display: flex; width: fit-content; max-width: 100%;
+    align-items: center; gap: 10px; flex-wrap: wrap;
     background: var(--accent); color: #fff;
     padding: 8px 16px; border-radius: 6px; margin-bottom: 16px;
     font-family: 'Consolas', monospace;
     font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+  }
+  /* Mirra 2：成套色塊改成看得到代碼與色名的卡片 */
+  #product-mirra .swatch-container { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  #product-mirra .swatch.m-sw {
+    width: 128px !important; height: auto !important; border-radius: 7px;
+    background: var(--surface) !important;
+    border: 1.5px solid var(--border) !important;
+    padding: 7px 8px 6px; cursor: pointer; text-align: left;
+    display: flex; flex-direction: column; gap: 2px; transition: all .12s;
+  }
+  #product-mirra .m-sw:hover { border-color: var(--border-strong) !important; }
+  #product-mirra .m-sw.active {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px rgba(26,25,23,0.14);
+  }
+  #product-mirra .m-sw-dot {
+    display:block; width:100%; height:30px; border-radius:5px;
+    border:1px solid rgba(0,0,0,0.20); margin-bottom:4px;
+  }
+  #product-mirra .m-sw-code {
+    font-family:'Consolas',monospace; font-size:12px; font-weight:700;
+    color:var(--text); line-height:1.1; letter-spacing:.02em;
+  }
+  #product-mirra .m-sw-name {
+    font-size:10.5px; color:var(--text-muted); line-height:1.25;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  #product-mirra .m-sw-sur { font-size:10px; font-weight:700; color:#8a6a1f; line-height:1.2; }
+  #product-mirra .m-sw-sur.zero { color:var(--text-muted); font-weight:400; }
+  /* 選了這個色會連帶決定哪幾格 */
+  #product-mirra .m-cascade {
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+    margin-top:9px; padding-top:8px; border-top:1px dashed var(--border);
+    font-size:11px;
+  }
+  #product-mirra .m-cc-t { color:var(--text-muted); margin-right:2px; }
+  #product-mirra .m-cc {
+    display:inline-flex; align-items:center; gap:5px;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:5px; padding:2px 7px;
+  }
+  #product-mirra .m-cc i { font-style:normal; color:var(--text-muted); font-size:10px; }
+  #product-mirra .m-cc b { font-family:'Consolas',monospace; font-size:11px; color:var(--text); }
+  .mb-sep {
+    display: inline-block; width: 1px; align-self: stretch;
+    min-height: 15px; margin: 0 4px;
+    background: rgba(255,255,255,0.30);
   }
   .model-badge-label {
     font-family: inherit;
@@ -622,6 +670,39 @@
   .line-badge { padding: 9px 14px !important; }
   .footer-fold { margin-top: 10px !important; }
 
+  /* ══════════════════════════════════════════
+     色塊區與計價區的分隔（純顯示，不動選配與計價）
+     色塊原本沒有卡片框，跟上面的欄位黏成一整團；
+     解析卡與總價黑條之間也沒有留白。
+     ══════════════════════════════════════════ */
+  .leather-section {
+    background: var(--step-bg) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    padding: 10px 12px !important;
+    margin-top: 10px !important;
+  }
+  .leather-sel-label { margin-bottom: 2px !important; font-weight: 700 !important; }
+  .swatch-container { gap: 9px !important; margin-top: 8px !important; }
+  #product-mirra .swatch:not(.m-sw) { width: 30px !important; height: 30px !important; }
+  #product-sayl .swatch { width: 42px !important; height: 32px !important; }
+  .swatch { box-shadow: 0 0 0 1px rgba(0,0,0,.10); }
+
+  /* 區塊之間一律留白，不要黏在一起 */
+  .parse-card + .total-bar, .parse-card + .twd-bar, .parse-card + .hm-twd-strip,
+  .total-bar + .parse-card, .twd-bar + .parse-card, .hm-twd-strip + .parse-card,
+  .parse-card + .parse-card,
+  .total-bar + .total-bar, .result-block + .parse-card,
+  .model-badge + .parse-card, .line-badges + .parse-card {
+    margin-top: 10px !important;
+  }
+  .model-badge { margin: 10px 0 !important; }
+  .line-badges { margin-bottom: 10px !important; gap: 10px !important; }
+  .total-bar, .twd-bar { margin-top: 8px !important; }
+  .hm-detail-bar { margin-top: 10px !important; }
+  /* 產品抬頭的中英文不要貼在一起 */
+  .setu-en, .cap-en, .e-en, .ch-en { margin-top: 3px !important; }
+
   /* ── SECTION DIVIDER ── */
   .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
 
@@ -781,7 +862,7 @@
   #product-mirra .leather-sel-label { font-size: 12px; display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
   #product-mirra .selected-leather-name { font-size: 11px; }
   #product-mirra .swatch-container { gap: 8px; margin-top: 6px; }
-  #product-mirra .swatch { width: 26px; height: 26px; }
+  #product-mirra .swatch:not(.m-sw) { width: 26px; height: 26px; }
   #product-mirra .btn-calc { padding: 9px; font-size: 13px; margin-top: 6px; }
   /* Mirra 色塊「成套色」雙色顯示用 */
   #product-mirra .swatch.split {
@@ -989,7 +1070,7 @@
       標示說明：<span class="src-tag">原廠</span>代表這句話有原廠文件出處（價目書、技術規格書、型錄、保養文件、調整指南）；
       <span class="tip-tag">門市建議</span>代表原廠文件沒寫，是門市實務判斷，對客戶說明時請不要當成原廠規格。
     </div></details>
-    <span class="header-version">v6.1　<a href="javascript:void(0)" onclick="var d=document.getElementById('verMore');d.style.display=(d.style.display==='block'?'none':'block');" class="ver-more-link">本次更新內容</a></span><div id="verMore" class="ver-more"><b>2026-08-23</b>　<b>Eames Tables 原廠色卡</b>：桌面色、封邊色、線孔飾面、柱身色、底座色五個欄位都加上色塊，共 49 個代碼，圖檔<b>直接引用 Herman Miller 官方 Materials 網站的原圖網址</b>，非自行調色。色塊會依目前的材質與尺寸自動過濾，點下去直接帶入。木皮的低中高光澤與開孔封孔共六種組合共用同一張木材色卡，色塊只列一格，光澤在下拉選。<b>圖檔需連網載入</b>，離線時顯示「圖需連網」，代碼與名稱仍在。價目書有列但官方 Materials 頁沒收的代碼（611、G1、BK、BKM、5U）標「原廠未提供色卡圖」。<br><b>原廠圖說分頁</b>：Planning Guide 七張原圖 —— 高度形狀底座對照、邊緣造型與厚度、材質可用色清單、圓方與長方橢圓材質矩陣、木紋方向、線孔種類與位置。<br><b>吋數自動補公分</b>：說明文字裡的吋數就地標公分，尺寸下拉從 mm 改 cm。換算值為本頁計算，非原廠標示。<br><b>低會議桌 25.5 吋</b>四種形狀含石材版已補齊，共十一種桌型。<b>貼上型號</b>有沒有空格都吃，<b>主碼</b>直接秀在最上面。<br><b>匯率</b>辦公椅 35、Eames 經典與桌几 40，同類別連動。<b>Aeron 真皮扶手墊</b>三色與框架色無關（先前寫反）。<b>未組裝選項</b>全數移除。<br>每項標示出處，未經原廠文件確認者一律標「待查」不出價。</div>
+    <span class="header-version">v6.1　<a href="javascript:void(0)" onclick="var d=document.getElementById('verMore');d.style.display=(d.style.display==='block'?'none':'block');" class="ver-more-link">本次更新內容</a></span><div id="verMore" class="ver-more"><b>2026-08-24 修正（二）</b>　<b>Mirra 2 成套色改成看得懂的卡片</b>：原本只有六個小圓點，要滑上去才知道是哪一色。現在每格都有代碼、色名與加價，下方另外列出「這個色會同時決定哪幾格」——背套色連動 Step 9 背框／14 腰靠帶／15 椅背布／16 座面網布，椅架套色連動 Step 10 椅架／11 扶手墊／12 五爪腳，選 TriFlex 背或非可調腰靠時會自動改成 NA。<br><b>步驟編號標明線別</b>：欄位上的編號是亞洲線目錄的編號，美國價目書不計整裝那一步，所以美國線解析表的步驟號一律少 1，卡片標題已註明。<br><b>N2 固定腰靠</b>：亞洲線 +$45、美國線 +$0（原廠 MRFN1 頁與 MRFN2 頁自相矛盾，已依整裝款 MRFN1 取值），選單標示已改。<br><b>型號徽章不再黏在一起</b>：每個徽章各佔一行，Setu 兩線價差那一條改用分隔線分欄。<hr style="border:0;border-top:1px solid #ddd;margin:8px 0;"><b>2026-08-24 修正（一）</b>　<b>下方計價與色塊排版</b>：色卡區塊改成獨立卡片（有底色與外框），不再跟上面的選配欄位黏在一起；型號、單價、明細、台幣換算四塊之間補回固定間距。<br><b>Cosm 補上美金單價</b>：先前只顯示型號與台幣，單價藏在收合的明細表裡，現在跟其他椅款一樣秀在型號下面。<br><b>Verus 每欄說明點不開</b>：欄位自己的「說明」鈕跟後來加的 i 圓點互相蓋掉，兩邊都打不開，已改成只留原本的「說明」鈕；「最快 20 天」交期標示移到欄位標題右邊，不再各佔一行。<br><b>Eames Aluminum 布料色卡</b>：離線時圖檔載不出來會留一格空白，現在改成斜線底色塊，代碼照樣點得到，並加註圖檔需連網。<hr style="border:0;border-top:1px solid #ddd;margin:8px 0;"><b>2026-08-23 修正</b>　<b>Setu Step 8 織網色不見了</b>：前一版做欄位說明收合時，把織網色的七個色塊當成說明文字一起收進 i 圓點裡，畫面上只剩標題，會漏選。收合規則已改成<b>只收純說明文字，任何含下拉、按鈕、可點色塊的區塊一律不收</b>，並加了一支測試逐一掃過十二款產品確認沒有控制項被藏起來。<br><b>Eames Tables 原廠色卡</b>：桌面色、封邊色、線孔飾面、柱身色、底座色五個欄位共 49 個代碼，圖檔直接引用 Herman Miller 官方 Materials 網站原圖，需連網載入。價目書有列但官方頁未收的代碼（611、G1、BK、BKM、5U）標「原廠未提供色卡圖」。<br><b>原廠圖說分頁</b>：Planning Guide 七張原圖，含高度形狀底座對照與線孔位置。<br><b>吋數自動補公分</b>；<b>低會議桌 25.5 吋</b>已補齊，共十一種桌型；<b>貼上型號</b>有沒有空格都吃；<b>主碼</b>秀在最上面。<br><b>匯率</b>辦公椅 35、Eames 經典與桌几 40，同類別連動。<b>Aeron 真皮扶手墊</b>三色與框架色無關（先前寫反）。<b>未組裝選項</b>全數移除。<br>每項標示出處，未經原廠文件確認者一律標「待查」不出價。</div>
   </div>
 
   <!-- ── PRODUCT TABS ── -->
@@ -1543,7 +1624,7 @@
       <div class="mirra-grid">
         <div class="mirra-config-item">
           <div class="config-item-label">傾仰 Tilt
-            <span class="config-item-step">Step 4</span></div>
+            <span class="config-item-step">亞洲 Step 4</span></div>
           <select class="eames-select" id="mirra_tilt" onchange="mirraRecalc()">
             <option value="1">1 — Standard tilt</option>
             <option value="2" selected>2 — Tilt limiter</option>
@@ -1552,7 +1633,7 @@
         </div>
         <div class="mirra-config-item">
           <div class="config-item-label">扶手 Arms
-            <span class="config-item-step">Step 5</span></div>
+            <span class="config-item-step">亞洲 Step 5</span></div>
           <select class="eames-select" id="mirra_arms" onchange="mirraOnArmsChange()">
             <option value="N">N — No arms</option>
             <option value="P">P — Fixed arms</option>
@@ -1561,7 +1642,7 @@
         </div>
         <div class="mirra-config-item">
           <div class="config-item-label">座深 Seat Depth
-            <span class="config-item-step">Step 7</span></div>
+            <span class="config-item-step">亞洲 Step 7</span></div>
           <select class="eames-select" id="mirra_seat" onchange="mirraRecalc()">
             <option value="A" selected>A — FlexFront 可調 413-457mm</option>
             <option value="F">F — Fixed 413mm</option>
@@ -1569,7 +1650,7 @@
         </div>
         <div class="mirra-config-item">
           <div class="config-item-label">背材 Back
-            <span class="config-item-step">Step 8</span></div>
+            <span class="config-item-step">亞洲 Step 8</span></div>
           <select class="eames-select" id="mirra_back" onchange="mirraOnBackChange()">
             <option value="F" selected>F — Butterfly™ 蝴蝶背（含布料）</option>
             <option value="P">P — TriFlex™ 聚合物背</option>
@@ -1577,16 +1658,16 @@
         </div>
         <div class="mirra-config-item">
           <div class="config-item-label">腰靠 Back Support
-            <span class="config-item-step">Step 13</span></div>
+            <span class="config-item-step">亞洲 Step 13</span></div>
           <select class="eames-select" id="mirra_support" onchange="mirraOnSupportChange()">
             <option value="SZS">SZS — Basic 基本</option>
-            <option value="N2">N2 — Non-adj 固定 +$45</option>
+            <option value="N2">N2 — Non-adj 固定（亞洲線 +$45／美國線 +$0）</option>
             <option value="AJ" selected>AJ — Adjustable 可調 +$75</option>
           </select>
         </div>
         <div class="mirra-config-item">
           <div class="config-item-label">底盤 Base Finish
-            <span class="config-item-step">Step 12</span></div>
+            <span class="config-item-step">亞洲 Step 12</span></div>
           <select class="eames-select" id="mirra_base" onchange="mirraRecalc()">
             <option value="MATCH" selected>跟隨框架色（G1 或 ZM）</option>
             <option value="L7P">L7P — Silver Alloy 銀色 +$93</option>
@@ -1594,7 +1675,7 @@
         </div>
         <div class="mirra-config-item">
           <div class="config-item-label">輪子 Castors
-            <span class="config-item-step">Step 17</span></div>
+            <span class="config-item-step">亞洲 Step 17</span></div>
           <select class="eames-select" id="mirra_caster" onchange="mirraRecalc()">
             <option value="BB" selected>BB — 僅地毯 Carpet only</option>
             <option value="GF">GF — Glide 腳墊（硬地板或地毯）+$25</option>
@@ -1609,20 +1690,21 @@
       <div class="leather-section" style="padding-top:10px; border-top:1px solid var(--border);">
         <div class="leather-sel-label">
           背套色 Back Color Set
-          <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 9, 14, 15, 16</span>
+          <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">亞洲 Step 9・14・15・16</span>
           <span class="selected-leather-name" id="mirraBackColorName">G1 — Graphite 石墨黑（標準）</span>
         </div>
         <div style="font-size:11px; color:var(--text-muted); margin:4px 0 6px;">
           選一個顏色 → <b>背框 + 腰帶 + 蝴蝶布料 + 座墊</b> 自動成套。<b>6 色</b>：G1 / ZM / CRV / CRE / TRA / OLF。
         </div>
         <div class="swatch-container" id="mirraBackColorSwatches"></div>
+        <div class="m-cascade" id="mirraBackCascade"></div>
       </div>
 
       <!-- ── 椅架套色（2 色，影響 椅架/扶手墊/底盤） ── -->
       <div class="leather-section">
         <div class="leather-sel-label">
           椅架套色 Frame Color Set
-          <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">Step 10, 11, 12</span>
+          <span class="config-item-step" style="font-size:9px; padding:1px 4px; background:var(--step-bg); border:1px solid var(--border); border-radius:3px;">亞洲 Step 10・11・12</span>
           <span class="selected-leather-name" id="mirraFrameColorName">G1 — Graphite 石墨黑（標準）（扶手墊→Black 黑色）</span>
         </div>
         <div style="font-size:11px; color:var(--text-muted); margin:4px 0 6px;">
@@ -1630,6 +1712,7 @@
           底盤可另選 L7P 銀色 +$93。
         </div>
         <div class="swatch-container" id="mirraFrameColorSwatches"></div>
+        <div class="m-cascade" id="mirraFrameCascade"></div>
       </div>
 
       <!-- ── 提示：TriFlex 背 / 無扶手時部分色塊不適用 ── -->
@@ -1667,7 +1750,7 @@
 
       <!-- 美國線解析 -->
       <div class="parse-card">
-        <div class="parse-header us-h"><span>美國線解析（PB_MIT 5/26 累加法）</span></div>
+        <div class="parse-header us-h"><span>美國線解析（PB_MIT 5/26 累加法）　步驟號比上面少 1，美國價目書不計整裝那一步</span></div>
         <table class="steps-table">
           <thead><tr>
             <th style="width:72px">Step</th>
@@ -2425,6 +2508,7 @@
   ══════════════════════════════════════════ -->
   <style>
   #product-verus .verus-note{ font-size:11px; color:var(--text-muted); line-height:1.5; margin-top:3px; }
+  #product-verus .config-item-label .verus-note{ margin:0 0 0 auto; font-size:10px; line-height:1; white-space:nowrap; flex:0 0 auto; }
   #product-verus .verus-sw{ display:inline-block; width:14px; height:14px; border-radius:3px; border:1px solid rgba(0,0,0,0.25); vertical-align:middle; margin-left:6px; }
   #product-verus .verus-help{ display:inline-flex; align-items:center; gap:3px; white-space:nowrap; flex:0 0 auto; font-family:inherit; border:1px solid var(--border-strong); background:var(--surface); color:var(--text-muted); font-size:10px; font-weight:700; line-height:1; padding:3px 8px 3px 6px; border-radius:11px; margin-left:7px; cursor:pointer; vertical-align:middle; letter-spacing:.03em; transition:all .12s; }
   #product-verus .verus-help::before{ content:'＋'; font-size:10px; }
@@ -5803,24 +5887,60 @@ let mirraSelectedFrame = MIRRA_FRAME_COLORS[0]; // 椅架套色
 // =========================================================
 
 // 背套色塊（6 色）
+function _mirraSwCell(it){
+  const sur = it.surcharge > 0 ? '+$' + it.surcharge : '';
+  const cell = document.createElement('div');
+  cell.className = 'swatch m-sw';
+  cell.dataset.code = it.code;
+  cell.title = it.code + ' — ' + it.name + '（' + it.desc + '）' + sur;
+  const dot = document.createElement('span');
+  dot.className = 'm-sw-dot';
+  dot.style.background = it.color;
+  if (it.border) dot.style.borderColor = '#b9b4aa';
+  const cd = document.createElement('b'); cd.className='m-sw-code'; cd.textContent = it.code;
+  const nm = document.createElement('small'); nm.className='m-sw-name'; nm.textContent = it.name + ' ' + it.desc;
+  const pr = document.createElement('small');
+  pr.className = sur ? 'm-sw-sur' : 'm-sw-sur zero';
+  pr.textContent = sur ? sur : '不加價';
+  cell.appendChild(dot); cell.appendChild(cd); cell.appendChild(nm); cell.appendChild(pr);
+  return cell;
+}
+// 選一個色，實際會被填進哪幾格 — 直接列出來，不用自己推
+function mirraSyncCascade(){
+  const b = mirraSelectedBack, f = mirraSelectedFrame;
+  if (!b || !f) return;
+  const gv = function(id){ const e=document.getElementById(id); return e?e.value:''; };
+  const back=gv('mirra_back'), sup=gv('mirra_support'), baseSel=gv('mirra_base'), arms=gv('mirra_arms');
+  const bEl = document.getElementById('mirraBackCascade');
+  if (bEl) {
+    bEl.innerHTML = '<span class="m-cc-t">這個色會同時決定</span>'
+      + '<span class="m-cc"><i>Step 9 背框</i><b>' + b.code + '</b></span>'
+      + '<span class="m-cc"><i>Step 14 腰靠帶</i><b>' + (sup==='AJ' ? b.code : 'NA') + '</b></span>'
+      + '<span class="m-cc"><i>Step 15 椅背布</i><b>' + (back==='F' ? b.butterflyCode : 'NA') + '</b></span>'
+      + '<span class="m-cc"><i>Step 16 座面網布</i><b>' + b.airweaveCode + '</b></span>';
+  }
+  const fEl = document.getElementById('mirraFrameCascade');
+  if (fEl) {
+    fEl.innerHTML = '<span class="m-cc-t">這個色會同時決定</span>'
+      + '<span class="m-cc"><i>Step 10 椅架</i><b>' + f.code + '</b></span>'
+      + '<span class="m-cc"><i>Step 11 扶手墊</i><b>' + (arms==='N' ? 'NA' : f.armpadCode) + '</b></span>'
+      + '<span class="m-cc"><i>Step 12 五爪腳</i><b>' + (baseSel==='L7P' ? 'L7P' : f.code) + '</b></span>';
+  }
+}
 function mirraBuildBackColorSwatches() {
   const c = document.getElementById('mirraBackColorSwatches');
   if (!c) return;
   c.innerHTML = '';
-  MIRRA_BACK_COLORS.forEach((it, idx) => {
-    const s = document.createElement('div');
-    s.className = 'swatch' + (idx === 0 ? ' active' : '');
-    s.style.background = it.color;
-    if (it.border) s.style.borderColor = '#c8c4bc';
+  MIRRA_BACK_COLORS.forEach(function(it, idx){
+    const s = _mirraSwCell(it);
+    if (idx === 0) s.classList.add('active');
     const surcharge = it.surcharge > 0 ? ' +$' + it.surcharge : '';
-    s.title = `${it.code} — ${it.name}（${it.desc}）${surcharge}`;
-    s.dataset.code = it.code;
-    s.onclick = () => {
-      c.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+    s.onclick = function(){
+      c.querySelectorAll('.swatch').forEach(function(x){ x.classList.remove('active'); });
       s.classList.add('active');
       mirraSelectedBack = it;
       const lbl = document.getElementById('mirraBackColorName');
-      if (lbl) lbl.textContent = `${it.code} — ${it.name} ${it.desc}${surcharge}`;
+      if (lbl) lbl.textContent = it.code + ' — ' + it.name + ' ' + it.desc + surcharge;
       mirraRecalc();
     };
     c.appendChild(s);
@@ -5832,20 +5952,17 @@ function mirraBuildFrameColorSwatches() {
   const c = document.getElementById('mirraFrameColorSwatches');
   if (!c) return;
   c.innerHTML = '';
-  MIRRA_FRAME_COLORS.forEach((it, idx) => {
-    const s = document.createElement('div');
-    s.className = 'swatch' + (idx === 0 ? ' active' : '');
-    s.style.background = it.color;
-    if (it.border) s.style.borderColor = '#c8c4bc';
+  MIRRA_FRAME_COLORS.forEach(function(it, idx){
+    const s = _mirraSwCell(it);
+    if (idx === 0) s.classList.add('active');
     const surcharge = it.surcharge > 0 ? ' +$' + it.surcharge : '';
-    s.title = `${it.code} — ${it.name}（${it.desc}）${surcharge}（扶手墊→${it.armpadName}）`;
-    s.dataset.code = it.code;
-    s.onclick = () => {
-      c.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+    s.title += '（扶手墊→' + it.armpadName + '）';
+    s.onclick = function(){
+      c.querySelectorAll('.swatch').forEach(function(x){ x.classList.remove('active'); });
       s.classList.add('active');
       mirraSelectedFrame = it;
       const lbl = document.getElementById('mirraFrameColorName');
-      if (lbl) lbl.textContent = `${it.code} — ${it.name} ${it.desc}${surcharge}（扶手墊→${it.armpadName}）`;
+      if (lbl) lbl.textContent = it.code + ' — ' + it.name + ' ' + it.desc + surcharge + '（扶手墊→' + it.armpadName + '）';
       mirraRecalc();
     };
     c.appendChild(s);
@@ -5907,10 +6024,10 @@ function mirraUpdateHints() {
   const hintsText = document.getElementById('mirraHintsText');
   const hints = [];
   if (back === 'P') {
-    hints.push('您選了 <b>TriFlex 聚合物背</b>：成套色仍會套用「背框色 + 椅架 + 座墊 + 腰帶」，但蝴蝶背布料色（Step 14）不適用。');
+    hints.push('您選了 <b>TriFlex 聚合物背</b>：成套色仍會套用「背框色 + 椅架 + 座墊 + 腰帶」，但蝴蝶背布料色（亞洲 Step 15）不適用。');
   }
   if (support === 'SZS' || support === 'N2') {
-    hints.push('您選了 <b>' + (support === 'SZS' ? 'Basic 基本' : 'Non-adjustable 固定') + ' 腰靠</b>：腰帶顏色（Step 13）不適用，計價時不計入。');
+    hints.push('您選了 <b>' + (support === 'SZS' ? 'Basic 基本' : 'Non-adjustable 固定') + ' 腰靠</b>：腰帶顏色（亞洲 Step 14）不適用，計價時不計入。');
   }
   if (hints.length > 0) {
     hintsText.innerHTML = hints.map(h => '• ' + h).join('<br>');
@@ -6065,6 +6182,7 @@ function mirraCalcUS() {
 }
 
 function mirraRecalc() {
+  try{ mirraSyncCascade(); }catch(e){}
   const r = mirraCalc();
   const u = mirraCalcUS();
 
@@ -6747,7 +6865,7 @@ function renderAPSwatches(){
     var hm='https://images.hermanmiller.group/asset/'+s2[1]+'/W/x.png?w=80';
     var mh='https://media.maharam.com/asset/'+s2[1]+'/x.jpg.rendition.'+s2[0]+'_233.jpg';
     h+='<div class="sw-cell'+(s2[0]===chAPNum?' active':'')+'" title="'+s2[0]+'" onclick="pickAPSwatch(\''+s2[0]+'\')">'
-     + '<img loading="lazy" src="'+hm+'" data-mh="'+mh+'" onerror="if(this.dataset.mh){this.src=this.dataset.mh;this.removeAttribute(&quot;data-mh&quot;);}else{this.style.visibility=&quot;hidden&quot;;}">'
+     + '<img loading="lazy" src="'+hm+'" data-mh="'+mh+'" onerror="if(this.dataset.mh){this.src=this.dataset.mh;this.removeAttribute(&quot;data-mh&quot;);}else{this.classList.add(&quot;no-img&quot;);this.src=&quot;data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7&quot;;}">'
      + '<small>'+s2[0]+'</small></div>';
   }
   wrap.innerHTML=h;
@@ -6762,8 +6880,10 @@ function renderSwatches(){
   for(var i=0;i<list.length;i++){ var s2=list[i];
     var hm='https://images.hermanmiller.group/asset/'+s2[1]+'/W/x.png?w=80';
     var mh='https://media.maharam.com/asset/'+s2[1]+'/x.jpg.rendition.'+s2[0]+'_233.jpg';
-    h+='<div class="sw-cell'+(s2[0]===chFabNum?' active':'')+'" title="'+s2[0]+'" onclick="pickSwatch(\''+s2[0]+'\')"><img loading="lazy" src="'+hm+'" data-mh="'+mh+'" onerror="if(this.dataset.mh){this.src=this.dataset.mh;this.removeAttribute(&quot;data-mh&quot;);}else{this.style.visibility=&quot;hidden&quot;;}"><small>'+s2[0]+'</small></div>';
+    h+='<div class="sw-cell'+(s2[0]===chFabNum?' active':'')+'" title="'+s2[0]+'" onclick="pickSwatch(\''+s2[0]+'\')"><img loading="lazy" src="'+hm+'" data-mh="'+mh+'" onerror="if(this.dataset.mh){this.src=this.dataset.mh;this.removeAttribute(&quot;data-mh&quot;);}else{this.classList.add(&quot;no-img&quot;);this.src=&quot;data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7&quot;;}"><small>'+s2[0]+'</small></div>';
   }
+  h+='<div class="sw-hint" style="width:100%;margin-top:6px;">'
+    + '<span class="tip-tag">門市建議</span> 色塊圖由原廠 Materials 網站即時載入，離線或公司擋外連時會顯示斜線底，布號照樣可以點選。對客戶確認顏色請用實體布卡。</div>';
   wrap.innerHTML=h;
 }
 function pickSwatch(code){ chFabNum=code; renderSwatches(); chairRecalc();
@@ -6931,6 +7051,7 @@ function chairPasteEx(x){ var e=document.getElementById("chPasteInput"); e.value
 #product-eamesChairs .sw-hint{ flex-basis:100%; font-size:11px; color:var(--text-muted); margin-bottom:2px; }
 #product-eamesChairs .sw-cell{ width:48px; cursor:pointer; text-align:center; }
 #product-eamesChairs .sw-cell img{ width:44px; height:44px; object-fit:cover; border-radius:6px; border:2px solid transparent; background:#e8e6e2; display:block; }
+#product-eamesChairs .sw-cell img.no-img{ background:repeating-linear-gradient(45deg,#efedea 0 5px,#e3e0db 5px 10px); border:1px dashed var(--border-strong); }
 #product-eamesChairs .sw-cell.active img{ border-color:var(--accent); box-shadow:0 0 0 2px rgba(26,25,23,0.25); }
 #product-eamesChairs .sw-cell small{ display:block; font-size:8px; color:var(--text-muted); font-family:'Consolas',monospace; margin-top:1px; line-height:1.1; }
 </style>
@@ -8143,9 +8264,10 @@ function setuRender(targetId, sfx, resUs, resAsia, code){
   h+='</div>';
   if(resUs.ok&&resAsia.ok){
     const d=resAsia.total-resUs.total;
-    h+='<div class="model-badge"><span class="model-badge-label">兩線價差</span>'
+    h+='<div class="model-badge"><span class="model-badge-label">兩線價差</span><span>'
       +(d===0?'兩線同價':('亞洲線'+(d>0?'高':'低')+' $'+Math.abs(d).toLocaleString()+'（'+(d>0?'+':'-')+(Math.abs(d)/resUs.total*100).toFixed(1)+'%）'))
-      +'　　美國線主碼 '+resUs.code.split(' ')[0]+'　亞洲線主碼 '+resAsia.code.split(' ')[0]+'</div>';
+      +'</span><span class="mb-sep"></span><span class="model-badge-label">美國線主碼</span><span>'+resUs.code.split(' ')[0]+'</span>'
+      +'<span class="mb-sep"></span><span class="model-badge-label">亞洲線主碼</span><span>'+resAsia.code.split(' ')[0]+'</span></div>';
   }
   const notes=[].concat(resUs.ok?resUs.notes:[], resAsia.ok?resAsia.notes:[]);
   if(notes.length){ h+='<div class="alert alert-warn show" style="margin-bottom:12px;"><div>'+[...new Set(notes)].map(n=>'· '+n).join('<br>')+'</div></div>'; }
@@ -8883,7 +9005,10 @@ function cmCalc(){
   }).join('');
   const isA=(CM_S.line==='asia');
   let h='<div class="result-block show">'
-    +'<div class="model-badge"><span class="model-badge-label">型號</span><span>'+model+'</span></div>';
+    +'<div class="model-badge"><span class="model-badge-label">型號</span><span>'+model+'</span></div>'
+    +'<div class="total-bar"><div><div class="total-label">'+(isA?'亞洲線單張定價（USD）':'美國線單張定價（USD）')+'</div>'
+    +'<div class="total-sub">'+(isA?'20／30／45／80-day HM Asia Seating (2026)　查表法':'PB_CSM　累加法')+'</div></div>'
+    +'<div class="total-price"><span class="total-currency">USD</span><span>'+r.total.toLocaleString()+'</span></div></div>';
   if(r.errors&&r.errors.length)
     h+='<div class="alert alert-warn show"><div>'+r.errors.map(function(e){return '• '+e;}).join('<br>')+'</div></div>';
   h+='<div class="parse-card"><div class="parse-header '+(isA?'asia-h':'us-h')+'"><span>'
@@ -9799,11 +9924,22 @@ function hmFoldHints(root){
     const lab=item.querySelector(HM_LAB_SEL);
     if(!lab) return;
     // 找出標籤與控制項以外、有文字的節點 = 說明
+    // 只收「純說明文字」。任何含互動控制項的區塊一律不收，
+    // 之前把 Setu Step 8 的織網色塊當成說明收進去，導致整個選色控制項不見了。
+    const INTERACTIVE='select,input,textarea,button,a,[onclick],[role=button]';
+    const PICKERISH=/(^|\s)(sw-|swatch|chip|palette|grid|picker|esw|eag-fin)/i;
+    // 已經有自己開合按鈕的說明區塊（例如 Verus 每欄的「說明」鈕）不要再收一次，
+    // 兩套開合互相蓋掉會變成兩邊都點不開。
+    const OWNFOLD='.verus-help-body,.verus-note';
     const notes=Array.from(item.children).filter(function(c){
       if(c===lab) return false;
-      if(c.matches('select,input,textarea,button')) return false;
-      if(c.classList && (c.classList.contains('hm-hint-box')||c.classList.contains('sw-wrap'))) return false;
-      if(c.querySelector && c.querySelector('select,input,textarea')) return false;
+      if(c.nodeType!==1) return false;
+      if(c.matches(INTERACTIVE)) return false;
+      if(c.querySelector && c.querySelector(INTERACTIVE)) return false;
+      const cn=(c.className||'').toString();
+      if(c.classList && c.classList.contains('hm-hint-box')) return false;
+      if(c.matches(OWNFOLD) || (c.querySelector && c.querySelector(OWNFOLD))) return false;
+      if(PICKERISH.test(cn)) return false;
       return (c.textContent||'').trim().length>0;
     });
     item.dataset.hmFolded='1';
@@ -9822,7 +9958,20 @@ function hmFoldHints(root){
     };
     lab.appendChild(t);
   });
+  hmVerusInline(scope);
   hmHintBar(scope);
+}
+// Verus 每欄下方的「最快 20天」原本各佔一行，移到標籤列右邊，
+// 資訊照樣看得到，列高少掉一行。
+function hmVerusInline(scope){
+  scope.querySelectorAll('#product-verus .config-item').forEach(function(item){
+    const note=item.querySelector(':scope > .verus-note');
+    const lab=item.querySelector(':scope > .config-item-label');
+    if(!note||!lab) return;
+    if(note.dataset.hmInline==='1') return;
+    note.dataset.hmInline='1';
+    lab.appendChild(note);
+  });
 }
 function hmHintBar(scope){
   scope.querySelectorAll('.config-grid, .eames-config-grid, .sayl-grid, .mirra-grid, .eta-grid').forEach(function(g){
