@@ -187,7 +187,7 @@ footer{margin-top:26px;text-align:center;color:#9aa0a6;font-size:11.5px;line-hei
   <div class="snap">本表為快照,不是即時庫存。現貨數字停在上方的資料截止日,之後倉庫的進出不會反映在這裡。向客人承諾現貨或交期前,請先向新店倉確認。</div>
   可預購與現貨是同一批貨的兩種狀態,不是兩批貨,請勿相加。<br>
   可預購欄顯示的是「還能再收幾件預購單」,未到貨的批次拆解請點該列展開查看。<br>
-  仁愛、內湖、忠孝三欄是門市現有展品數。2026/08/24 起門市現場賣出會自動扣該店展品,不再扣到新店倉。
+  仁愛、內湖、白天鵝三欄是門市現有展品數。2026/08/24 起門市現場賣出會自動扣該店展品,不再扣到新店倉。
   <div class="eta" id="etaNote"></div>
  </div>
  <div class="bar">
@@ -210,7 +210,7 @@ footer{margin-top:26px;text-align:center;color:#9aa0a6;font-size:11.5px;line-hei
    <thead><tr>
     <th style="width:60px">圖片</th><th style="width:92px">分類</th><th style="width:96px">型號</th>
     <th class="l">品名與規格</th>
-    <th style="width:54px">仁愛</th><th style="width:54px">內湖</th><th style="width:54px">忠孝</th>
+    <th style="width:54px">仁愛</th><th style="width:54px">內湖</th><th style="width:62px">白天鵝</th>
     <th style="width:74px">新店現貨</th><th style="width:74px">可預購</th>
     <th style="width:76px">歐元價</th><th style="width:92px">定價 NT$</th>
    </tr></thead>
@@ -332,7 +332,7 @@ function row(i){
   +'<td class="l cname">'+nm+'</td>'
   +'<td class="cnum" data-k="仁愛">'+cell(i.ra)+'</td>'
   +'<td class="cnum" data-k="內湖">'+cell(i.nh)+'</td>'
-  +'<td class="cnum" data-k="忠孝">'+cell(i.zx)+'</td>'
+  +'<td class="cnum" data-k="白天鵝">'+cell(i.zx)+'</td>'
   +'<td class="cnum" data-k="新店現貨">'+cell(i.st,'pos')+'</td>'
   +'<td class="cnum" data-k="可預購" title="未到貨 '+(i.b3+i.b4+(i.b5||0))+' 件,已收預購 '+i.ps+' 件">'+cell(i.pre,'pre')+'</td>'
   +'<td class="cnum money" data-k="歐元價">'+(i.eu?'€'+nf(i.eu):'')+'</td>'
@@ -345,7 +345,7 @@ function detail(i){
   [bl('第五批','b5'),i.b5||0],
   ['未到貨合計',i.b3+i.b4+(i.b5||0)],['門市展品合計',i.ra+i.nh+i.zx],
   ['已售出',i.so],['外借',i.le],['預購已售出',i.ps]];
- const ss=(i.sr+i.sn+i.sz)>0?[['門市已售出 仁愛',i.sr],['內湖',i.sn],['忠孝',i.sz]]:[];
+ const ss=(i.sr+i.sn+i.sz)>0?[['門市已售出 仁愛',i.sr],['內湖',i.sn],['白天鵝',i.sz]]:[];
  let h='<div class="det-in">'+d.concat(ss).map(x=>'<div>'+x[0]+' <b>'+x[1]+'</b></div>').join('')
   +(i.k?'<div>原廠料號 <b>'+esc(i.k)+'</b></div>':'');
  if(i.t.length)h+='<div class="det-note">'+esc(i.t.join(' / '))+'</div>';
